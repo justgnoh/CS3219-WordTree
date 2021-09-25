@@ -1,66 +1,89 @@
 version: '3.9'
 
 services:
-  server:
+  challenge:
     restart: always
     build:
-      context: ./server
+      context: ./server/challenge
       dockerfile: Dockerfile.dev
-    container_name: bookstore_server
+    container_name: challenge_service
     volumes:
       - /app/node_modules
-      - ./server:/app
+      - ./server/challenge:/app
     environment:
-      - POSTGRES_URL=postgresql://postgres:postgres@db:5432/bookstore
+      - POSTGRES_URL=${POSTGRES_URL}
     depends_on:
       - db
+    ports:
+      - 5001:5000
     networks:
-      - bookstore_network
+      - word_squirrel_network
+
+  essay:
+    restart: always
+    build:
+      context: ./server/essay
+      dockerfile: Dockerfile.dev
+    container_name: essay_service
+    volumes:
+      - /app/node_modules
+      - ./server/essay:/app
+    environment:
+      - POSTGRES_URL=${POSTGRES_URL}
+    depends_on:
+      - db
+    ports:
+      - 5002:5000
+    networks:
+      - word_squirrel_network
 
   db:
     image: postgres:13-alpine
     restart: always
-    container_name: bookstore_db
+    container_name: word_squirrel_db
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=bookstore
+      - POSTGRES_DB=word_squirrel
+      - POSTGRES_PASSWORD=password
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres-data:${POSTGRES_DATA_DIR}
       - ./migrations:/docker-entrypoint-initdb.d
     networks:
-      - bookstore_network
+      - word_squirrel_network
 
   client:
     restart: always
     build:
-      context: ./client
+      context: ./frontend
       dockerfile: Dockerfile.dev
-    container_name: bookstore_client
+    container_name: word_squirrel_ui
     volumes:
       - /app/node_modules
-      - ./client:/app
+      - ./frontend:/app
     depends_on:
-      - server
-    networks:
-      - bookstore_network
-
-  nginx:
-    restart: always
-    depends_on:
-      - server
-      - client
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile.dev
-    container_name: bookstore_nginx
+      - challenge
+      - essay
     ports:
-      - 8080:80
+      - 5003:3000
     networks:
-      - bookstore_network
+      - word_squirrel_network
+
+  # nginx:
+  #   restart: always
+  #   depends_on:
+  #     - server
+  #     - client
+  #   build:
+  #     context: ./nginx
+  #     dockerfile: Dockerfile.dev
+  #   container_name: bookstore_nginx
+  #   ports:
+  #     - 8080:80
+  #   networks:
+  #     - word_squirrel_network
 
 networks:
-  bookstore_network:
+  word_squirrel_network:
     driver: bridge
 
 volumes:

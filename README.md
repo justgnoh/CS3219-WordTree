@@ -1,9 +1,4 @@
-<h1 align="center">
-    <img width="275" height="78" src="https://user-images.githubusercontent.com/32206164/84589665-cf725680-ae38-11ea-828b-b20eada43eae.png" alt="logo">
-</h1>
 
-<h4 align="center">:ledger: Project store for buying books</h4>
-<h3 align="center">PERN Stack App</h4>
 
 - React (Redux)
 - Node.js (Express)
@@ -13,19 +8,26 @@
 
 ## Installation
 
-1)  
+Template adapted from https://github.com/raevsanton/bookstore/
+
+1.  
     ```bash
-    git clone https://github.com/raevsanton/bookstore.git
+    git clone https://github.com/CS3219-SE-Principles-and-Patterns/cs3219-project-ay2122-2122-s1-g36.git
     ```
-2. 
+2. Ensure you have docker and docker compose installed. 
+3. Ensure docker is running.
+4. Copy .env.example into .env and fill in the required fields
+ - POSTGRES_URL: the url e.g. postgresql://user:secret@localhost
+ - POSTGRES_DATA: where postgres data is stored on ur local setup
+
+4. 
    ```bash
-    cd bookstore
+    cd cs3219-project-ay2122-2122-s1-g36
     ```
-3.
+5.
     ```bash
     docker-compose up --build
     ```
-4.  
-    ```bash
-    http://localhost:8080
-    ```
+
+6. Visit http://localhost:5001 and http://localhost:5002 and you should see "hello" 
+7. Visit http://localhost:5003 to see some template UI
