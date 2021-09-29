@@ -1,10 +1,11 @@
 import express from 'express';
 import pool from '../database/db';
 
-class BooksController {
-    async getAllBooks(req: express.Request, res: express.Response) {
+class ChallengeController {
+    async getAllChallengeById(req: express.Request, res: express.Response) {
         const books = await pool.query('SELECT * FROM book');
         res.json(books.rows);
+
     }
     async getOneBookById(req: express.Request, res: express.Response) {
         const { id } = req.params;
@@ -31,4 +32,4 @@ class BooksController {
     }
 }
 
-export default new BooksController();
+export default new ChallengeController();
