@@ -4,6 +4,7 @@ import ChallengeController from '../controllers/ChallengeController';
 const router = Router();
 
 router.get('/', ChallengeController.getAllChallengeByUserId);
+router.post('/', ChallengeController.createNewChallenge);
 // router.get('/books/:id', booksController.getOneBookById);
 // router.post('/books/sort', booksController.getSortedBooks);
 // router.delete('/books/:id', booksController.deleteOneBookById);

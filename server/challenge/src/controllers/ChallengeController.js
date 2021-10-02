@@ -12,29 +12,28 @@ class ChallengeController {
         res.json(challenge.rows);
         res.status(200)
     }
-    // async getOneBookById(req: express.Request, res: express.Response) {
-    //     const { id } = req.params;
-    //     const book = await pool.query('SELECT * FROM book where id = $1', [id]);
-    //     res.json(book.rows[0]);
-    // }
-    // async getSortedBooks(req: express.Request, res: express.Response) {
-    //     const { sort } = req.body;
-    //     let books;
-    //     switch(sort) {
-    //         case 'price-desc':
-    //             books = await pool.query('SELECT * FROM book ORDER BY price DESC');
-    //             break;
-    //         case 'price-asc':
-    //             books = await pool.query('SELECT * FROM book ORDER BY price ASC');
-    //             break;
-    //     }
-    //     res.json(books?.rows);
-    // }
-    // async deleteOneBookById(req: express.Request, res: express.Response) {
-    //     const { id } = req.params;
-    //     const book = await pool.query('DELETE FROM book where id = $1', [id]);
-    //     res.json(book.rows[0]);
-    // }
+    async createNewChallenge(req, res) {
+        const data = req.body;
+        if (data === undefined) return res.status(400).send("Bad Request. No data found.")
+        if (!data.squirrel_id) return res.status(400).send("Bad Request. No userID found.")
+        if (!data.num_of_total_turns) return res.status(400).send("Bad Request. No num_of_total_turns found.")
+        if (data.num_of_total_turns !== 4 && data.num_of_total_turns !== 6  ) return res.status(400).send("Bad Request. Invalid number for num_of_total_turns found.")
+        if (!data.word_limit_per_turn) return res.status(400).send("Bad Request. No word_limit_per_turn found.")
+        if (data.word_limit_per_turn !== 300 && data.word_limit_per_turn !== 500  ) return res.status(400).send("Bad Request. Invalid number for word_limit_per_turn found.")
+        if (!data.genre) return res.status(400).send("Bad Request. No genre found.")
+
+        await pool.query(SQL_QUERIES.insertChallenge, [data.squirrel_id, data.num_of_total_turns, data.word_limit_per_turn, data.genre]).then(
+            () => res.status(200).send("OK")
+        ).catch(err => {
+            if (err.constraint !== undefined) {
+                if (err.constraint.includes("challenges_genre_fkey") > 0) {
+                    return res.status(400).send("Bad Request. Genre not found")
+                }
+            } else {
+                return res.status(500).send(err.message)
+            }
+        })
+    }
 }
 
 export default new ChallengeController();
