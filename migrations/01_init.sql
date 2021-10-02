@@ -1,10 +1,10 @@
-create table book(
-    id SERIAL PRIMARY KEY,
-    link VARCHAR(255),
-    cover VARCHAR(255),
-    title VARCHAR(255),
-    subtitle VARCHAR(255),
-    authors VARCHAR(255)[],
-    description VARCHAR(255),
-    price INTEGER
+drop table if exists WordsPerChallenge, EssayPara cascade;
+
+create table Challenges ( /*stub*/
+    challenge_id serial primary key
+);
+
+create table WordsPerChallenge (
+    challenge_id integer primary key references Challenges(challenge_id),
+    word_list text[][] not null
 );

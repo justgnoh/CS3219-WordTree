@@ -1,10 +1,11 @@
 {
-  "name": "essay-api",
+  "name": "word-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
-  "scripts": {
-    "start": "ts-node src/index.ts",
+  "main": "./src/index.js",
+  "type": "module",
+    "scripts": {
+    "start": "nodemon run",
     "dev": "nodemon -L"
   },
   "author": "Chiam Yun Qing",
