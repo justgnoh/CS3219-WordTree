@@ -5,6 +5,17 @@ create table Challenges ( /*stub*/
 );
 
 create table WordsPerChallenge (
-    challenge_id integer primary key references Challenges(challenge_id),
-    word_list text[][] not null
+    challenge_id integer references Challenges(challenge_id),
+    seq_num integer,
+    word_list text[] not null,
+    primary key(challenge_id, seq_num)
+);
+
+create table EssayPara (
+    challenge_id integer references Challenges(challenge_id),
+    seq_num integer not null,
+    author_id integer references Users(id),
+    essay_para text not null,
+    words_used text[],
+    primary key (challenge_id, seq_num)
 );

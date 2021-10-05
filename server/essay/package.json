@@ -1,10 +1,11 @@
 {
   "name": "essay-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.ts",
+  "description": "End points for Essay Service",
+  "main": "./src/index.js",
+  "type": "module",
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "nodemon run",
     "dev": "nodemon -L"
   },
   "author": "Chiam Yun Qing",
