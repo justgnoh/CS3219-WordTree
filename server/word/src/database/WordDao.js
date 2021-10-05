@@ -9,20 +9,22 @@ const pool = new Pool({
   port: 5432
 });
 
-class WordDao {
-    async getWordsForTurn(challengeid, seqnum) {
-        //psql array is 1-indexing
-        //function returns a single array of 3 words
-        try {
-          const wordarr = await pool.query("select ARRAY(select unnest(word_list[$1:$1])) from wordsperchallenge WHERE challenge_id = $2;", [seqnum, challengeid]);
-          return wordarr.rows[0]["array"];
-        } catch (err) {
-          throw err;
-        }
-    }
-
-    async 
-
+//function returns a single array of 3 words
+export async function getWordsForTurn(challengeid, seqnum) {
+  //Note: psql array is 1-indexing
+  try {
+    const wordarr = await pool.query("SELECT word_list FROM WordsPerChallenge WHERE challenge_id = $1 and seq_num = $2;", [challengeid, seqnum]);
+    return wordarr.rows[0]["word_list"];
+  } catch (err) {
+    throw err;
+  }
 }
 
-export default new WordDao();
+export async function insertWordList(challengeid, seqnum, wordarr) {
+  try {
+    await pool.query("INSERT INTO WordsPerChallenge(challenge_id, seq_num, word_list) VALUES($1, $2, $3);", [challengeid, seqnum, wordarr]);
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+}
