@@ -5,6 +5,7 @@ import {
   Route,
   Link
 } from "react-router-dom";
+import LoginPage from './pages/LoginPage';
 
 import './App.css';
 
@@ -45,7 +46,7 @@ export default function App() {
             <Register />
           </Route>
           <Route path="/login">
-            <Login />
+            <LoginPage />
           </Route>
           <Route path="/">
             <Profile />
@@ -62,9 +63,9 @@ function Profile() {
   return <h2>This is the users profile, concatenate the url with their pid</h2>;
 }
 
-function Login() {
-  return <h2>This is the login page, Username, Password</h2>;
-}
+// function Login() {
+//   return <h2>This is the login page, Username, Password</h2>;
+// }
 
 function Register() {
   return <h2>This is the register page, Username, Password + Other basic details</h2>;

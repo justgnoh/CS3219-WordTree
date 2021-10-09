@@ -1,4 +1,6 @@
-import firebase from "firebase";
+import { initializeApp } from 'firebase/app';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
     apiKey: "AIzaSyAYsPoQAOnfBuPcx-TM2hceDs5R1s3c8Dc",
@@ -10,14 +12,17 @@ const firebaseConfig = {
     measurementId: "G-CS18SL2KMP"
   };
 
-const app = firebase.initializeApp(firebaseConfig);
-const auth = app.auth();
-const db = app.firestore();
+const app = initializeApp(firebaseConfig);
+const auth = getAuth();
+const db = getFirestore();
 
 // Sign in by Username & Password
-const signInWithEmailAndPassword = async (email, password) => {
+const basicSignIn = async (email, password) => {
     try {
-      await auth.signInWithEmailAndPassword(email, password);
+      await signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
+        const user = userCredential.user;
+        console.log(user);
+      });
     } catch (err) {
       console.error(err);
       alert(err.message);
@@ -61,7 +66,7 @@ const logout = () => {
 export {
     auth,
     db,
-    signInWithEmailAndPassword,
+    basicSignIn,
     registerWithEmailAndPassword,
     sendPasswordResetEmail,
     logout,
