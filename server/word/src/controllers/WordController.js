@@ -1,6 +1,53 @@
 import * as worddao from '../database/WordDao.js';
 import * as worddict from './WordDictionary.js'
 
+const MISSING_FIELDS = "Bad Request. Missing fields.";
+
+export async function createNewWordList(req, res) {
+    const challengeid = req.body['challenge_id'];
+    const interest = req.body['interest'];
+    const numturns = req.body['num_of_total_turns'];
+
+    if (!challengeid || !interest || !numturns) {
+        return res.status(400).send(MISSING_FIELDS);
+    }
+    try {
+        let wordlist = await generateWords(interest, numturns);
+
+        for (let i = 1; i <= numturns; i++) {
+            await worddao.insertWordList(challengeid, i, wordlist[i - 1]);
+        }
+        return res.status(200).json();
+    } catch (err) {
+        console.log(err);
+        return res.status(400).json();
+    }
+}
+
+//generates the 2D array of wordlist
+//Assumption is interest is an array
+export async function generateWords(interest, numturns) {
+    console.log(typeof interest); //TODO: IF IS A STRING, CHANGE IMPLEMENTATION
+
+    let wordSet = new Set();
+    for (var i = 0; i < interest.length; i++) {
+        let setOfSynonyms = await worddict.getSetOfSynonyms(interest[i])
+            .catch(err => {
+                throw err;
+            });
+        let catWordSet = Array.from(setOfSynonyms);
+        for (let key of catWordSet) {
+            wordSet.add(key);
+        }
+    }
+    let shuffleArr = Array.from(wordSet);
+    fisherYates(shuffleArr); //shuffles array
+    return await convertToWordList(shuffleArr, numturns)
+        .catch(err => {
+            throw err;
+        });
+}
+
 // Code from: http://sedition.com/perl/javascript-fy.html
 // Knuth Shuffle - used to shuffle the word array 
 export function fisherYates(myArray) {
@@ -17,6 +64,10 @@ export function fisherYates(myArray) {
 
 //converts the shuffled 1D array to 2D array
 export async function convertToWordList(array, numturns) {
+    if (!array || !array.length) {
+        throw 'No words generated in word list!';
+    }
+
     if (array.length < numturns * 3) { //if not enough words, just repeat
         for (let i = 0; i < numturns * 3 - array.length + 1; i++) {
             array.push(array[i]);
@@ -35,44 +86,13 @@ export async function convertToWordList(array, numturns) {
     return wordlist;
 }
 
-//generates the 2D array of wordlist
-export async function generateWords(categories, numturns) {
-    let wordSet = new Set();
-    try {
-        for (var i = 0; i < categories.length; i++) {
-            let catWordSet = Array.from(await worddict.getSetOfSynonyms(categories[i]));
-            for (let key of catWordSet) {
-                wordSet.add(key);
-            }
-        }
-        let shuffleArr = Array.from(wordSet);
-        fisherYates(shuffleArr); //shuffles array
-        return await convertToWordList(shuffleArr, numturns);
-    } catch (err) {
-        console.log(err);
-    }
-}
-
-export async function createNewWordList(req, res) {
-    const challengeid = req.body['challengeid'];
-    const categories = req.body['categories'];
-    const numturns = req.body['numturns'];
-
-    try {
-        let wordlist = await generateWords(categories, numturns);
-        for (let i = 1; i <= numturns; i++) {
-            await worddao.insertWordList(challengeid, i, wordlist[i - 1]);
-        }
-        res.status(200).json();
-    } catch (err) {
-        console.log(err);
-        res.status(400).json();
-    }
-}
-
 export async function getWordsForTurn(req, res) {
-    const challengeid = req.params['challengeid'];
-    const seqnum = req.params['seqnum'];
+    const challengeid = req.params['challenge_id'];
+    const seqnum = req.params['seq_num'];
+    if (!challengeid || !seqnum) {
+        res.status(400).send(MISSING_FIELDS);
+    }
+
     try {
         const result = await worddao.getWordsForTurn(challengeid, seqnum);
         res.json(result);
