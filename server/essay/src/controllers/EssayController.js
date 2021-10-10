@@ -1,30 +1,50 @@
+import axios from 'axios';
 import * as essaydao from '../database/EssayDao.js';
+
+const MISSING_INFO = "Bad Request. Missing fields or parameters.";
 
 export async function postNewPara(req, res) {
     const challengeid = req.params['challengeid'];
-    const authorid = req.body['authorid'];
-    const seqnum = req.body['seqnum'];
+    const authorid = req.body['author_id'];
+    const seqnum = req.body['seq_num'];
     const essaypara = req.body['essaypara'];
 
-    const wordsused = getWordsUsed(challengeid, seqnum, essaypara);
+    if (!authorid || !seqnum || !essaypara) {
+        return res.status(400).send(MISSING_INFO);
+    }
 
     try {
+        const wordsused = await getWordsUsed(challengeid, seqnum, essaypara);
         await essaydao.insertNewEssayPara(challengeid, seqnum, authorid, essaypara, wordsused);
 
-        //TODO: send to nut service the points
-        //SEND.NURSERVICES
+        //Send points to nuts service
+        if (wordsused.length > 0) {
+            await axios.post('localhost:5011/newEssayNut', {
+                ChallengeId: challengeid,
+                SeqNum: seqnum,
+                NumberOfNuts: wordsused.length,
+                UserId: authorid
+            }
+            );
+        }
 
-
-        res.status(200).json();
+        return res.status(200).json();
     } catch (err) {
-        res.status(400).json();
+        
+        console.log(err);
+        return res.status(400).json();
     }
 }
 
-export function getWordsUsed(challengeid, seqnum, essaypara) {
+export async function getWordsUsed(challengeid, seqnum, essaypara) {
     try {
-    //TODO: link to word service endpoint to get the 3 words
-        const wordarr = [];
+        let wordarr = await axios.get('http://127.0.0.1:5007/words/' + challengeid + '/' + seqnum);
+
+        if (!wordarr.data) {
+            throw "Words for this challenge id and sequence number does not exist!"
+        }
+
+        wordarr = wordarr.data;
         let words_used = [];
         for (let i = 0; i < wordarr.length; i++) {
             if (essaypara.includes(wordarr[i])) {
@@ -33,16 +53,23 @@ export function getWordsUsed(challengeid, seqnum, essaypara) {
         }
         return words_used;
     } catch (err) {
-        res.status(400).json();
+        throw err;
     }
 }
 
 export async function getAllEssayPara(req, res) {
     const challengeid = req.params['challengeid'];
-    try {
-        const result = await essaydao.getAllEssayPara(challengeid);
-        res.json(result);
-    } catch (err) {
-        res.status(400).json();
+
+    if (!challengeid) {
+        return res.status(400).send(MISSING_INFO);
     }
+
+    await essaydao.getAllEssayPara(challengeid)
+        .then(result => {
+            res.json(result.rows);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(400).json();
+        });
 }

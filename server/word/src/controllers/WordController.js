@@ -87,12 +87,9 @@ export async function convertToWordList(array, numturns) {
 }
 
 export async function getWordsForTurn(req, res) {
-    const challengeid = req.params['challenge_id'];
-    const seqnum = req.params['seq_num'];
-    if (!challengeid || !seqnum) {
-        res.status(400).send(MISSING_FIELDS);
-    }
-
+    const challengeid = req.params['challengeid'];
+    const seqnum = req.params['seqnum'];
+ 
     try {
         const result = await worddao.getWordsForTurn(challengeid, seqnum);
         res.json(result);
