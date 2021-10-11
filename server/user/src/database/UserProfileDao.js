@@ -38,7 +38,7 @@ export async function getUserInterest(userId) {
 
 export async function deleteUserInterest(userId, interest) {
     try {
-        const result = await pool.query("DELETE FROM " + userProfileDb +
+        const result = await pool.query("DELETE FROM " + userInterestDb +
                 " WHERE " + userIdCol + " = $1 AND " + interestCol + " = $2;", [userId, interest]);
         return result;
     } catch (err) {
@@ -48,8 +48,8 @@ export async function deleteUserInterest(userId, interest) {
 
 export async function addUserInterest(userId, interest) {
     try {
-        const result = await pool.query("INSERT INTO " + userProfileDb +
-                "(" + userIdCol + ", " + interestId + ") VALUES ($1, $2);", [userId, interest]);
+        const result = await pool.query("INSERT INTO " + userInterestDb +
+                "(" + userIdCol + ", " + interestCol + ") VALUES ($1, $2);", [userId, interest]);
         return result;
     } catch (err) {
         throw err;
