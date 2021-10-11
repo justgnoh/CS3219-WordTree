@@ -1,6 +1,0 @@
-export enum ModalActions {
-  MODAL_SUCCESS = 'MODAL_SUCCESS',
-  MODAL_ERROR = 'MODAL_ERROR',
-  MODAL_CLOSE = 'MODAL_CLOSE',
-  MODAL_OPEN = 'MODAL_OPEN',
-}
