@@ -1,11 +1,11 @@
 {
-  "name": "bookstore-api",
+  "name": "challenge-service",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "index.js",
   "scripts": {
-    "start": "ts-node src/index.ts",
-    "dev": "nodemon -L"
+    "start": "ts-node src/index.js",
+    "dev": "nodemon src/index.js"
   },
   "author": "raevsanton",
   "license": "ISC",
