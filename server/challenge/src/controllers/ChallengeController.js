@@ -39,7 +39,7 @@ export const createNewChallenge = async (req, res) => {
     }
 }
 
-export const addEssayExtract = async (req, res) => {
+export const addEssayPara = async (req, res) => {
     const { id } = req.params;
     const data = req.body;
     if (!data.player_id) return res.status(400).send(error_messages.MISSING_FIELDS);
@@ -86,8 +86,4 @@ export const addEssayExtract = async (req, res) => {
         return res.status(403).send(error_messages.WRONG_TURN);
     }
 
-}
-
-export const getChallengeByChallengeID = async (req, res) => {
-    
 }
