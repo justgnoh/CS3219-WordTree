@@ -17,7 +17,7 @@ services:
     ports:
       - 5001:5000
     networks:
-      - word_squirrel_network
+      - word_tree_network
 
   essay:
     restart: always
@@ -35,21 +35,39 @@ services:
     ports:
       - 5002:5000
     networks:
-      - word_squirrel_network
+      - word_tree_network
+
+  nut:
+    restart: always
+    build:
+      context: ./server/nut
+      dockerfile: Dockerfile.dev
+    container_name: nut_service
+    volumes:
+      - /app/node_modules
+      - ./server/nut:/app
+    environment:
+      - POSTGRES_URL=${POSTGRES_URL}
+    depends_on:
+      - db
+    ports:
+      - 5011:5000
+    networks:
+      - word_tree_network
 
   db:
     image: postgres:13-alpine
     restart: always
-    container_name: word_squirrel_db
+    container_name: word_tree_db
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=word_squirrel
+      - POSTGRES_DB=word_tree
       - POSTGRES_PASSWORD=password
     volumes:
       - postgres-data:${POSTGRES_DATA_DIR}
       - ./migrations:/docker-entrypoint-initdb.d
     networks:
-      - word_squirrel_network
+      - word_tree_network
 
   client:
     restart: always
@@ -63,10 +81,11 @@ services:
     depends_on:
       - challenge
       - essay
+      - nut
     ports:
       - 5003:3000
     networks:
-      - word_squirrel_network
+      - word_tree_network
 
   # nginx:
   #   restart: always
@@ -83,7 +102,7 @@ services:
   #     - word_squirrel_network
 
 networks:
-  word_squirrel_network:
+  word_tree_network:
     driver: bridge
 
 volumes:

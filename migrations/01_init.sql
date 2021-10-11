@@ -32,3 +32,33 @@ CREATE TABLE TurnDetails(
     time_of_last_completed_sequence TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY(challenge_id)
 );
+
+/* stub */
+CREATE TABLE UserAccount (
+    id INT PRIMARY KEY
+);
+
+/* stub */
+CREATE TABLE EssayPara (
+    challenge_id int,
+    seq_num int,
+    PRIMARY KEY (challenge_id, seq_num)
+);
+
+CREATE TABLE UserProfile (
+    user_id INT PRIMARY KEY,
+    name VARCHAR(50),
+    total_nut INT DEFAULT 0,
+    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id),
+    CONSTRAINT total_nut_more_than_zero CHECK (total_nut >= 0)
+);
+
+CREATE TABLE EssayNut (
+    user_id INT,
+    nut INT NOT NULL,
+    challenge_id INT,
+    seq_num INT,
+    PRIMARY KEY (user_id, challenge_id, seq_num),
+    FOREIGN KEY (challenge_id, seq_num) REFERENCES EssayPara(challenge_id, seq_num),
+    FOREIGN KEY (user_id) REFERENCES UserAccount(id)
+);
