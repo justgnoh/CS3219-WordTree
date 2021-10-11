@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "start": "ts-node src/index.ts",
-    "dev": "nodemon src/index.ts"
+    "start": "ts-node src/index.js",
+    "dev": "nodemon src/index.js"
   },
   "author": "raevsanton",
   "license": "ISC",
