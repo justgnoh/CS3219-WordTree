@@ -17,7 +17,9 @@ export async function createNewWordList(req, res) {
         for (let i = 1; i <= numturns; i++) {
             await worddao.insertWordList(challengeid, i, wordlist[i - 1]);
         }
-        return res.status(200).json();
+
+        let firstWordArr = await worddao.getWordsForTurn(challengeid, 1);
+        return res.status(200).json(firstWordArr);
     } catch (err) {
         console.log(err);
         return res.status(400).json();
@@ -25,27 +27,15 @@ export async function createNewWordList(req, res) {
 }
 
 //generates the 2D array of wordlist
-//Assumption is interest is an array
 export async function generateWords(interest, numturns) {
-    console.log(typeof interest); //TODO: IF IS A STRING, CHANGE IMPLEMENTATION
-
-    let wordSet = new Set();
-    for (var i = 0; i < interest.length; i++) {
-        let setOfSynonyms = await worddict.getSetOfSynonyms(interest[i])
-            .catch(err => {
-                throw err;
-            });
-        let catWordSet = Array.from(setOfSynonyms);
-        for (let key of catWordSet) {
-            wordSet.add(key);
-        }
+    try {
+        let setOfSynonyms = await worddict.getSetOfSynonyms(interest)
+        let shuffleArr = Array.from(setOfSynonyms);
+        fisherYates(shuffleArr); //shuffles array
+        return await convertToWordList(shuffleArr, numturns)
+    } catch (err) {
+        throw err;
     }
-    let shuffleArr = Array.from(wordSet);
-    fisherYates(shuffleArr); //shuffles array
-    return await convertToWordList(shuffleArr, numturns)
-        .catch(err => {
-            throw err;
-        });
 }
 
 // Code from: http://sedition.com/perl/javascript-fy.html
