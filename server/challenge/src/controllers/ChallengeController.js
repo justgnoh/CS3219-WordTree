@@ -31,6 +31,7 @@ export const createNewChallenge = async (req, res) => {
     if (challenge && challenge.rows && challenge.rows.length > 0 && challenge.rows[0].challenge_id) {
             console.log(challenge.rows[0].challenge_id);
             return await pool.query(query.INSERT_NEW_TURN_DETAILS, [challenge.rows[0].challenge_id])
+            // TODO get words from word service
             .then(() => res.status(200).send("OK"))
             .catch(err => {
                 console.log(err);
@@ -73,6 +74,8 @@ export const addEssayPara = async (req, res) => {
     ).catch(err => {
         return res.status(500).send(err.message);
     })
+
+    // TODO get essay extract from essay service
 
     if (isCorrectPlayerTurn) {
         await pool.query(query.UPDATE_TURN_DETAILS_TIMESTAMP, [id]).catch(err => {
