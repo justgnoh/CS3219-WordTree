@@ -37,6 +37,24 @@ services:
     networks:
       - word_tree_network
 
+  user:
+    restart: always
+    build:
+      context: ./server/user
+      dockerfile: Dockerfile.dev
+    container_name: user_service
+    volumes:
+      - /app/node_modules
+      - ./server/user:/app
+    environment:
+      - POSTGRES_URL=${POSTGRES_URL}
+    depends_on:
+      - db
+    ports:
+      - 5010:5000
+    networks:
+      - word_tree_network
+
   nut:
     restart: always
     build:
@@ -85,7 +103,7 @@ services:
   #   ports:
   #     - 8080:80
   #   networks:
-  #     - word_squirrel_network
+  #     - word_tree_network
 
 networks:
   word_tree_network:
