@@ -8,7 +8,7 @@ const nutCol = "nut";
 const seqNumCol = "seq_num";
 const challengeIdCol = "challenge_id";
 
-export async function addNut(userId, nut, challengeId, seqNum) {
+export async function newEssayNut(userId, nut, challengeId, seqNum) {
     try {
         const result = await pool.query("INSERT INTO " + nutDb +
                 "(" + userIdCol + ", " + nutCol + ", " + challengeIdCol + ", " + seqNumCol +
@@ -19,7 +19,7 @@ export async function addNut(userId, nut, challengeId, seqNum) {
     }
 }
 
-export async function deleteNut(userId, challengeId, seqNum) {
+export async function deleteEssayNut(userId, challengeId, seqNum) {
     try {
         const result = await pool.query("DELETE FROM " + nutDb +
                 " WHERE " + userIdCol + " = $1 AND " + challengeIdCol + " = $2 AND " + seqNumCol + " = $3;",

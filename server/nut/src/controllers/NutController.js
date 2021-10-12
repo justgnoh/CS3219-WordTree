@@ -6,7 +6,7 @@ const ERROR_NO_NUT = "Bad Request. No nut found.";
 const ERROR_NO_CHALLENGE_ID = "Bad Request. No challenge id found.";
 const ERROR_NO_SEQ_NUM = "Bad Request. No sequence number found.";
 
-export async function addNut(req, res) {
+export async function newEssayNut(req, res) {
     console.log("addNut: ", req.body);
     const data = req.body;
     if (data == undefined) {
@@ -25,7 +25,7 @@ export async function addNut(req, res) {
         return res.status(400).send(ERROR_NO_SEQ_NUM);
     }
 
-    await userDao.addNut(data.userId, data.nut, data.challengeId, data.seqNum)
+    await userDao.newEssayNut(data.userId, data.nut, data.challengeId, data.seqNum)
         .then(result1 => { res.status(200).send("OK"); })
         .catch(err => { res.status(500).send(err.message); });
 
@@ -43,7 +43,7 @@ export async function addNut(req, res) {
 //        .catch(err => { res.status(500).send(err.message); });
 }
 
-export async function deleteNut(req, res) {
+export async function deleteEssayNut(req, res) {
     console.log("deleteNut: ", req.body);
     const data = req.body;
     if (data == undefined) {
@@ -59,7 +59,7 @@ export async function deleteNut(req, res) {
         return res.status(400).send(ERROR_NO_SEQ_NUM);
     }
 
-    await userDao.deleteNut(data.userId, data.challengeId, data.seqNum)
+    await userDao.deleteEssayNut(data.userId, data.challengeId, data.seqNum)
         .then(result1 => { res.status(200).send("OK"); })
         .catch(err => { res.status(500).send(err.message); });
 
