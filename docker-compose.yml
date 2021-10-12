@@ -55,37 +55,41 @@ services:
     networks:
       - word_tree_network
 
-  db:
-    image: postgres:13-alpine
+  nut:
     restart: always
-    container_name: word_tree_db
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=word_tree
-      - POSTGRES_PASSWORD=password
+    build:
+      context: ./server/nut
+      dockerfile: Dockerfile.dev
+    container_name: nut_service
     volumes:
-      - postgres-data:${POSTGRES_DATA_DIR}
-      - ./migrations:/docker-entrypoint-initdb.d
+      - /app/node_modules
+      - ./server/nut:/app
+    environment:
+      - POSTGRES_URL=${POSTGRES_URL}
+    depends_on:
+      - db
+    ports:
+      - 5011:5000
     networks:
       - word_tree_network
 
-  client:
-    restart: always
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.dev
-    container_name: word_tree_ui
-    volumes:
-      - /app/node_modules
-      - ./frontend:/app
-    depends_on:
-      - challenge
-      - essay
-      - user
-    ports:
-      - 5003:3000
-    networks:
-      - word_tree_network
+#  client:
+#    restart: always
+#    build:
+#      context: ./frontend
+#      dockerfile: Dockerfile.dev
+#    container_name: word_squirrel_ui
+#    volumes:
+#      - /app/node_modules
+#      - ./frontend:/app
+#    depends_on:
+#      - challenge
+#      - essay
+#      - nut
+#    ports:
+#      - 5003:3000
+#    networks:
+#      - word_tree_network
 
   # nginx:
   #   restart: always
