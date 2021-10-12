@@ -1,4 +1,4 @@
-import * as userDao from "../database/UserProfileDAO.js";
+import * as userDao from "../database/UserProfileDao.js";
 
 const ERROR_NO_DATA = "Bad Request. No data found.";
 const ERROR_NO_USER_ID = "Bad Request. No user id found.";
@@ -26,9 +26,6 @@ export async function createUserProfile(req, res) {
 export async function getUserProfile(req, res) {
     console.log("getUserProfile: ", req.params);
     const userId = req.params.userId;
-    if (userId == undefined) {
-        return res.status(400).send(ERROR_NO_USER_ID);
-    }
 
     await userDao.getUserProfile(userId)
         .then(result => { res.status(200).json(result.rows); })
@@ -38,9 +35,6 @@ export async function getUserProfile(req, res) {
 export async function getUserInterest(req, res) {
     console.log("getUserInterest: ", req.params);
     const userId = req.params.userId;
-    if (userId == undefined) {
-        return res.status(400).send(ERROR_NO_USER_ID);
-    }
 
     await userDao.getUserInterest(userId)
         .then(result => { res.status(200).json(result.rows); })
