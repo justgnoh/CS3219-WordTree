@@ -1,4 +1,4 @@
-import * as userDao from "../database/NutDao.js";
+import * as nutDao from "../database/NutDao.js";
 
 const ERROR_NO_DATA = "Bad Request. No data found.";
 const ERROR_NO_USER_ID = "Bad Request. No user id found.";
@@ -25,13 +25,13 @@ export async function newEssayNut(req, res) {
         return res.status(400).send(ERROR_NO_SEQ_NUM);
     }
 
-    await userDao.newEssayNut(data.userId, data.nut, data.challengeId, data.seqNum)
+    await nutDao.newEssayNut(data.userId, data.nut, data.challengeId, data.seqNum)
         .then(result1 => { res.status(200).send("OK"); })
         .catch(err => { res.status(500).send(err.message); });
 
-//    await userDao.addNut(data.userId, data.nut, data.challengeId, data.seqNum)
+//    await nutDao.addNut(data.userId, data.nut, data.challengeId, data.seqNum)
 //        .then(result1 => {
-//            await userDao.getTotalNut(data.userId)
+//            await nutDao.getTotalNut(data.userId)
 //                .then(result2 => {
 //                    console.log("totalNut: ", result2);
 //                    /* To be done: call user service to update total nut in user profile
@@ -59,13 +59,13 @@ export async function deleteEssayNut(req, res) {
         return res.status(400).send(ERROR_NO_SEQ_NUM);
     }
 
-    await userDao.deleteEssayNut(data.userId, data.challengeId, data.seqNum)
+    await nutDao.deleteEssayNut(data.userId, data.challengeId, data.seqNum)
         .then(result1 => { res.status(200).send("OK"); })
         .catch(err => { res.status(500).send(err.message); });
 
-//    await userDao.addNut(data.userId, data.challengeId, data.seqNum)
+//    await nutDao.addNut(data.userId, data.challengeId, data.seqNum)
 //        .then(result1 => {
-//            await userDao.getTotalNut(data.userId)
+//            await nutDao.getTotalNut(data.userId)
 //                .then(result2 => {
 //                    console.log("totalNut: ", result2);
 //                    /* To be done: call user service to update total nut in user profile
@@ -80,11 +80,8 @@ export async function deleteEssayNut(req, res) {
 export async function viewUserNut(req, res) {
     console.log("viewUserNut: ", req.params);
     const userId = req.params.userId;
-    if (userId == undefined) {
-        return res.status(400).send(ERROR_NO_USER_ID);
-    }
 
-    await userDao.viewUserNut(userId)
+    await nutDao.viewUserNut(userId)
         .then(result => { res.status(200).json(result.rows); })
         .catch(err => { res.status(500).send(err.message); });
 }
@@ -92,11 +89,8 @@ export async function viewUserNut(req, res) {
 export async function getTotalNut(req, res) {
     console.log("getTotalNut: ", req.params);
     const userId = req.params.userId;
-    if (userId == undefined) {
-        return res.status(400).send(ERROR_NO_USER_ID);
-    }
 
-    await userDao.getTotalNut(userId)
+    await nutDao.getTotalNut(userId)
         .then(result => { res.status(200).json(result.rows); })
         .catch(err => { res.status(500).send(err.message); });
 }
