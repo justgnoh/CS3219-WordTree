@@ -20,10 +20,10 @@ export async function postNewPara(req, res) {
         //Send points to nuts service
         if (wordsused.length > 0) {
             await axios.post('localhost:5011/newEssayNut', {
-                ChallengeId: challengeid,
-                SeqNum: seqnum,
-                NumberOfNuts: wordsused.length,
-                UserId: authorid
+                challengeId: challengeid,
+                seqNum: seqnum,
+                nut: wordsused.length,
+                userId: authorid
             }
             );
         }
