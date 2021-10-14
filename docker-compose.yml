@@ -33,7 +33,25 @@ services:
     depends_on:
       - db
     ports:
-      - 5002:5000
+      - 5006:5000
+    networks:
+      - word_squirrel_network
+
+  word:
+    restart: always
+    build:
+      context: ./server/word
+      dockerfile: Dockerfile.dev
+    container_name: word_service
+    volumes:
+      - /app/node_modules
+      - ./server/word:/app
+    environment:
+      - POSTGRES_URL=${POSTGRES_URL}
+    depends_on:
+      - db
+    ports:
+      - 5007:5000
     networks:
       - word_tree_network
 
