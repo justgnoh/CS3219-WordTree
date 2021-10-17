@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -18,33 +18,45 @@ const db = getFirestore();
 
 // Sign in by Username & Password
 const basicSignIn = async (email, password) => {
-    try {
-      await signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
-        const user = userCredential.user;
-        console.log(user);
-      });
-    } catch (err) {
-      console.error(err);
-      alert(err.message);
-    }
+  signInWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    const user = userCredential.user;
+    console.log('User Logged In');
+    console.log(user);
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+  });
 };
 
 // Register with Email & Password
 const registerWithEmailAndPassword = async (name, email, password) => {
-    try {
-      const res = await auth.createUserWithEmailAndPassword(email, password);
-      const user = res.user;
-      await db.collection("users").add({
-        uid: user.uid,
-        name,
-        authProvider: "local",
-        email,
-      });
-    //   TODO: Add entry to GCP UserAccount table
-    } catch (err) {
-      console.error(err);
-      alert(err.message);
-    }
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      // Signed in 
+      const user = userCredential.user;
+      console.log(user);
+    })
+    .catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      // ..
+    });
+    // try {
+    //   const res = await auth.createUserWithEmailAndPassword(email, password);
+    //   const user = res.user;
+    //   await db.collection("users").add({
+    //     uid: user.uid,
+    //     name,
+    //     authProvider: "local",
+    //     email,
+    //   });
+    // //   TODO: Add entry to GCP UserAccount table
+    // } catch (err) {
+    //   console.error(err);
+    //   alert(err.message);
+    // }
 };
 
 // Reset Password

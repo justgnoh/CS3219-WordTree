@@ -1,17 +1,21 @@
-import React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Link
 } from "react-router-dom";
-import LoginPage from './pages/LoginPage';
 
-import './App.css';
+// import './App.css';
 
-export default function App() {
+import Navigation from "./components/Navigation";
+import RegisterPage from "./pages/RegisterPage";
+import ProfilePage from "./pages/ProfilePage";
+import LoginPage from "./pages/LoginPage";
+
+function App() {
   return (
     <Router>
+      <Navigation/>
       <div>
         <nav>
           <ul>
@@ -43,29 +47,23 @@ export default function App() {
             <Challenge />
           </Route>
           <Route path="/register">
-            <Register />
+            <RegisterPage />
           </Route>
           <Route path="/login">
             <LoginPage />
           </Route>
           <Route path="/">
-            <Profile />
+            <ProfilePage />
           </Route>
         </Switch>
       </div>
     </Router>
-
   );
 }
 
-// TODO: Shift these into pages
 function Profile() {
   return <h2>This is the users profile, concatenate the url with their pid</h2>;
 }
-
-// function Login() {
-//   return <h2>This is the login page, Username, Password</h2>;
-// }
 
 function Register() {
   return <h2>This is the register page, Username, Password + Other basic details</h2>;
@@ -78,3 +76,7 @@ function Challenge() {
 function Community() {
   return <h2>Welcome to the Treehouse! Come hangout!</h2>;
 }
+
+export default App;
+
+
