@@ -42,10 +42,7 @@ function LoginPage() {
         </button>
 
         {/* Add other login modes here */}
-       
-        <div>
-          <Link to="/reset">Forgot Password</Link>
-        </div>
+
         <div>
           Don't have an account? <Link to="/register">Register</Link> now.
         </div>
