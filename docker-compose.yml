@@ -1,41 +1,37 @@
 version: '3.9'
 
 services:
-  challenge:
-    restart: always
-    build:
-      context: ./server/challenge
-      dockerfile: Dockerfile.dev
-    container_name: challenge_service
-    volumes:
-      - /app/node_modules
-      - ./server/challenge:/app
-    environment:
-      - POSTGRES_URL=${POSTGRES_URL}
-    depends_on:
-      - db
-    ports:
-      - 5001:5000
-    networks:
-      - word_tree_network
+  # challenge:
+  #   restart: always
+  #   build:
+  #     context: ./server/challenge
+  #     dockerfile: Dockerfile.dev
+  #   container_name: challenge_service
+  #   volumes:
+  #     - /app/node_modules
+  #     - ./server/challenge:/app
+  #   environment:
+  #     - POSTGRES_URL=${POSTGRES_URL}
+  #   ports:
+  #     - 5001:5000
+  #   networks:
+  #     - word_tree_network
 
-  essay:
-    restart: always
-    build:
-      context: ./server/essay
-      dockerfile: Dockerfile.dev
-    container_name: essay_service
-    volumes:
-      - /app/node_modules
-      - ./server/essay:/app
-    environment:
-      - POSTGRES_URL=${POSTGRES_URL}
-    depends_on:
-      - db
-    ports:
-      - 5006:5000
-    networks:
-      - word_squirrel_network
+  # essay:
+  #   restart: always
+  #   build:
+  #     context: ./server/essay
+  #     dockerfile: Dockerfile.dev
+  #   container_name: essay_service
+  #   volumes:
+  #     - /app/node_modules
+  #     - ./server/essay:/app
+  #   environment:
+  #     - POSTGRES_URL=${POSTGRES_URL}
+  #   ports:
+  #     - 5006:5000
+  #   networks:
+  #     - word_tree_network
 
   word:
     restart: always
@@ -46,82 +42,59 @@ services:
     volumes:
       - /app/node_modules
       - ./server/word:/app
-    environment:
-      - POSTGRES_URL=${POSTGRES_URL}
-    depends_on:
-      - db
+    # environment:
+    #   - POSTGRES_URL=${POSTGRES_URL}
     ports:
-      - 5007:5000
+      - 5000:5000
+    expose:
+      - "5000"
     networks:
       - word_tree_network
 
-  user:
-    restart: always
-    build:
-      context: ./server/user
-      dockerfile: Dockerfile.dev
-    container_name: user_service
-    volumes:
-      - /app/node_modules
-      - ./server/user:/app
-    environment:
-      - POSTGRES_URL=${POSTGRES_URL}
-    depends_on:
-      - db
-    ports:
-      - 5010:5000
-    networks:
-      - word_tree_network
-
-  nut:
-    restart: always
-    build:
-      context: ./server/nut
-      dockerfile: Dockerfile.dev
-    container_name: nut_service
-    volumes:
-      - /app/node_modules
-      - ./server/nut:/app
-    environment:
-      - POSTGRES_URL=${POSTGRES_URL}
-    depends_on:
-      - db
-    ports:
-      - 5011:5000
-    networks:
-      - word_tree_network
-
-#  client:
-#    restart: always
-#    build:
-#      context: ./frontend
-#      dockerfile: Dockerfile.dev
-#    container_name: word_squirrel_ui
-#    volumes:
-#      - /app/node_modules
-#      - ./frontend:/app
-#    depends_on:
-#      - challenge
-#      - essay
-#      - nut
-#    ports:
-#      - 5003:3000
-#    networks:
-#      - word_tree_network
-
-  # nginx:
+  # user:
   #   restart: always
-  #   depends_on:
-  #     - server
-  #     - client
   #   build:
-  #     context: ./nginx
+  #     context: ./server/user
   #     dockerfile: Dockerfile.dev
-  #   container_name: bookstore_nginx
+  #   container_name: user_service
+  #   volumes:
+  #     - /app/node_modules
+  #     - ./server/user:/app
+  #   environment:
+  #     - POSTGRES_URL=${POSTGRES_URL}
   #   ports:
-  #     - 8080:80
+  #     - 5010:5000
   #   networks:
   #     - word_tree_network
+
+  # nut:
+  #   restart: always
+  #   build:
+  #     context: ./server/nut
+  #     dockerfile: Dockerfile.dev
+  #   container_name: nut_service
+  #   volumes:
+  #     - /app/node_modules
+  #     - ./server/nut:/app
+  #   environment:
+  #     - POSTGRES_URL=${POSTGRES_URL}
+  #   ports:
+  #     - 5011:5000
+  #   networks:
+  #     - word_tree_network
+
+  nginx:
+    restart: always
+    depends_on:
+      - word
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.dev
+    container_name: apigateway_nginx
+    ports:
+      - 80:80
+    networks:
+      - word_tree_network
 
 networks:
   word_tree_network:

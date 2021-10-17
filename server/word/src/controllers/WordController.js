@@ -3,6 +3,14 @@ import * as worddict from './WordDictionary.js'
 
 const MISSING_FIELDS = "Bad Request. Missing fields.";
 
+export async function test(req,res) {
+    res.json("TESTING SUCCESS!");
+}
+
+export async function testroute(req,res) {
+    res.json("TESTING ROUTE SUCCESS!");
+}
+
 export async function createNewWordList(req, res) {
     const challengeid = req.body['challenge_id'];
     const interest = req.body['interest'];

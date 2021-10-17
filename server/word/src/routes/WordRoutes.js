@@ -9,4 +9,9 @@ router.get('/words/:challengeid/:seqnum', wordsController.getWordsForTurn);
 //Called by Challenge Service to initialise the word list 
 router.post('/wordlist', wordsController.createNewWordList);
 
+
+router.get('/', wordsController.test);
+
+router.get('/testroute', wordsController.testroute);
+
 export default router;
