@@ -5,22 +5,25 @@ import {
   Link
 } from "react-router-dom";
 
-// import './App.css';
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "./firebase";
 
 import Navigation from "./components/Navigation";
 import RegisterPage from "./pages/RegisterPage";
 import ProfilePage from "./pages/ProfilePage";
 import LoginPage from "./pages/LoginPage";
+import HomePage from "./pages/HomePage";
 
 function App() {
+
   return (
     <Router>
       <Navigation/>
       <div>
-        <nav>
+        {/* <nav>
           <ul>
             <li>
-              <Link to="/">Welcome Back User!</Link>
+              <Link to="/">HomePage</Link>
             </li>
             <li>
               <Link to="/login">Login Page</Link>
@@ -28,14 +31,8 @@ function App() {
             <li>
               <Link to="/register">Register Page</Link>
             </li>
-            <li>
-              <Link to="/challenge">Challenge Page</Link>
-            </li>
-            <li>
-              <Link to="/community">Community Page</Link>
-            </li>
           </ul>
-        </nav>
+        </nav> */}
 
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
@@ -53,7 +50,7 @@ function App() {
             <LoginPage />
           </Route>
           <Route path="/">
-            <ProfilePage />
+            <HomePage />
           </Route>
         </Switch>
       </div>

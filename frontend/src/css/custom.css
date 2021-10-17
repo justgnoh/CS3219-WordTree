@@ -1,0 +1,24 @@
+.borderGrey {
+    border: 1px solid grey
+}
+
+.customHeight {
+    min-height: 60vh;
+}
+
+.logo {
+    width: 400px;
+    height: 400px;
+}
+
+.primary-color {
+    background-color: #606C38;
+}
+
+.white-text{
+    color: white;
+}
+
+.nav-text-color {
+    color: white;
+}

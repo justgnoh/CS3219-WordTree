@@ -1,15 +1,22 @@
-import {Container, Navbar, Nav} from 'react-bootstrap'
+import { Container, Navbar, Nav } from "react-bootstrap";
+
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
 
 export default function Navigation() {
+  const [user] = useAuthState(auth);
+
   return (
-    <Navbar bg='light' variant='light'>
-      <Container>
-        <Navbar.Brand href='/'>WordTree</Navbar.Brand>
-        <Nav className="me-auto">
-          <Nav.Link href="#home">Home</Nav.Link>
-          <Nav.Link href="#features">Features</Nav.Link>
-          <Nav.Link href="#pricing">Pricing</Nav.Link>
-        </Nav>
+    <Navbar variant="dark" className="primary-color">
+      <Container fluid>
+        <Navbar.Brand href="/">WordTree</Navbar.Brand>
+        {user && (
+          <Nav className="me-auto">
+            <Nav.Link href="/profile">Profile</Nav.Link>
+            <Nav.Link href="/challenge">Challenges</Nav.Link>
+            <Nav.Link href="/community">TreeHouse</Nav.Link>
+          </Nav>
+        )}
       </Container>
     </Navbar>
   );
