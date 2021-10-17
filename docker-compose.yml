@@ -13,25 +13,27 @@ services:
   #   environment:
   #     - POSTGRES_URL=${POSTGRES_URL}
   #   ports:
-  #     - 5001:5000
+  #     - 5001:5001
+      # expose: 
+      #   - "5001"
   #   networks:
   #     - word_tree_network
 
-  # essay:
-  #   restart: always
-  #   build:
-  #     context: ./server/essay
-  #     dockerfile: Dockerfile.dev
-  #   container_name: essay_service
-  #   volumes:
-  #     - /app/node_modules
-  #     - ./server/essay:/app
-  #   environment:
-  #     - POSTGRES_URL=${POSTGRES_URL}
-  #   ports:
-  #     - 5006:5000
-  #   networks:
-  #     - word_tree_network
+  essay:
+    restart: always
+    build:
+      context: ./server/essay
+      dockerfile: Dockerfile.dev
+    container_name: essay_service
+    volumes:
+      - /app/node_modules
+      - ./server/essay:/app
+    # environment:
+    #   - POSTGRES_URL=${POSTGRES_URL}
+    ports:
+      - 5006:5006
+    networks:
+      - word_tree_network
 
   word:
     restart: always
@@ -45,43 +47,45 @@ services:
     # environment:
     #   - POSTGRES_URL=${POSTGRES_URL}
     ports:
-      - 5000:5000
+      - 5007:5007
     expose:
-      - "5000"
+      - "5007"
     networks:
       - word_tree_network
 
-  # user:
-  #   restart: always
-  #   build:
-  #     context: ./server/user
-  #     dockerfile: Dockerfile.dev
-  #   container_name: user_service
-  #   volumes:
-  #     - /app/node_modules
-  #     - ./server/user:/app
-  #   environment:
-  #     - POSTGRES_URL=${POSTGRES_URL}
-  #   ports:
-  #     - 5010:5000
-  #   networks:
-  #     - word_tree_network
+  user:
+    restart: always
+    build:
+      context: ./server/user
+      dockerfile: Dockerfile.dev
+    container_name: user_service
+    volumes:
+      - /app/node_modules
+      - ./server/user:/app
+    # environment:
+    #   - POSTGRES_URL=${POSTGRES_URL}
+    ports:
+      - 5010:5010
+    expose: 
+      - "5010"
+    networks:
+      - word_tree_network
 
-  # nut:
-  #   restart: always
-  #   build:
-  #     context: ./server/nut
-  #     dockerfile: Dockerfile.dev
-  #   container_name: nut_service
-  #   volumes:
-  #     - /app/node_modules
-  #     - ./server/nut:/app
-  #   environment:
-  #     - POSTGRES_URL=${POSTGRES_URL}
-  #   ports:
-  #     - 5011:5000
-  #   networks:
-  #     - word_tree_network
+  nut:
+    restart: always
+    build:
+      context: ./server/nut
+      dockerfile: Dockerfile.dev
+    container_name: nut_service
+    volumes:
+      - /app/node_modules
+      - ./server/nut:/app
+    # environment:
+    #   - POSTGRES_URL=${POSTGRES_URL}
+    ports:
+      - 5011:5011
+    networks:
+      - word_tree_network
 
   nginx:
     restart: always

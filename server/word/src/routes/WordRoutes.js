@@ -10,8 +10,7 @@ router.get('/words/:challengeid/:seqnum', wordsController.getWordsForTurn);
 router.post('/wordlist', wordsController.createNewWordList);
 
 
-router.get('/', wordsController.test);
-
+router.post('/testpost', wordsController.test);
 router.get('/testroute', wordsController.testroute);
 
 export default router;

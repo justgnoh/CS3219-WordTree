@@ -4,7 +4,7 @@ import * as worddict from './WordDictionary.js'
 const MISSING_FIELDS = "Bad Request. Missing fields.";
 
 export async function test(req,res) {
-    res.json("TESTING SUCCESS!");
+    res.json("TESTING POST SUCCESS!");
 }
 
 export async function testroute(req,res) {

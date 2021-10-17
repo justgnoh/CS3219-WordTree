@@ -2,7 +2,7 @@ import express from 'express';
 import wordRouter from './routes/WordRoutes.js';
 import bodyParser from 'body-parser';
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5007;
 
 const app = express();
 

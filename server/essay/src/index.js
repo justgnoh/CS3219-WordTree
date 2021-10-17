@@ -2,7 +2,7 @@ import express from 'express';
 import essaysRouter from './routes/EssayRoutes.js';
 import bodyParser from 'body-parser';
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5006;
 
 const app = express();
 
