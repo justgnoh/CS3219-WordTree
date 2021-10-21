@@ -12,10 +12,8 @@ services:
       - ./server/challenge:/app
     environment:
       - POSTGRES_URL=${POSTGRES_URL}
-    depends_on:
-      - db
     ports:
-      - 5001:5000
+      - 5001:5001
     networks:
       - word_tree_network
 
@@ -30,12 +28,10 @@ services:
       - ./server/essay:/app
     environment:
       - POSTGRES_URL=${POSTGRES_URL}
-    depends_on:
-      - db
     ports:
       - 5006:5000
     networks:
-      - word_squirrel_network
+      - word_tree_network
 
   word:
     restart: always
@@ -48,8 +44,6 @@ services:
       - ./server/word:/app
     environment:
       - POSTGRES_URL=${POSTGRES_URL}
-    depends_on:
-      - db
     ports:
       - 5007:5000
     networks:
@@ -66,8 +60,6 @@ services:
       - ./server/user:/app
     environment:
       - POSTGRES_URL=${POSTGRES_URL}
-    depends_on:
-      - db
     ports:
       - 5010:5000
     networks:
@@ -84,8 +76,6 @@ services:
       - ./server/nut:/app
     environment:
       - POSTGRES_URL=${POSTGRES_URL}
-    depends_on:
-      - db
     ports:
       - 5011:5000
     networks:

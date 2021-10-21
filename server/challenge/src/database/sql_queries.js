@@ -1,4 +1,4 @@
-const SQL_QUERIES = {
+export const SQL_QUERIES = {
     GET_CHALLENGES_BY_USER_ID: "SELECT * FROM Challenges WHERE squirrel_iD = $1 OR racoon_id = $1",
     INSERT_NEW_CHALLENGE: "insert into Challenges (squirrel_id, num_of_total_turns, word_limit_per_turn, genre) values ($1, $2, $3, $4) RETURNING challenge_id",
     INSERT_NEW_TURN_DETAILS: "insert into TurnDetails(challenge_id) values ($1)",
@@ -9,6 +9,3 @@ const SQL_QUERIES = {
     GET_PLAYER_ID_IN_CHALLENGE: "SELECT (squirrel_id, racoon_id) FROM Challenges c WHERE c.challenge_id = $1",
 }
 
-module.exports = {
-    SQL_QUERIES
-}

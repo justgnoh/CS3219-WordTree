@@ -1,7 +1,7 @@
 import express from 'express';
-import pool from '../database/db';
-import {SQL_QUERIES as query} from '../database/sql_queries';
-import { error_messages, OK_MESSAGE} from '../config';
+import pool from '../database/db.js';
+import {SQL_QUERIES as query} from '../database/sql_queries.js';
+import { error_messages, OK_MESSAGE} from '../config/index.js';
 
 export const getAllChallengeByUserId = async (req, res) => {
     const userID = req.query.userid;
