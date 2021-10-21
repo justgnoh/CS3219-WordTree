@@ -1,5 +1,6 @@
 import { Pool } from 'pg';
+import { POSTGRES_URL } from '../config';
 
 export default new Pool({
-    connectionString: "postgresql://nikhila@localhost:5432/word_squirrel",
+    connectionString: POSTGRES_URL,
 });

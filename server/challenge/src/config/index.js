@@ -9,4 +9,10 @@ export const error_messages = {
     NOT_IN_THIS_CHALLENGE: "Not part of this incomplete challenge",
 }
 
-export const OK = "OK";
+
+const dotenv = require('dotenv');
+dotenv.config();
+
+export const POSTGRES_URL = process.env.POSTGRES_URL;
+
+export const OK_MESSAGE = "OK";

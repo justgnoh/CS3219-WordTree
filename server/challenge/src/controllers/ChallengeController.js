@@ -1,7 +1,7 @@
 import express from 'express';
 import pool from '../database/db';
 import {SQL_QUERIES as query} from '../database/sql_queries';
-import { error_messages, OK} from '../config';
+import { error_messages, OK_MESSAGE} from '../config';
 
 export const getAllChallengeByUserId = async (req, res) => {
     const userID = req.query.userid;
@@ -86,7 +86,7 @@ export const addEssayPara = async (req, res) => {
         await pool.query(query.UPDATE_TURN_DETAILS_SEQUENCE_NUM, [id]).catch(err => {
             return res.status(500).send(err.message);
         })
-        return res.status(200).send(OK)
+        return res.status(200).send(OK_MESSAGE)
     } else {
         return res.status(403).send(error_messages.WRONG_TURN);
     }
