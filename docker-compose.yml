@@ -10,12 +10,10 @@ services:
   #   volumes:
   #     - /app/node_modules
   #     - ./server/challenge:/app
-  #   environment:
-  #     - POSTGRES_URL=${POSTGRES_URL}
+  #   # environment:
+  #   #   - POSTGRES_URL=${POSTGRES_URL}
   #   ports:
   #     - 5001:5001
-      # expose: 
-      #   - "5001"
   #   networks:
   #     - word_tree_network
 
@@ -48,8 +46,6 @@ services:
     #   - POSTGRES_URL=${POSTGRES_URL}
     ports:
       - 5007:5007
-    expose:
-      - "5007"
     networks:
       - word_tree_network
 
@@ -66,8 +62,6 @@ services:
     #   - POSTGRES_URL=${POSTGRES_URL}
     ports:
       - 5010:5010
-    expose: 
-      - "5010"
     networks:
       - word_tree_network
 
