@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: wordtree
+  name: nut-deployment
+  labels:
+    app: nut-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nut-service
+  template:
+    metadata:
+      name: nut-service
+      labels:
+        app: nut-service
+    spec:
+      containers:
+      - name: nut-service
+        image: 
+        ports:
+        - containerPort: 5011

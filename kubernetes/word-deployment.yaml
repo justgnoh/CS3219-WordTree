@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: wordtree
+  name: word-deployment
+  labels:
+    app: word-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: word-service
+  template:
+    metadata:
+      name: word-service
+      labels:
+        app: word-service
+    spec:
+      containers:
+      - name: word-service
+        image: 
+        ports:
+        - containerPort: 5007
