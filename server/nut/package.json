@@ -1,19 +1,18 @@
 {
-  "name": "essay-api",
+  "name": "nut-api",
   "version": "1.0.0",
-  "description": "End points for Essay Service",
+  "description": "",
   "main": "./src/index.js",
   "type": "module",
   "scripts": {
     "start": "nodemon run",
     "dev": "nodemon -L"
   },
-  "author": "Chiam Yun Qing",
+  "author": "WordTree",
   "license": "ISC",
   "dependencies": {
     "@types/cors": "^2.8.10",
     "@types/pg": "^7.14.7",
-    "axios": "^0.22.0",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "nodemon": "^2.0.6",

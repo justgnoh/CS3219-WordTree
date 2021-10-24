@@ -1,7 +1,7 @@
 {
-  "name": "essay-api",
+  "name": "word-api",
   "version": "1.0.0",
-  "description": "End points for Essay Service",
+  "description": "",
   "main": "./src/index.js",
   "type": "module",
   "scripts": {
