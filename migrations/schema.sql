@@ -73,3 +73,13 @@ CREATE TABLE EssayNut (
     FOREIGN KEY (challenge_id, seq_num) REFERENCES EssayPara(challenge_id, seq_num),
     FOREIGN KEY (user_id) REFERENCES UserAccount(user_id)
 );
+
+CREATE TABLE CommunityNut (
+    user_id INT,
+    nut INT NOT NULL,
+    challenge_id INT,
+    seq_num INT,
+    PRIMARY KEY (user_id, challenge_id, seq_num),
+    FOREIGN KEY (challenge_id, seq_num) REFERENCES EssayPara(challenge_id, seq_num),
+    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id)
+);
