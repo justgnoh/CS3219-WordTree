@@ -51,7 +51,7 @@ function RegisterPage() {
           placeholder="Password"
         />
 
-        <button className="register__btn" onClick={register}>
+        <button className="register__btn" onClick={()=>register}>
           Register
         </button>
 

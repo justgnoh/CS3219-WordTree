@@ -5,9 +5,6 @@ import {
   Link
 } from "react-router-dom";
 
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "./firebase";
-
 import Navigation from "./components/Navigation";
 import RegisterPage from "./pages/RegisterPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -37,33 +34,28 @@ function App() {
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Switch>
-          <Route path="/community">
-            <Community />
+        <Route exact path="/">
+            <HomePage />
           </Route>
-          <Route path="/challenge">
-            <Challenge />
-          </Route>
-          <Route path="/register">
-            <RegisterPage />
-          </Route>
-          <Route path="/login">
+          <Route exact path="/login">
             <LoginPage />
           </Route>
-          <Route path="/">
-            <HomePage />
+          <Route exact path="/register">
+            <RegisterPage />
+          </Route>
+          <Route exact path="/profile">
+            <ProfilePage />
+          </Route>
+          <Route exact path="/community">
+            <Community />
+          </Route>
+          <Route exact path="/challenge">
+            <Challenge />
           </Route>
         </Switch>
       </div>
     </Router>
   );
-}
-
-function Profile() {
-  return <h2>This is the users profile, concatenate the url with their pid</h2>;
-}
-
-function Register() {
-  return <h2>This is the register page, Username, Password + Other basic details</h2>;
 }
 
 function Challenge() {
