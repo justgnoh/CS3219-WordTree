@@ -13,6 +13,7 @@ import RegisterPage from "./pages/RegisterPage";
 import ProfilePage from "./pages/ProfilePage";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
+import SocketPage from "./pages/SocketPage";
 
 function App() {
 
@@ -48,6 +49,9 @@ function App() {
           </Route>
           <Route path="/login">
             <LoginPage />
+          </Route>
+          <Route path="/socket">
+            <SocketPage />
           </Route>
           <Route path="/">
             <HomePage />
