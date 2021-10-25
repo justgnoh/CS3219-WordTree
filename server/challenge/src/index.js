@@ -2,8 +2,8 @@ import express from 'express';
 import challengeRouter from './routes/challenge.js';
 import bodyParser from 'body-parser';
 
-const PORT = process.env.PORT || 5000;
-require('dotenv').config();
+const PORT = process.env.PORT || 5001;
+
 
 const app = express();
 
