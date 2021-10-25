@@ -81,6 +81,22 @@ services:
     networks:
       - word_tree_network
 
+  community:
+    restart: always
+    build:
+      context: ./server/community
+      dockerfile: Dockerfile.dev
+    container_name: community_service
+    volumes:
+      - /app/node_modules
+      - ./server/community:/app
+    # environment:
+    #   - POSTGRES_URL=${POSTGRES_URL}
+    ports:
+      - 5015:5015
+    networks:
+      - word_tree_network
+
   nginx:
     restart: always
     depends_on:
