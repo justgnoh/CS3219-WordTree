@@ -49,3 +49,8 @@
 .profile-contents {
     margin-top: 15vh;
 }
+
+.challenge-nut {
+    min-width: 30vh;
+    min-height: 5vh;
+}

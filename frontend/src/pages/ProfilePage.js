@@ -32,7 +32,7 @@ function ProfilePage() {
       // Edit Profile
       return (
         <div className="d-flex flex-column profile-contents-container borderGrey">
-          editing ah u
+          
         </div>
       );
     }
@@ -94,14 +94,14 @@ function ProfilePage() {
           <Button
             variant="dark"
             className="primary-color"
-            onClick={()=>disableEdit}
+            onClick={disableEdit}
           >
             My Profile
           </Button>
-          <Button variant="dark" className="primary-color" onClick={()=>enableEdit}>
+          <Button variant="dark" className="primary-color" onClick={enableEdit}>
             Edit Profile
           </Button>
-          <Button variant="dark" className="primary-color" onClick={()=>enableNut}>
+          <Button variant="dark" className="primary-color" onClick={enableNut}>
             Nuts
           </Button>
         </div>

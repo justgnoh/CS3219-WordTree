@@ -10,6 +10,9 @@ import RegisterPage from "./pages/RegisterPage";
 import ProfilePage from "./pages/ProfilePage";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
+import ChallengePage from "./pages/ChallengePage";
+import Challenge from "./pages/Challenge";
+import CommunityPage from "./pages/CommunityPage";
 
 function App() {
 
@@ -47,19 +50,20 @@ function App() {
             <ProfilePage />
           </Route>
           <Route exact path="/community">
-            <Community />
+            <CommunityPage />
           </Route>
           <Route exact path="/challenge">
-            <Challenge />
+            <ChallengePage />
+          </Route>
+          
+          {/* TODO: Edit below paths */}
+          <Route exact path="/challenge/arthur">
+            <Challenge/>
           </Route>
         </Switch>
       </div>
     </Router>
   );
-}
-
-function Challenge() {
-  return <h2>This is the Challenge page</h2>;
 }
 
 function Community() {
