@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import * as ChallengeController from '../controllers/ChallengeController.js';
+import * as AuthController from '../controllers/AuthController.js';
 
 const router = Router();
 
-router.get('/', ChallengeController.getAllChallengeByUserId);
-router.post('/', ChallengeController.createNewChallenge);
-router.put('/:id', ChallengeController.addEssayPara);
-router.get('/:id', ChallengeController.getChallengeByChallengeId);
+router.get('/challenge/*', AuthController.getRequest);
+router.post('/', AuthController.getRequest);
+router.put('/:id', AuthController.getRequest);
+router.get('/:id', AuthController.getRequest);
 
 export default router;
