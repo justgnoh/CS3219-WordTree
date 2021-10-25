@@ -3,7 +3,7 @@ import pool from '../database/db.js';
 const userProfileDb = "UserProfile";
 const userInterestDb = "UserInterest";
 const userIdCol = "user_id";
-const nameCol = "name";
+const nameCol = "user_name";
 const interestCol = "interest";
 const totalNutCol = "total_nut";
 

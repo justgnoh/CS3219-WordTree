@@ -9,7 +9,7 @@ CREATE TABLE UserAccount (
 
 CREATE TABLE UserProfile (
     user_id INT PRIMARY KEY,
-    username VARCHAR(50),
+    user_name VARCHAR(50),
     total_nut INT DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES UserAccount(user_id),
     CONSTRAINT total_nut_more_than_zero CHECK (total_nut >= 0)
