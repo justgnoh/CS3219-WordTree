@@ -2,15 +2,16 @@ DROP TABLE IF EXISTS UserAccount, UserProfile, Interest, UserInterest, Challenge
 
 CREATE TABLE UserAccount (
     user_id INTEGER PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
-    password TEXT NOT NULL,
-    access_token TEXT
+    email VARCHAR(50) NOT NULL,
+    password TEXT NOT NULL
 );
 
 CREATE TABLE UserProfile (
     user_id INT PRIMARY KEY,
     user_name VARCHAR(50),
     total_nut INT DEFAULT 0,
+    date_of_birth DATE,
+    joined_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES UserAccount(user_id),
     CONSTRAINT total_nut_more_than_zero CHECK (total_nut >= 0)
 );
@@ -65,9 +66,9 @@ CREATE TABLE EssayPara (
 
 CREATE TABLE EssayNut (
     user_id INT,
-    nut INT NOT NULL,
     challenge_id INT,
     seq_num INT,
+    nut INT NOT NULL,
     datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, challenge_id, seq_num),
     FOREIGN KEY (challenge_id, seq_num) REFERENCES EssayPara(challenge_id, seq_num),
@@ -75,22 +76,26 @@ CREATE TABLE EssayNut (
 );
 
 CREATE TABLE CommunityChallengeNut (
-    user_id INT,
-    nut INT NOT NULL,
+    upvoter_user_id INT,
+    upvoted_user_id INT,
     challenge_id INT,
+    nut INT NOT NULL,
     datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (user_id, challenge_id),
+    PRIMARY KEY (upvoter_user_id, upvoted_user_id, challenge_id),
     FOREIGN KEY (challenge_id) REFERENCES Challenges(challenge_id),
-    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id)
+    FOREIGN KEY (upvoted_user_id) REFERENCES UserAccount(user_id),
+    FOREIGN KEY (upvoter_user_id) REFERENCES UserAccount(user_id)
 );
 
 CREATE TABLE CommunityEssayNut (
-    user_id INT,
-    nut INT NOT NULL,
+    upvoter_user_id INT,
+    upvoted_user_id INT,
     challenge_id INT,
     seq_num INT,
+    nut INT NOT NULL,
     datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (user_id, challenge_id, seq_num),
+    PRIMARY KEY (upvoter_user_id, upvoted_user_id, challenge_id, seq_num),
     FOREIGN KEY (challenge_id, seq_num) REFERENCES EssayPara(challenge_id, seq_num),
-    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id)
+    FOREIGN KEY (upvoted_user_id) REFERENCES UserAccount(user_id),
+    FOREIGN KEY (upvoter_user_id) REFERENCES UserAccount(user_id)
 );

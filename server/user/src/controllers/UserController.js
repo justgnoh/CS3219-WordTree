@@ -1,10 +1,12 @@
-import * as userDao from "../database/UserProfileDao.js";
+import * as userProfileDao from "../database/UserProfileDao.js";
+import * as userInterestDao from "../database/UserInterestDao.js";
 
 const ERROR_NO_DATA = "Bad Request. No data found.";
 const ERROR_NO_USER_ID = "Bad Request. No user id found.";
 const ERROR_NO_NAME = "Bad Request. No name found.";
 const ERROR_NO_INTEREST = "Bad Request. No interest found.";
 const ERROR_NO_TOTAL_NUT = "Bad Request. No total nut found.";
+const ERROR_NO_DATE_OF_BIRTH = "Bad Request. No date of birth found.";
 
 export async function createUserProfile(req, res) {
     console.log("createUserProfile: ", req.body);
@@ -18,8 +20,11 @@ export async function createUserProfile(req, res) {
     if (!profile.name) {
         return res.status(400).send(ERROR_NO_NAME);
     }
+    if (!profile.dateOfBirth) {
+        return res.status(400).send(ERROR_NO_DATE_OF_BIRTH);
+    }
 
-    await userDao.createUserProfile(profile.userId, profile.name)
+    await userProfileDao.createUserProfile(profile.userId, profile.name, profile.dateOfBirth)
         .then(result => { res.status(200).send("OK"); })
         .catch(err => { res.status(500).send(err.message); });
 }
@@ -28,12 +33,12 @@ export async function getUserProfile(req, res) {
     console.log("getUserProfile: ", req.params);
     const userId = req.params.userId;
 
-    await userDao.getUserProfile(userId)
+    await userProfileDao.getUserProfile(userId)
         .then(result => { res.status(200).json(result.rows); })
         .catch(err => { res.status(500).send(err.message); });
 }
 
-export async function updateUserName(req, res) {
+export async function updateUserProfile(req, res) {
     console.log("updateUserName: ", req.body);
     const body = req.body;
     if (body == undefined) {
@@ -45,8 +50,11 @@ export async function updateUserName(req, res) {
     if (!body.name) {
         return res.status(400).send(ERROR_NO_NAME);
     }
+    if (!body.dateOfBirth) {
+        return res.status(400).send(ERROR_NO_DATE_OF_BIRTH);
+    }
 
-    await userDao.updateUserName(body.userId, body.name)
+    await userProfileDao.updateUserName(body.userId, body.name, body.dateOfBirth)
         .then(result => { res.status(200).send("OK"); })
         .catch(err => { res.status(500).send(err.message); });
 }
@@ -64,7 +72,7 @@ export async function updateUserTotalNut(req, res) {
         return res.status(400).send(ERROR_NO_TOTAL_NUT);
     }
 
-    await userDao.updateUserTotalNut(body.userId, body.totalNut)
+    await userProfileDao.updateUserTotalNut(body.userId, body.totalNut)
         .then(result => { res.status(200).send("OK"); })
         .catch(err => { res.status(500).send(err.message); });
 }
@@ -82,7 +90,7 @@ export async function addUserInterest(req, res) {
         return res.status(400).send(ERROR_NO_INTEREST);
     }
 
-    await userDao.addUserInterest(body.userId, body.interest)
+    await userInterestDao.addUserInterest(body.userId, body.interest)
         .then(result => { res.status(200).send("OK"); })
         .catch(err => { res.status(500).send(err.message); });
 }
@@ -100,7 +108,7 @@ export async function deleteUserInterest(req, res) {
         return res.status(400).send(ERROR_NO_INTEREST);
     }
 
-    await userDao.deleteUserInterest(body.userId, body.interest)
+    await userInterestDao.deleteUserInterest(body.userId, body.interest)
         .then(result => { res.status(200).send("OK"); })
         .catch(err => { res.status(500).send(err.message); });
 }
@@ -109,7 +117,7 @@ export async function getUserInterest(req, res) {
     console.log("getUserInterest: ", req.params);
     const userId = req.params.userId;
 
-    await userDao.getUserInterest(userId)
+    await userInterestDao.getUserInterest(userId)
         .then(result => { res.status(200).json(result.rows); })
         .catch(err => { res.status(500).send(err.message); });
 }
@@ -118,7 +126,7 @@ export async function clearUserInterest(req, res) {
     console.log("clearUserInterest: ", req.params);
     const userId = req.params.userId;
 
-    await userDao.clearUserInterest(userId)
+    await userInterestDao.clearUserInterest(userId)
         .then(result => { res.status(200).send("OK"); })
         .catch(err => { res.status(500).send(err.message); });
 }

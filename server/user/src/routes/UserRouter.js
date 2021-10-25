@@ -5,7 +5,7 @@ const router = Router();
 
 router.post('/createUserProfile', userController.createUserProfile);
 router.get('/getUserProfile/:userId', userController.getUserProfile);
-router.put('/updateUserName', userController.updateUserName);
+router.put('/updateUserProfile', userController.updateUserProfile);
 router.put('/updateUserTotalNut', userController.updateUserTotalNut);
 router.post('/addUserInterest', userController.addUserInterest);
 router.delete('/deleteUserInterest', userController.deleteUserInterest);
