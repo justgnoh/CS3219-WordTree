@@ -13,5 +13,5 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/challenge/', challengeRouter);
 
 app.listen(PORT, () => {
-    console.log(`Started api service on port: ${PORT}`);
+    console.log(`Started challenge api service on port: ${PORT}`);
 });
