@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS UserAccount, UserProfile, Interest, UserInterest, Challenges, TurnDetails, WordsPerChallenge, EssayPara, EssayNut cascade;
+DROP TABLE IF EXISTS UserAccount, UserProfile, Interest, UserInterest, Challenges, TurnDetails, WordsPerChallenge, EssayPara, EssayNut, CommunityChallengeNut, CommunityEssayNut CASCADE;
 
 CREATE TABLE UserAccount (
     user_id INTEGER PRIMARY KEY,
@@ -30,38 +30,37 @@ CREATE TABLE UserInterest (
 CREATE TABLE Challenges (
     challenge_id SERIAL PRIMARY KEY,
     title VARCHAR(200),
-    squirrel_id INTEGER NOT NULL References UserAccount(user_id),
-    racoon_id INTEGER References UserAccount(user_id) DEFAULT NULL,
+    squirrel_id INTEGER NOT NULL REFERENCES UserAccount(user_id),
+    racoon_id INTEGER REFERENCES UserAccount(user_id) DEFAULT NULL,
     num_of_total_turns INTEGER NOT NULL CHECK (num_of_total_turns = 4 OR num_of_total_turns = 6),
     word_limit_per_turn INTEGER NOT NULL CHECK (word_limit_per_turn = 300 OR word_limit_per_turn = 500),
-    interest VARCHAR(100) NOT NULL References Interest(interest),
+    interest VARCHAR(100) NOT NULL REFERENCES Interest(interest),
     status_of_challenge VARCHAR(100) NOT NULL DEFAULT 'DRAFT',
     CHECK (squirrel_id != racoon_id),
     CHECK (((status_of_challenge = 'DRAFT' OR status_of_challenge = 'WAITING_MATCH') AND racoon_id = NULL) OR racoon_id != NULL),
     CHECK (status_of_challenge != 'COMPLETED' OR title IS NOT NULL)
 );
 
-
-CREATE TABLE TurnDetails(
+CREATE TABLE TurnDetails (
     challenge_id SERIAL PRIMARY KEY,
     num_of_sequences_completed INTEGER DEFAULT 0,
     time_of_last_completed_sequence TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-create table WordsPerChallenge (
-    challenge_id integer references Challenges(challenge_id),
+CREATE TABLE WordsPerChallenge (
+    challenge_id integer REFERENCES Challenges(challenge_id),
     seq_num integer,
-    word_list text[] not null CHECK (cardinality(word_list) = 3),
-    primary key(challenge_id, seq_num)
+    word_list text[] NOT NULL CHECK (cardinality(word_list) = 3),
+    PRIMARY KEY (challenge_id, seq_num)
 );
 
-create table EssayPara (
-    challenge_id integer references Challenges(challenge_id),
-    seq_num integer not null,
-    author_id integer references UserAccount(user_id),
-    essay_para text not null,
+CREATE TABLE EssayPara (
+    challenge_id integer REFERENCES Challenges(challenge_id),
+    seq_num integer NOT NULL,
+    author_id integer REFERENCES UserAccount(user_id),
+    essay_para text NOT NULL,
     words_used text[],
-    primary key (challenge_id, seq_num)
+    PRIMARY KEY (challenge_id, seq_num)
 );
 
 CREATE TABLE EssayNut (
@@ -69,16 +68,28 @@ CREATE TABLE EssayNut (
     nut INT NOT NULL,
     challenge_id INT,
     seq_num INT,
+    datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, challenge_id, seq_num),
     FOREIGN KEY (challenge_id, seq_num) REFERENCES EssayPara(challenge_id, seq_num),
     FOREIGN KEY (user_id) REFERENCES UserAccount(user_id)
 );
 
-CREATE TABLE CommunityNut (
+CREATE TABLE CommunityChallengeNut (
+    user_id INT,
+    nut INT NOT NULL,
+    challenge_id INT,
+    datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, challenge_id),
+    FOREIGN KEY (challenge_id) REFERENCES Challenges(challenge_id),
+    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id)
+);
+
+CREATE TABLE CommunityEssayNut (
     user_id INT,
     nut INT NOT NULL,
     challenge_id INT,
     seq_num INT,
+    datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, challenge_id, seq_num),
     FOREIGN KEY (challenge_id, seq_num) REFERENCES EssayPara(challenge_id, seq_num),
     FOREIGN KEY (user_id) REFERENCES UserAccount(user_id)
