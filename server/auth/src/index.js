@@ -1,16 +1,17 @@
 import express from 'express';
-import userRouter from './routes/UserRouter.js';
+import challengeRouter from './routes/challenge.js';
 import bodyParser from 'body-parser';
 
-const PORT = process.env.PORT || 5010;
+const PORT = process.env.PORT || 5000;
+require('dotenv').config();
 
 const app = express();
 
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/user/', userRouter);
+app.use('/challenge/', challengeRouter);
 
 app.listen(PORT, () => {
-    console.log(`Started user api service on port: ${PORT}`);
+    console.log(`Started api service on port: ${PORT}`);
 });

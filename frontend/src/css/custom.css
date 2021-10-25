@@ -1,0 +1,51 @@
+.borderGrey {
+    border: 1px solid grey
+}
+
+.customHeight {
+    min-height: 60vh;
+}
+
+.logo {
+    width: 400px;
+    height: 400px;
+}
+
+.primary-color {
+    background-color: #606C38;
+}
+
+.white-text{
+    color: white;
+}
+
+.black-text {
+    color: black;
+}
+
+.nav-text-color {
+    color: white;
+}
+
+.profile-container {
+    min-height: 90vh
+}
+
+.profile-menu {
+    min-width: 30vh;
+}
+
+.profile-menu-nav {
+    margin-top: 15vh;
+    width: 100%;
+}
+
+.profile-contents-container {
+    min-width: 60vw;
+    align-items: center;
+    background-color: #FEFAE0;
+}
+
+.profile-contents {
+    margin-top: 15vh;
+}
