@@ -9,6 +9,7 @@ function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [dob, setDob] = useState("");
   const [user, loading, error] = useAuthState(auth);
   const history = useHistory();
 
@@ -49,6 +50,13 @@ function RegisterPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
+        />
+        <input
+          type="date"
+          className="register__textBox"
+          value={dob}
+          onChange={(e) => setDob(e.target.value)}
+          placeholder="Date Of Birth"
         />
 
         <button className="register__btn" onClick={()=>register}>
