@@ -46,7 +46,7 @@ export async function getChallenge(req, res) {
         const essayParaDetails = await communityDao.getEssayParaDetails(data.userId, data.challengeId);
         const challengeUserDetails = await communityDao.getChallengeUserDetails(challengeDetails.rows[0].squirrel_id, challengeDetails.rows[0].racoon_id);
 
-        const details = { challenge: challengeDetails.rows, essayPara: essayParaDetails.rows, challengeUser: challengeUserDetails.rows };
+        const details = { challenge: challengeDetails.rows[0], essayPara: essayParaDetails.rows, challengeUser: challengeUserDetails.rows };
         res.status(200).json(details);
     } catch (err) {
         res.status(500).send(err.message);
