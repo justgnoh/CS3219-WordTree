@@ -7,8 +7,10 @@ const userIdCol = "user_id";
 const nutCol = "nut";
 const seqNumCol = "seq_num";
 const challengeIdCol = "challenge_id";
+const upvoterUserIdCol = "upvoter_user_id";
+const upvotedUserIdCol = "upvoted_user_id";
 
-export async function createEssayNut(userId, nut, challengeId, seqNum) {
+export async function addEssayNut(userId, nut, challengeId, seqNum) {
     try {
         const result = await pool.query("INSERT INTO " + essayNutDb +
                 "(" + userIdCol + ", " + nutCol + ", " + challengeIdCol + ", " + seqNumCol +
@@ -30,44 +32,45 @@ export async function deleteEssayNut(userId, challengeId, seqNum) {
     }
 }
 
-export async function createCommunityChallengeNut(userId, nut, challengeId) {
+export async function addCommunityChallengeNut(upvoterUserId, upvotedUserId1, upvotedUserId2, challengeId) {
     try {
         const result = await pool.query("INSERT INTO " + communityChallengeNutDb +
-                "(" + userIdCol + ", " + nutCol + ", " + challengeIdCol +
-                ") VALUES ($1, $2, $3);", [userId, nut, challengeId]);
+                "(" + upvoterUserIdCol + ", " + upvotedUserIdCol + ", " + challengeIdCol +
+                ") VALUES ($1, $2, $3), ($1, $4, $3);",
+                [upvoterUserId, upvotedUserId1, challengeId, upvotedUserId2]);
         return result;
     } catch (err) {
         throw err;
     }
 }
 
-export async function deleteCommunityChallengeNut(userId, challengeId) {
+export async function deleteCommunityChallengeNut(upvoterUserId, challengeId) {
     try {
         const result = await pool.query("DELETE FROM " + communityChallengeNutDb +
-                " WHERE " + userIdCol + " = $1 AND " + challengeIdCol + " = $2;",
-                [userId, challengeId]);
+                " WHERE " + upvoterUserIdCol + " = $1 AND " + challengeIdCol + " = $2;",
+                [upvoterUserId, challengeId]);
         return result;
     } catch (err) {
         throw err;
     }
 }
 
-export async function createCommunityEssayNut(userId, nut, challengeId, seqNum) {
+export async function addCommunityEssayNut(upvoterUserId, upvotedUserId, challengeId, seqNum) {
     try {
         const result = await pool.query("INSERT INTO " + communityEssayNutDb +
-                "(" + userIdCol + ", " + nutCol + ", " + challengeIdCol + ", " + seqNumCol +
-                ") VALUES ($1, $2, $3, $4);", [userId, nut, challengeId, seqNum]);
+                "(" + upvoterUserIdCol + ", " + upvotedUserIdCol + ", " + challengeIdCol + ", " + seqNumCol +
+                ") VALUES ($1, $2, $3, $4);", [upvoterUserId, upvotedUserId, challengeId, seqNum]);
         return result;
     } catch (err) {
         throw err;
     }
 }
 
-export async function deleteCommunityEssayNut(userId, challengeId, seqNum) {
+export async function deleteCommunityEssayNut(upvoterUserId, challengeId, seqNum) {
     try {
         const result = await pool.query("DELETE FROM " + communityEssayNutDb +
-                " WHERE " + userIdCol + " = $1 AND " + challengeIdCol + " = $2 AND " + seqNumCol + " = $3;",
-                [userId, challengeId, seqNum]);
+                " WHERE " + upvoterUserIdCol + " = $1 AND " + challengeIdCol + " = $2 AND " + seqNumCol + " = $3;",
+                [upvoterUserId, challengeId, seqNum]);
         return result;
     } catch (err) {
         throw err;
@@ -87,7 +90,7 @@ export async function getEssayNut(userId) {
 export async function getCommunityChallengeNut(userId) {
     try {
         const result = await pool.query("SELECT * FROM " + communityChallengeNutDb +
-                " WHERE  " + userIdCol + " = $1;", [userId]);
+                " WHERE  " + upvotedUserIdCol + " = $1;", [userId]);
         return result;
     } catch (err) {
         throw err;
@@ -97,7 +100,7 @@ export async function getCommunityChallengeNut(userId) {
 export async function getCommunityEssayNut(userId) {
     try {
         const result = await pool.query("SELECT * FROM " + communityEssayNutDb +
-                " WHERE  " + userIdCol + " = $1;", [userId]);
+                " WHERE  " + upvotedUserIdCol + " = $1;", [userId]);
         return result;
     } catch (err) {
         throw err;
@@ -106,7 +109,7 @@ export async function getCommunityEssayNut(userId) {
 
 export async function getTotalEssayNut(userId) {
     try {
-        const result = await pool.query("SELECT SUM (" + nutCol + ") FROM " + essayNutDb +
+        const result = await pool.query("SELECT COALESCE( SUM(" + nutCol + "), 0) AS TOTAL FROM " + essayNutDb +
                 " WHERE " + userIdCol + " = $1;", [userId]);
         return result;
     } catch (err) {
@@ -116,8 +119,8 @@ export async function getTotalEssayNut(userId) {
 
  export async function getTotalCommunityChallengeNut(userId) {
     try {
-        const result = await pool.query("SELECT SUM (" + nutCol + ") FROM " + communityChallengeNutDb +
-                " WHERE " + userIdCol + " = $1;", [userId]);
+        const result = await pool.query("SELECT COALESCE( SUM(" + nutCol + "), 0) AS TOTAL FROM " + communityChallengeNutDb +
+                " WHERE " + upvotedUserIdCol + " = $1;", [userId]);
         return result;
     } catch (err) {
         throw err;
@@ -126,8 +129,8 @@ export async function getTotalEssayNut(userId) {
 
  export async function getTotalCommunityEssayNut(userId) {
     try {
-        const result = await pool.query("SELECT SUM (" + nutCol + ") FROM " + communityEssayNutDb +
-                " WHERE " + userIdCol + " = $1;", [userId]);
+        const result = await pool.query("SELECT COALESCE( SUM(" + nutCol + "), 0) AS TOTAL FROM " + communityEssayNutDb +
+                " WHERE " + upvotedUserIdCol + " = $1;", [userId]);
         return result;
     } catch (err) {
         throw err;

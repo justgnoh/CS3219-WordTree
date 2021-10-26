@@ -3,11 +3,11 @@ import * as nutController from '../controllers/NutController.js';
 
 const router = Router();
 
-router.post('/createEssayNut', nutController.createEssayNut);
+router.post('/addEssayNut', nutController.addEssayNut);
 router.delete('/deleteEssayNut', nutController.deleteEssayNut);
-router.post('/createCommunityChallengeNut', nutController.createCommunityChallengeNut);
+router.post('/addCommunityChallengeNut', nutController.addCommunityChallengeNut);
 router.delete('/deleteCommunityChallengeNut', nutController.deleteCommunityChallengeNut);
-router.post('/createCommunityEssayNut', nutController.createCommunityEssayNut);
+router.post('/addCommunityEssayNut', nutController.addCommunityEssayNut);
 router.delete('/deleteCommunityEssayNut', nutController.deleteCommunityEssayNut);
 router.get('/viewUserNut/:userId', nutController.viewUserNut);
 router.get('/getUserTotalNut/:userId', nutController.getUserTotalNut);

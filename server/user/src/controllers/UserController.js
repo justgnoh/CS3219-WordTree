@@ -69,7 +69,9 @@ export async function updateUserTotalNut(req, res) {
         return res.status(400).send(ERROR_NO_USER_ID);
     }
     if (!body.totalNut) {
-        return res.status(400).send(ERROR_NO_TOTAL_NUT);
+        if (body.totalNut != 0) {
+            return res.status(400).send(ERROR_NO_TOTAL_NUT);
+        }
     }
 
     await userProfileDao.updateUserTotalNut(body.userId, body.totalNut)

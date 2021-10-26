@@ -11,7 +11,7 @@ CREATE TABLE UserProfile (
     user_name VARCHAR(50),
     total_nut INT DEFAULT 0,
     date_of_birth DATE,
-    joined_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    joined_datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES UserAccount(user_id),
     CONSTRAINT total_nut_more_than_zero CHECK (total_nut >= 0)
 );
@@ -79,7 +79,7 @@ CREATE TABLE CommunityChallengeNut (
     upvoter_user_id INT,
     upvoted_user_id INT,
     challenge_id INT,
-    nut INT NOT NULL,
+    nut INT NOT NULL DEFAULT 1,
     datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (upvoter_user_id, upvoted_user_id, challenge_id),
     FOREIGN KEY (challenge_id) REFERENCES Challenges(challenge_id),
@@ -92,10 +92,10 @@ CREATE TABLE CommunityEssayNut (
     upvoted_user_id INT,
     challenge_id INT,
     seq_num INT,
-    nut INT NOT NULL,
+    nut INT NOT NULL DEFAULT 1,
     datetime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (upvoter_user_id, upvoted_user_id, challenge_id, seq_num),
     FOREIGN KEY (challenge_id, seq_num) REFERENCES EssayPara(challenge_id, seq_num),
-    FOREIGN KEY (upvoted_user_id) REFERENCES UserAccount(user_id),
-    FOREIGN KEY (upvoter_user_id) REFERENCES UserAccount(user_id)
+    FOREIGN KEY (upvoter_user_id) REFERENCES UserAccount(user_id),
+    FOREIGN KEY (upvoted_user_id) REFERENCES UserAccount(user_id)
 );
