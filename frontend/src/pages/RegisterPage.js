@@ -29,7 +29,8 @@ function RegisterPage() {
 
   return (
     <div className="register">
-      <div className="register__container">
+      <div className="register__container white-text">
+        <h1>Registration</h1>
         <input
           type="text"
           className="register__textBox"
@@ -64,7 +65,7 @@ function RegisterPage() {
         </button>
 
         <div>
-          Already have an account? <Link to="/login">Login</Link> now.
+          Already have an account? <Link to="/login" className="white-text">Login</Link> now.
         </div>
       </div>
     </div>

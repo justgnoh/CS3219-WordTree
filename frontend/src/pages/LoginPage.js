@@ -19,7 +19,8 @@ function LoginPage() {
 
   return (
     <div className="login">
-      <div className="login__container">
+      <div className="login__container white-text">
+        <h1>Login</h1>
         <input
           type="text"
           className="login__textBox"
@@ -44,7 +45,7 @@ function LoginPage() {
         {/* Add other login modes here */}
 
         <div>
-          Don't have an account? <Link to="/register">Register</Link> now.
+          Don't have an account? <Link to="/register" className="white-text">Register</Link> now.
         </div>
       </div>
     </div>
