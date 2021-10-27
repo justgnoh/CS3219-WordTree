@@ -12,6 +12,13 @@ function ProfilePage() {
   const [editProfile, setEditProfile] = useState(false);
   const [viewNut, setViewNut] = useState(false);
 
+  useEffect(() => {
+    if (!user) {
+      history.replace("/");
+    }
+    // fetchUserName();
+  }, [user, history]);
+
   function enableEdit() {
     setEditProfile(true);
     setViewNut(false);
