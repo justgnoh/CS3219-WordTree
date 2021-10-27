@@ -46,6 +46,9 @@ function App() {
           <Route exact path="/register">
             <RegisterPage />
           </Route>
+          <Route exact path="/register/success">
+            <InterestsPage />
+          </Route>
           <Route exact path="/profile">
             <ProfilePage />
           </Route>
