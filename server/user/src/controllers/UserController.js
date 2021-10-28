@@ -168,7 +168,13 @@ export async function addUserInterest(req, res) {
         return res.status(400).send(ERROR_NO_INTEREST);
     }
 
-    await userInterestDao.addUserInterest(body.userId, body.interest)
+    try {
+        var interestArr = JSON.parse(body.interest);
+    } catch (err) {
+        var interestArr = [body.interest];
+    }
+
+    await userInterestDao.addUserInterest(body.userId, interestArr)
         .then(result => { res.status(200).send("OK"); })
         .catch(err => { res.status(500).send(err.message); });
 }
@@ -186,7 +192,13 @@ export async function deleteUserInterest(req, res) {
         return res.status(400).send(ERROR_NO_INTEREST);
     }
 
-    await userInterestDao.deleteUserInterest(body.userId, body.interest)
+    try {
+        var interestArr = JSON.parse(body.interest);
+    } catch (err) {
+        var interestArr = [body.interest];
+    }
+
+    await userInterestDao.deleteUserInterest(body.userId, interestArr)
         .then(result => { res.status(200).send("OK"); })
         .catch(err => { res.status(500).send(err.message); });
 }
