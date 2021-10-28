@@ -1,3 +1,4 @@
+import axios from 'axios';
 import * as nutDao from "../database/NutDao.js";
 
 const ERROR_NO_DATA = "Bad Request. No data found.";
@@ -5,9 +6,11 @@ const ERROR_NO_USER_ID = "Bad Request. No user id found.";
 const ERROR_NO_NUT = "Bad Request. No nut found.";
 const ERROR_NO_CHALLENGE_ID = "Bad Request. No challenge id found.";
 const ERROR_NO_SEQ_NUM = "Bad Request. No sequence number found.";
+const ERROR_NO_UPVOTER_USER_ID = "Bad Request. No upvoter user id found.";
+const ERROR_NO_UPVOTED_USER_ID = "Bad Request. No upvoted user id found.";
 
-export async function newEssayNut(req, res) {
-    console.log("addNut: ", req.body);
+export async function addEssayNut(req, res) {
+    console.log("addEssayNut: ", req.body);
     const data = req.body;
     if (data == undefined) {
         return res.status(400).send(ERROR_NO_DATA);
@@ -25,26 +28,16 @@ export async function newEssayNut(req, res) {
         return res.status(400).send(ERROR_NO_SEQ_NUM);
     }
 
-    await nutDao.newEssayNut(data.userId, data.nut, data.challengeId, data.seqNum)
-        .then(result1 => { res.status(200).send("OK"); })
+    await nutDao.addEssayNut(data.userId, data.nut, data.challengeId, data.seqNum)
+        .then(result => {
+            updateProfileTotalNut(data.userId);
+            res.status(200).send("OK");
+        })
         .catch(err => { res.status(500).send(err.message); });
-
-//    await nutDao.addNut(data.userId, data.nut, data.challengeId, data.seqNum)
-//        .then(result1 => {
-//            await nutDao.getTotalNut(data.userId)
-//                .then(result2 => {
-//                    console.log("totalNut: ", result2);
-//                    /* To be done: call user service to update total nut in user profile
-//                    updateProfileTotalNut(data.userId); */
-//                    res.status(200).send("OK");
-//                })
-//                .catch(err => { res.status(500).send(err.message); });
-//        })
-//        .catch(err => { res.status(500).send(err.message); });
 }
 
 export async function deleteEssayNut(req, res) {
-    console.log("deleteNut: ", req.body);
+    console.log("deleteEssayNut: ", req.body);
     const data = req.body;
     if (data == undefined) {
         return res.status(400).send(ERROR_NO_DATA);
@@ -60,45 +53,169 @@ export async function deleteEssayNut(req, res) {
     }
 
     await nutDao.deleteEssayNut(data.userId, data.challengeId, data.seqNum)
-        .then(result1 => { res.status(200).send("OK"); })
+        .then(result1 => {
+            updateProfileTotalNut(data.userId);
+            res.status(200).send("OK");
+        })
         .catch(err => { res.status(500).send(err.message); });
+}
 
-//    await nutDao.addNut(data.userId, data.challengeId, data.seqNum)
-//        .then(result1 => {
-//            await nutDao.getTotalNut(data.userId)
-//                .then(result2 => {
-//                    console.log("totalNut: ", result2);
-//                    /* To be done: call user service to update total nut in user profile
-//                    updateProfileTotalNut(data.userId); */
-//                    res.status(200).send("OK");
-//                })
-//                .catch(err => { res.status(500).send(err.message); });
-//        })
-//        .catch(err => { res.status(500).send(err.message); });
+export async function addCommunityChallengeNut(req, res) {
+    console.log("addCommunityChallengeNut: ", req.body);
+    const data = req.body;
+    if (data == undefined) {
+        return res.status(400).send(ERROR_NO_DATA);
+    }
+    if (!data.upvoterUserId) {
+        return res.status(400).send(ERROR_NO_UPVOTER_USER_ID);
+    }
+    if (!data.upvotedUserId1) {
+        return res.status(400).send(ERROR_NO_UPVOTED_USER_ID);
+    }
+    if (!data.upvotedUserId2) {
+        return res.status(400).send(ERROR_NO_UPVOTED_USER_ID);
+    }
+    if (!data.challengeId) {
+        return res.status(400).send(ERROR_NO_CHALLENGE_ID);
+    }
+
+    await nutDao.addCommunityChallengeNut(data.upvoterUserId, data.upvotedUserId1, data.upvotedUserId2, data.challengeId)
+        .then(result => {
+            updateProfileTotalNut(data.upvotedUserId1);
+            updateProfileTotalNut(data.upvotedUserId2);
+            res.status(200).send("OK");
+        })
+        .catch(err => { res.status(500).send(err.message); });
+}
+
+export async function deleteCommunityChallengeNut(req, res) {
+    console.log("deleteCommunityChallengeNut: ", req.body);
+    const data = req.body;
+    if (data == undefined) {
+        return res.status(400).send(ERROR_NO_DATA);
+    }
+    if (!data.upvoterUserId) {
+        return res.status(400).send(ERROR_NO_UPVOTER_USER_ID);
+    }
+    if (!data.upvotedUserId1) {
+        return res.status(400).send(ERROR_NO_UPVOTED_USER_ID);
+    }
+    if (!data.upvotedUserId2) {
+        return res.status(400).send(ERROR_NO_UPVOTED_USER_ID);
+    }
+    if (!data.challengeId) {
+        return res.status(400).send(ERROR_NO_CHALLENGE_ID);
+    }
+
+    await nutDao.deleteCommunityChallengeNut(data.upvoterUserId, data.challengeId)
+        .then(result1 => {
+            updateProfileTotalNut(data.upvotedUserId1);
+            updateProfileTotalNut(data.upvotedUserId2);
+            res.status(200).send("OK");
+        })
+        .catch(err => { res.status(500).send(err.message); });
+}
+
+export async function addCommunityEssayNut(req, res) {
+    console.log("addCommunityEssayNut: ", req.body);
+    const data = req.body;
+    if (data == undefined) {
+        return res.status(400).send(ERROR_NO_DATA);
+    }
+    if (!data.upvoterUserId) {
+        return res.status(400).send(ERROR_NO_UPVOTER_USER_ID);
+    }
+    if (!data.upvotedUserId) {
+        return res.status(400).send(ERROR_NO_UPVOTED_USER_ID);
+    }
+    if (!data.challengeId) {
+        return res.status(400).send(ERROR_NO_CHALLENGE_ID);
+    }
+    if (!data.seqNum) {
+        return res.status(400).send(ERROR_NO_SEQ_NUM);
+    }
+
+    await nutDao.addCommunityEssayNut(data.upvoterUserId, data.upvotedUserId, data.challengeId, data.seqNum)
+        .then(result => {
+            updateProfileTotalNut(data.upvotedUserId);
+            res.status(200).send("OK");
+        })
+        .catch(err => { res.status(500).send(err.message); });
+}
+
+export async function deleteCommunityEssayNut(req, res) {
+    console.log("deleteCommunityEssayNut: ", req.body);
+    const data = req.body;
+    if (data == undefined) {
+        return res.status(400).send(ERROR_NO_DATA);
+    }
+    if (!data.upvoterUserId) {
+        return res.status(400).send(ERROR_NO_UPVOTER_USER_ID);
+    }
+    if (!data.upvotedUserId) {
+        return res.status(400).send(ERROR_NO_UPVOTED_USER_ID);
+    }
+    if (!data.challengeId) {
+        return res.status(400).send(ERROR_NO_CHALLENGE_ID);
+    }
+    if (!data.seqNum) {
+        return res.status(400).send(ERROR_NO_SEQ_NUM);
+    }
+
+    await nutDao.deleteCommunityEssayNut(data.upvoterUserId, data.challengeId, data.seqNum)
+        .then(result1 => {
+            updateProfileTotalNut(data.upvotedUserId);
+            res.status(200).send("OK");
+        })
+        .catch(err => { res.status(500).send(err.message); });
 }
 
 export async function viewUserNut(req, res) {
     console.log("viewUserNut: ", req.params);
     const userId = req.params.userId;
 
-    res.json("User nut viewed " + userId);
+    try {
+        const essayNut = await nutDao.getEssayNut(userId);
+        const communityChallengeNut = await nutDao.getCommunityChallengeNut(userId);
+        const communityEssayNut = await nutDao.getCommunityEssayNut(userId);
 
- /*   await nutDao.viewUserNut(userId)
-        .then(result => { res.status(200).json(result.rows); })
-        .catch(err => { res.status(500).send(err.message); });
-        */
+        const userNut = essayNut.rows.concat(communityChallengeNut.rows.concat(communityEssayNut.rows));
+        res.status(200).json(userNut);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
 }
 
-export async function getTotalNut(req, res) {
-    console.log("getTotalNut: ", req.params);
+export async function getUserTotalNut(req, res) {
+    console.log("getUserTotalNut: ", req.params);
     const userId = req.params.userId;
 
-    await nutDao.getTotalNut(userId)
-        .then(result => { res.status(200).json(result.rows); })
-        .catch(err => { res.status(500).send(err.message); });
+    try {
+        const totalEssayNut = await nutDao.getTotalEssayNut(userId);
+        const totalCommunityChallengeNut = await nutDao.getTotalCommunityChallengeNut(userId);
+        const totalCommunityEssayNut = await nutDao.getTotalCommunityEssayNut(userId);
+
+        const userTotalNut = parseInt(totalEssayNut.rows[0].total) + parseInt(totalCommunityChallengeNut.rows[0].total) +
+                parseInt(totalCommunityEssayNut.rows[0].total);
+        axios.put('http://localhost:5010/user/updateUserTotalNut', { userId: userId, totalNut: userTotalNut });
+        res.status(200).json(userTotalNut);
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
 }
 
-/* To be done: call user service to update total nut in user profile
 export async function updateProfileTotalNut(userId) {
+    console.log("(internal) updateProfileTotalNut: ", userId);
 
-} */
+    try {
+        const totalEssayNut = await nutDao.getTotalEssayNut(userId);
+        const totalCommunityChallengeNut = await nutDao.getTotalCommunityChallengeNut(userId);
+        const totalCommunityEssayNut = await nutDao.getTotalCommunityEssayNut(userId);
+
+        const userTotalNut = parseInt(totalEssayNut.rows[0].total) + parseInt(totalCommunityChallengeNut.rows[0].total) +
+                parseInt(totalCommunityEssayNut.rows[0].total);
+        axios.put('http://localhost:5010/user/updateUserTotalNut', { userId: userId, totalNut: userTotalNut });
+    } catch (err) {
+        return err;
+    }
+}

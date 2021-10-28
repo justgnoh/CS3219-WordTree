@@ -25,7 +25,7 @@ export async function postNewPara(req, res) {
 
         //Send points to nuts service
         if (wordsused.length > 0) {
-            await axios.post('localhost:5011/newEssayNut', {
+            await axios.post('http://localhost:5011/nut/addEssayNut', {
                 challengeId: challengeid,
                 seqNum: seqnum,
                 nut: wordsused.length,
