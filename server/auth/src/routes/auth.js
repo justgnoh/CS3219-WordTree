@@ -3,9 +3,6 @@ import * as AuthController from '../controllers/AuthController.js';
 
 const router = Router();
 
-router.get('/challenge/*', AuthController.getRequest);
-router.post('/', AuthController.getRequest);
-router.put('/:id', AuthController.getRequest);
-router.get('/:id', AuthController.getRequest);
+router.post('/', AuthController.verifyJWTToken);
 
 export default router;
