@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Breadcrumb, InputGroup, FormControl, ButtonGroup, Button, ToggleButton, ToggleButtonGroup } from 'react-bootstrap'
+import { Breadcrumb, InputGroup, FormControl, Modal, Button, ToggleButton, ToggleButtonGroup } from 'react-bootstrap'
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
 
@@ -11,6 +11,9 @@ export default function CreateChallengePage() {
     const [turns, setTurns] = useState('');
     const [wordLimit, setWordLimit] = useState('');
     const [interests, setInterests] = useState([]);
+
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
 
     const turnRadio = [
         { name: '4 turns', value: '4' },
@@ -25,34 +28,26 @@ export default function CreateChallengePage() {
     const interestsRadio = [{ name: 'crime' }, { name: 'fantasy' }, { name: 'adventure' }, { name: 'horror' }];
 
     var request = {
-        "uid": 'user.uid',
+        "uid": user.uid,
         "turns": turns,
         "wordLimit": wordLimit,
         "interests": interests
     }
 
-    function handleSelect(e) {
-        setChecked(e.currentTarget.checked);
-        if (checked) {
-            setTurns(e.target.value)
-        };
-        console.log(e);
-        console.log(request);
-    }
-
-    // const handleChange = (val) => setValue(val);
-
     function handleInterests(val) {
         setInterests(val);
-        console.log(val);
     }
 
-    function handleChange(val) {
-        setValue(val);
-        console.log(val)
+    function createChallengeRequest() {
+        console.log(request);
+        if (request.uid.length != 0 && (request.turns == "6" || request.turns == "4") &&
+            (request.wordLimit == "300" || request.wordLimit == "500") && request.interests.length != 0) {
+            // TODO: Post
+            console.log("All Good")
+        } else {
+            setShow(true);
+        }
     }
-
-    const [value, setValue] = useState([1, 3]);
 
     return (
         <div className="ms-5 me-5">
@@ -70,7 +65,7 @@ export default function CreateChallengePage() {
                     aria-label="Username"
                     aria-describedby="basic-addon1"
                     disabled
-                // value={user.uid}
+                    value={user.uid}
                 />
             </InputGroup>
 
@@ -115,7 +110,7 @@ export default function CreateChallengePage() {
             {/* TODO: Get Genres */}
             <ToggleButtonGroup className="mb-3" type="checkbox" value={interests} onChange={handleInterests} >
                 {interestsRadio.map((item, idx) => (
-                    <ToggleButton  className="black-text"id={idx} variant={'outline-warning'} value={item.name}>
+                    <ToggleButton className="black-text" id={idx} variant={'outline-warning'} value={item.name}>
                         {item.name}
                     </ToggleButton>
                 )
@@ -123,10 +118,28 @@ export default function CreateChallengePage() {
             </ToggleButtonGroup>
 
             <div>
-                <Button variant="dark" style={{minWidth:'100%'}} className="primary-color" onClick={() => console.log(request)}>Submit</Button>
+                <Button variant="dark" style={{ minWidth: '100%' }} className="primary-color" onClick={createChallengeRequest}>Submit</Button>
             </div>
 
-
+            <Modal
+                show={show}
+                onHide={handleClose}
+                backdrop="static"
+                keyboard={false}
+                centered
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Ooops!</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Please check if you have selected all required option.
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     )
 }
