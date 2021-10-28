@@ -8,7 +8,7 @@ export default function ChallengePage() {
     return (
         <div className="ms-5 me-5">
             <div className="d-flex justify-content-center ">
-                <Button variant="dark" className="primary-color m-3" onClick={()=>history.replace("/create/challenge")}>Create a new challenge request</Button>
+                <Button variant="dark" className="primary-color m-3" onClick={()=>history.replace("/challenge/create")}>Create a new challenge request</Button>
                 <Button variant="dark" className="primary-color m-3">View challenge requests</Button>
             </div>
 

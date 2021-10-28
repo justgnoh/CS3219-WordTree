@@ -46,7 +46,7 @@ function App() {
           <Route exact path="/challenge">
             <ChallengePage />
           </Route>
-          <Route exact path="/create/challenge">
+          <Route exact path="/challenge/create">
             <CreateChallengePage/>
           </Route>
           
