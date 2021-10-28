@@ -16,13 +16,15 @@ function RegisterPage() {
   const register = () => {
     if (!name) alert("Please enter name");
     registerWithEmailAndPassword(name, email, password);
+    console.log("done");
   };
 
   useEffect(() => {
     if (loading) return;
     // TODO: Add post Auth Page
     if (user) {
-        history.replace("/interests");
+        // history.replace("/interests");
+        history.replace("/profile");
     }
   }, [user, loading]);
 
@@ -59,7 +61,7 @@ function RegisterPage() {
           placeholder="Date Of Birth"
         />
 
-        <button className="register__btn" onClick={()=>register}>
+        <button className="register__btn" onClick={register}>
           Register
         </button>
 
