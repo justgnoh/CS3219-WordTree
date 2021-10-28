@@ -3,6 +3,6 @@ import * as AuthController from '../controllers/AuthController.js';
 
 const router = Router();
 
-router.post('/', AuthController.verifyJWTToken);
+router.get('/', AuthController.verifyJWTToken);
 
 export default router;
