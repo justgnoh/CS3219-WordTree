@@ -17,8 +17,7 @@ export default function Navigation() {
             <Nav.Link href="/profile">Profile</Nav.Link>
             <Nav.Link href="/challenge">Challenges</Nav.Link>
             <Nav.Link href="/community">TreeHouse</Nav.Link>
-            <Button variant="light" className="ml-auto" onClick={()=> {logout(); history.replace('/');
-            }}>Logout</Button>
+            <Button variant="light" className="ml-auto" onClick={()=> {logout().then(()=>history.replace('/'))}}>Logout</Button>
           </Nav>
         )}
       </Container>
