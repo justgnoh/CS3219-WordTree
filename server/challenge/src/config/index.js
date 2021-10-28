@@ -1,3 +1,4 @@
+import dotenv from 'dotenv';
 export const port = process.env.PORT;
 
 export const error_messages = {
@@ -9,8 +10,6 @@ export const error_messages = {
     NOT_IN_THIS_CHALLENGE: "Not part of this incomplete challenge",
 }
 
-
-const dotenv = require('dotenv');
 dotenv.config();
 
 export const POSTGRES_URL = process.env.POSTGRES_URL;

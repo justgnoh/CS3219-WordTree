@@ -1,21 +1,19 @@
 version: '3.9'
 
 services:
-  # challenge:
-  #   restart: always
-  #   build:
-  #     context: ./server/challenge
-  #     dockerfile: Dockerfile.dev
-  #   container_name: challenge_service
-  #   volumes:
-  #     - /app/node_modules
-  #     - ./server/challenge:/app
-  #   # environment:
-  #   #   - POSTGRES_URL=${POSTGRES_URL}
-  #   ports:
-  #     - 5001:5001
-  #   networks:
-  #     - word_tree_network
+  challenge:
+    restart: always
+    build:
+      context: ./server/challenge
+      dockerfile: Dockerfile.dev
+    container_name: challenge_service
+    volumes:
+      - /app/node_modules
+      - ./server/challenge:/app
+    ports:
+      - 5001:5001
+    networks:
+      - word_tree_network
 
   essay:
     restart: always
@@ -26,8 +24,6 @@ services:
     volumes:
       - /app/node_modules
       - ./server/essay:/app
-    # environment:
-    #   - POSTGRES_URL=${POSTGRES_URL}
     ports:
       - 5006:5006
     networks:
@@ -42,8 +38,6 @@ services:
     volumes:
       - /app/node_modules
       - ./server/word:/app
-    # environment:
-    #   - POSTGRES_URL=${POSTGRES_URL}
     ports:
       - 5007:5007
     networks:
@@ -58,8 +52,6 @@ services:
     volumes:
       - /app/node_modules
       - ./server/user:/app
-    # environment:
-    #   - POSTGRES_URL=${POSTGRES_URL}
     ports:
       - 5010:5010
     networks:
@@ -74,8 +66,6 @@ services:
     volumes:
       - /app/node_modules
       - ./server/nut:/app
-    # environment:
-    #   - POSTGRES_URL=${POSTGRES_URL}
     ports:
       - 5011:5011
     networks:
