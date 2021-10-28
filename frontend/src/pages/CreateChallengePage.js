@@ -5,7 +5,6 @@ import { auth } from "../firebase";
 
 export default function CreateChallengePage() {
     const [user, loading, error] = useAuthState(auth);
-    const [checked, setChecked] = useState(false);
 
     // Request Values
     const [turns, setTurns] = useState('');
