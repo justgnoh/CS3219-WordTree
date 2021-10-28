@@ -13,6 +13,7 @@ import HomePage from "./pages/HomePage";
 import ChallengePage from "./pages/ChallengePage";
 import Challenge from "./pages/Challenge";
 import CommunityPage from "./pages/CommunityPage";
+import InterestsPage from "./pages/InterestsPage";
 
 function App() {
 
@@ -20,20 +21,6 @@ function App() {
     <Router>
       <Navigation/>
       <div>
-        {/* <nav>
-          <ul>
-            <li>
-              <Link to="/">HomePage</Link>
-            </li>
-            <li>
-              <Link to="/login">Login Page</Link>
-            </li>
-            <li>
-              <Link to="/register">Register Page</Link>
-            </li>
-          </ul>
-        </nav> */}
-
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Switch>
@@ -46,7 +33,7 @@ function App() {
           <Route exact path="/register">
             <RegisterPage />
           </Route>
-          <Route exact path="/register/success">
+          <Route exact path="/interests">
             <InterestsPage />
           </Route>
           <Route exact path="/profile">

@@ -16,7 +16,6 @@ function ProfilePage() {
     if (!user) {
       history.replace("/");
     }
-    // fetchUserName();
   }, [user, history]);
 
   function enableEdit() {
