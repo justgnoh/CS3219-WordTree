@@ -10,6 +10,10 @@ import RegisterPage from "./pages/RegisterPage";
 import ProfilePage from "./pages/ProfilePage";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
+import ChallengePage from "./pages/ChallengePage";
+import Challenge from "./pages/Challenge";
+import CommunityPage from "./pages/CommunityPage";
+import InterestsPage from "./pages/InterestsPage";
 
 function App() {
 
@@ -17,20 +21,6 @@ function App() {
     <Router>
       <Navigation/>
       <div>
-        {/* <nav>
-          <ul>
-            <li>
-              <Link to="/">HomePage</Link>
-            </li>
-            <li>
-              <Link to="/login">Login Page</Link>
-            </li>
-            <li>
-              <Link to="/register">Register Page</Link>
-            </li>
-          </ul>
-        </nav> */}
-
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Switch>
@@ -43,23 +33,27 @@ function App() {
           <Route exact path="/register">
             <RegisterPage />
           </Route>
+          <Route exact path="/interests">
+            <InterestsPage />
+          </Route>
           <Route exact path="/profile">
             <ProfilePage />
           </Route>
           <Route exact path="/community">
-            <Community />
+            <CommunityPage />
           </Route>
           <Route exact path="/challenge">
-            <Challenge />
+            <ChallengePage />
+          </Route>
+          
+          {/* TODO: Edit below paths */}
+          <Route exact path="/challenge/arthur">
+            <Challenge/>
           </Route>
         </Switch>
       </div>
     </Router>
   );
-}
-
-function Challenge() {
-  return <h2>This is the Challenge page</h2>;
 }
 
 function Community() {
