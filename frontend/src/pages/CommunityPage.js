@@ -42,7 +42,7 @@ export default function CommunityPage() {
                         </td>
                         <td>
                             <Button variant="dark" size="sm" className="primary-color" onClick={()=> {
-                            history.push("/challenge/arthur");
+                            console.log("history.push");
                             }}>View</Button>
                         </td>
                     </tr>
