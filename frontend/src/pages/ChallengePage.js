@@ -1,15 +1,15 @@
 import React from 'react'
-import { Button, Card, Table, Badge } from 'react-bootstrap'
+import { Button, Table, Badge } from 'react-bootstrap'
 import { useHistory } from 'react-router';
 
 export default function ChallengePage() {
     const history = useHistory();
 
     return (
-        <div>
-            <div className="d-flex justify-content-center">
-                <Button variant="dark" className="primary-color me-3">Create a new challenge request</Button>
-                <Button variant="dark" className="primary-color">View challenge requests</Button>
+        <div className="ms-5 me-5">
+            <div className="d-flex justify-content-center ">
+                <Button variant="dark" className="primary-color m-3" onClick={()=>history.replace("/create/challenge")}>Create a new challenge request</Button>
+                <Button variant="dark" className="primary-color m-3">View challenge requests</Button>
             </div>
 
             <Table responsive>
