@@ -1,12 +1,8 @@
-//import pool from '../database/db';
 import pg from 'pg';
+import { POSTGRES_URL } from '../config/index.js';
 const Pool = pg.Pool;
 const pool = new Pool({
-  user: 'yunqing',
-  host: 'localhost',
-  database: 'testdb',
-  password: '',
-  port: 5432
+  connectionString: POSTGRES_URL
 });
 
 //function returns a single array of 3 words

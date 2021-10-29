@@ -117,4 +117,27 @@ spec:
         image: word-service:1.0.0
         ports:
         - containerPort: 5007
-        
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: wordtree
+  name: community-deployment
+  labels:
+    app: community-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: community-service
+  template:
+    metadata:
+      name: community-service
+      labels:
+        app: community-service
+    spec:
+      containers:
+      - name: community-service
+        image: community-service:1.0.0
+        ports:
+        - containerPort: 5015

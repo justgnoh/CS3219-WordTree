@@ -2,129 +2,49 @@ version: '3.9'
 
 services:
   challenge:
-<<<<<<< HEAD
     build:
       context: ./server/challenge
       dockerfile: Dockerfile
     image: challenge-service:1.0.0
     ports:
       - 5001:5001
-=======
-    restart: always
-    build:
-      context: ./server/challenge
-      dockerfile: Dockerfile.dev
-    container_name: challenge_service
-    volumes:
-      - /app/node_modules
-      - ./server/challenge:/app
-    ports:
-      - 5001:5001
-    networks:
-      - word_tree_network
->>>>>>> master
 
   essay:
     build:
       context: ./server/essay
-<<<<<<< HEAD
       dockerfile: Dockerfile
     image: essay-service:1.0.0
-=======
-      dockerfile: Dockerfile.dev
-    container_name: essay_service
-    volumes:
-      - /app/node_modules
-      - ./server/essay:/app
->>>>>>> master
     ports:
       - 5006:5006
 
   word:
     build:
       context: ./server/word
-<<<<<<< HEAD
       dockerfile: Dockerfile
     image: word-service:1.0.0
-=======
-      dockerfile: Dockerfile.dev
-    container_name: word_service
-    volumes:
-      - /app/node_modules
-      - ./server/word:/app
->>>>>>> master
     ports:
       - 5007:5007
 
   user:
     build:
       context: ./server/user
-<<<<<<< HEAD
       dockerfile: Dockerfile
     image: user-service:1.0.0
-=======
-      dockerfile: Dockerfile.dev
-    container_name: user_service
-    volumes:
-      - /app/node_modules
-      - ./server/user:/app
->>>>>>> master
     ports:
       - 5010:5010
 
   nut:
     build:
       context: ./server/nut
-<<<<<<< HEAD
       dockerfile: Dockerfile
     image: nut-service:1.0.0
     ports:
       - 5011:5011
-=======
-      dockerfile: Dockerfile.dev
-    container_name: nut_service
-    volumes:
-      - /app/node_modules
-      - ./server/nut:/app
-    ports:
-      - 5011:5011
-    networks:
-      - word_tree_network
 
   community:
-    restart: always
     build:
       context: ./server/community
-      dockerfile: Dockerfile.dev
-    container_name: community_service
-    volumes:
-      - /app/node_modules
-      - ./server/community:/app
-    # environment:
-    #   - POSTGRES_URL=${POSTGRES_URL}
+      dockerfile: Dockerfile
+    image: community-service:1.0.0
     ports:
       - 5015:5015
-    networks:
-      - word_tree_network
-
-  nginx:
-    restart: always
-    depends_on:
-      - word
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile.dev
-    container_name: apigateway_nginx
-    ports:
-      - 80:80
-    networks:
-      - word_tree_network
-
-networks:
-  word_tree_network:
-    driver: bridge
-
-volumes:
-  postgres-data:
-    driver: local
->>>>>>> master

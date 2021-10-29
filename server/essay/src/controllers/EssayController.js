@@ -30,7 +30,7 @@ export async function postNewPara(req, res) {
 
         //Send points to nuts service
         if (wordsused.length > 0) {
-            await axios.post('http://localhost:5011/nut/addEssayNut', {
+            await axios.post('http://nut-service:8080/nut/addEssayNut', {
                 challengeId: challengeid,
                 seqNum: seqnum,
                 nut: wordsused.length,
@@ -48,7 +48,7 @@ export async function postNewPara(req, res) {
 
 export async function getWordsUsed(challengeid, seqnum, essaypara) {
     try {
-        let wordarr = await axios.get('http://127.0.0.1:5007/words/' + challengeid + '/' + seqnum);
+        let wordarr = await axios.get('http://word-service:8080/words/' + challengeid + '/' + seqnum);
 
         if (!wordarr.data) {
             throw "Words for this challenge id and sequence number does not exist!"

@@ -173,12 +173,6 @@ export async function deleteCommunityEssayNut(req, res) {
 export async function viewUserNut(req, res) {
     console.log("viewUserNut: ", req.params);
     const userId = req.params.userId;
-<<<<<<< HEAD
-    
-    await nutDao.viewUserNut(userId)
-        .then(result => { res.status(200).json(result.rows); })
-        .catch(err => { res.status(500).send(err.message); });
-=======
 
     try {
         const essayNut = await nutDao.getEssayNut(userId);
@@ -190,7 +184,6 @@ export async function viewUserNut(req, res) {
     } catch (err) {
         res.status(500).send(err.message);
     }
->>>>>>> master
 }
 
 export async function getUserTotalNut(req, res) {
