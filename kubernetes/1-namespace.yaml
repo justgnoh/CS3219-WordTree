@@ -2,6 +2,3 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: wordtree
-
-
-  # docker build -t cs3219/mariadb:1.0.0 ./mariadb

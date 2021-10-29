@@ -1,0 +1,120 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: wordtree
+  name: user-deployment
+  labels:
+    app: user-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      name: user-service
+      labels:
+        app: user-service
+    spec:
+      containers:
+      - name: user-service
+        image: user-service:1.0.0
+        ports:
+        - containerPort: 5010
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: wordtree
+  name: challenge-deployment
+  labels:
+    app: challenge-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: challenge-service
+  template:
+    metadata:
+      name: challenge-service
+      labels:
+        app: challenge-service
+    spec:
+      containers:
+      - name: challenge-service
+        image: challenge-service:1.0.0
+        ports:
+        - containerPort: 5001
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: wordtree
+  name: essay-deployment
+  labels:
+    app: essay-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: essay-service
+  template:
+    metadata:
+      name: essay-service
+      labels:
+        app: essay-service
+    spec:
+      containers:
+      - name: essay-service
+        image: essay-service:1.0.0
+        ports:
+        - containerPort: 5006
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: wordtree
+  name: nut-deployment
+  labels:
+    app: nut-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nut-service
+  template:
+    metadata:
+      name: nut-service
+      labels:
+        app: nut-service
+    spec:
+      containers:
+      - name: nut-service
+        image: nut-service:1.0.0
+        ports:
+        - containerPort: 5011
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: wordtree
+  name: word-deployment
+  labels:
+    app: word-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: word-service
+  template:
+    metadata:
+      name: word-service
+      labels:
+        app: word-service
+    spec:
+      containers:
+      - name: word-service
+        image: word-service:1.0.0
+        ports:
+        - containerPort: 5007
+        

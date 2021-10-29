@@ -80,13 +80,10 @@ export async function deleteEssayNut(req, res) {
 export async function viewUserNut(req, res) {
     console.log("viewUserNut: ", req.params);
     const userId = req.params.userId;
-
-    res.json("User nut viewed " + userId);
-
- /*   await nutDao.viewUserNut(userId)
+    
+    await nutDao.viewUserNut(userId)
         .then(result => { res.status(200).json(result.rows); })
         .catch(err => { res.status(500).send(err.message); });
-        */
 }
 
 export async function getTotalNut(req, res) {
