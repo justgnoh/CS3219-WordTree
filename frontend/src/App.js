@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -6,74 +5,61 @@ import {
   Link
 } from "react-router-dom";
 
-import './App.css';
+import Navigation from "./components/Navigation";
+import RegisterPage from "./pages/RegisterPage";
+import ProfilePage from "./pages/ProfilePage";
+import LoginPage from "./pages/LoginPage";
+import HomePage from "./pages/HomePage";
+import ChallengePage from "./pages/ChallengePage";
+import Challenge from "./pages/Challenge";
+import CommunityPage from "./pages/CommunityPage";
+import InterestsPage from "./pages/InterestsPage";
 
-export default function App() {
+function App() {
+
   return (
     <Router>
+      <Navigation/>
       <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Welcome Back User!</Link>
-            </li>
-            <li>
-              <Link to="/login">Login Page</Link>
-            </li>
-            <li>
-              <Link to="/register">Register Page</Link>
-            </li>
-            <li>
-              <Link to="/challenge">Challenge Page</Link>
-            </li>
-            <li>
-              <Link to="/community">Community Page</Link>
-            </li>
-          </ul>
-        </nav>
-
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Switch>
-          <Route path="/community">
-            <Community />
+        <Route exact path="/">
+            <HomePage />
           </Route>
-          <Route path="/challenge">
-            <Challenge />
+          <Route exact path="/login">
+            <LoginPage />
           </Route>
-          <Route path="/register">
-            <Register />
+          <Route exact path="/register">
+            <RegisterPage />
           </Route>
-          <Route path="/login">
-            <Login />
+          <Route exact path="/interests">
+            <InterestsPage />
           </Route>
-          <Route path="/">
-            <Profile />
+          <Route exact path="/profile">
+            <ProfilePage />
+          </Route>
+          <Route exact path="/community">
+            <CommunityPage />
+          </Route>
+          <Route exact path="/challenge">
+            <ChallengePage />
+          </Route>
+          
+          {/* TODO: Edit below paths */}
+          <Route exact path="/challenge/arthur">
+            <Challenge/>
           </Route>
         </Switch>
       </div>
     </Router>
-
   );
-}
-
-// TODO: Shift these into pages
-function Profile() {
-  return <h2>This is the users profile, concatenate the url with their pid</h2>;
-}
-
-function Login() {
-  return <h2>This is the login page, Username, Password</h2>;
-}
-
-function Register() {
-  return <h2>This is the register page, Username, Password + Other basic details</h2>;
-}
-
-function Challenge() {
-  return <h2>This is the Challenge page</h2>;
 }
 
 function Community() {
   return <h2>Welcome to the Treehouse! Come hangout!</h2>;
 }
+
+export default App;
+
+

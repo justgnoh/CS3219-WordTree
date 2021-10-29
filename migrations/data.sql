@@ -6,10 +6,10 @@ insert into UserAccount(user_id, username, password, access_token) values (2, 'u
 insert into UserAccount(user_id, username, password, access_token) values (3, 'user3', 'pw3', 'token3');
 insert into UserAccount(user_id, username, password, access_token) values (4, 'user4', 'pw4', 'token4');
 
-insert into UserProfile(user_id, username, total_nut) values (1, 'user1', 100);
-insert into UserProfile(user_id, username, total_nut) values (2, 'user2', 200);
-insert into UserProfile(user_id, username, total_nut) values (3, 'user3', 300);
-insert into UserProfile(user_id, username, total_nut) values (4, 'user4', 400);
+insert into UserProfile(user_id, user_name, total_nut) values (1, 'user1', 100);
+insert into UserProfile(user_id, user_name, total_nut) values (2, 'user2', 200);
+insert into UserProfile(user_id, user_name, total_nut) values (3, 'user3', 300);
+insert into UserProfile(user_id, user_name, total_nut) values (4, 'user4', 400);
 
 insert into Interest (interest) values ('crime');
 insert into Interest (interest) values ('fantasy');

@@ -1,12 +1,12 @@
 import pkg from 'pg';
 const { Pool } = pkg;
-import { db } from '../config/index.js';
+import { POSTGRES_URL } from '../config/index.js';
 
 export default new Pool({
-    connectionString: db,
-    user: 'postgres',
-    host: 'localhost',
-    database: 'word_tree',
-    password: 'password',
-    port: 5432,
+    connectionString: POSTGRES_URL,
+//    user: 'postgres',
+//    host: 'localhost',
+//    database: 'word_tree',
+//    password: 'password',
+//    port: 5432,
 });

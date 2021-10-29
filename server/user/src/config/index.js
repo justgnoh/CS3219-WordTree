@@ -1,2 +1,7 @@
+import dotenv from 'dotenv'
+
 export const port = process.env.PORT;
-export const db = process.env.POSTGRES_URL;
+
+dotenv.config()
+export const POSTGRES_URL = process.env.POSTGRES_URL;
+
