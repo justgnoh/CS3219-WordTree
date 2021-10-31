@@ -62,3 +62,7 @@
     min-width: 30vh;
     min-height: 5vh;
 }
+
+.rounded-buttons {
+    border-radius: 15px;
+}

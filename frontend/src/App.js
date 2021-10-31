@@ -14,6 +14,8 @@ import ChallengePage from "./pages/ChallengePage";
 import Challenge from "./pages/Challenge";
 import CommunityPage from "./pages/CommunityPage";
 import InterestsPage from "./pages/InterestsPage";
+import CreateChallengePage from "./pages/CreateChallengePage";
+import ViewRequestsPage from "./pages/ViewRequestsPage";
 
 function App() {
 
@@ -44,6 +46,15 @@ function App() {
           </Route>
           <Route exact path="/challenge">
             <ChallengePage />
+          </Route>
+          <Route exact path="/challenge/create">
+            <CreateChallengePage/>
+          </Route>
+          <Route exact path="/challenge/create">
+            <CreateChallengePage/>
+          </Route>
+          <Route exact path="/challenge/view">
+            <ViewRequestsPage/>
           </Route>
           
           {/* TODO: Edit below paths */}
