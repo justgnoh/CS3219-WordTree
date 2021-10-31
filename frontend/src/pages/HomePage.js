@@ -12,20 +12,16 @@ export default function HomePage() {
   const history = useHistory();
 
   useEffect(() => {
-    if (!user) {
-      history.replace("/");
+    if (user) {
+      history.replace("/profile");
     }
     // fetchUserName();
-  }, [user]);
+  }, [user, history]);
 
   return (
     <Container fluid>
-      {user ? (
-        <div>
-          <div>Logged in as {user.email}</div>
-          <Button onClick={logout}>Logout</Button>
-        </div>
-      ) : (
+      {user ? () => {history.push("/profile")}
+        : (
         <div className="d-flex flex-column align-items-center justify-content-around customHeight">
           <img className="logo" src={logo} alt="word-tree-logo" />
           <Button

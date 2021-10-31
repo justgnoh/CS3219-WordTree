@@ -9,7 +9,7 @@
     display: flex;
     flex-direction: column;
     text-align: center;
-    background-color: #dcdcdc;
+    background-color: #606C38;
     padding: 30px;
   }
   .login__textBox {
@@ -23,7 +23,7 @@
     margin-bottom: 10px;
     border: none;
     color: white;
-    background-color: black;
+    background-color: #283618;
   }
   .login__google {
     background-color: #4285f4;

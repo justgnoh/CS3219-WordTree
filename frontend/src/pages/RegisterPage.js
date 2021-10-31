@@ -9,26 +9,29 @@ function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [dob, setDob] = useState("");
   const [user, loading, error] = useAuthState(auth);
   const history = useHistory();
 
   const register = () => {
     if (!name) alert("Please enter name");
     registerWithEmailAndPassword(name, email, password);
+    console.log("done");
   };
 
   useEffect(() => {
     if (loading) return;
     // TODO: Add post Auth Page
     if (user) {
+        // history.replace("/interests");
         history.replace("/profile");
-        console.log(user);
     }
   }, [user, loading]);
 
   return (
     <div className="register">
-      <div className="register__container">
+      <div className="register__container white-text">
+        <h1>Registration</h1>
         <input
           type="text"
           className="register__textBox"
@@ -50,13 +53,20 @@ function RegisterPage() {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
         />
+        <input
+          type="date"
+          className="register__textBox"
+          value={dob}
+          onChange={(e) => setDob(e.target.value)}
+          placeholder="Date Of Birth"
+        />
 
         <button className="register__btn" onClick={register}>
           Register
         </button>
 
         <div>
-          Already have an account? <Link to="/login">Login</Link> now.
+          Already have an account? <Link to="/login" className="white-text">Login</Link> now.
         </div>
       </div>
     </div>

@@ -1,24 +1,21 @@
 {
-  "name": "bookstore-api",
+  "name": "essay-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.ts",
+  "description": "End points for Essay Service",
+  "main": "./src/index.js",
+  "type": "module",
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "nodemon run",
     "dev": "nodemon -L"
   },
-  "author": "raevsanton",
+  "author": "Chiam Yun Qing",
   "license": "ISC",
-  "devDependencies": {
-    "@types/express": "^4.17.9",
-    "@types/node": "^14.14.16",
-    "ts-node": "^9.0.0",
-    "typescript": "^4.0.5"
-  },
   "dependencies": {
     "@types/cors": "^2.8.10",
     "@types/pg": "^7.14.7",
+    "axios": "^0.22.0",
     "body-parser": "^1.19.0",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "nodemon": "^2.0.6",
     "pg": "^8.5.1"

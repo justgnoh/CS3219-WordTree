@@ -5,15 +5,19 @@ import {
   Link
 } from "react-router-dom";
 
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "./firebase";
-
 import Navigation from "./components/Navigation";
 import RegisterPage from "./pages/RegisterPage";
 import ProfilePage from "./pages/ProfilePage";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
-import SocketPage from "./pages/SocketPage";
+import ChallengePage from "./pages/ChallengePage";
+import Challenge from "./pages/Challenge";
+import CommunityPage from "./pages/CommunityPage";
+import InterestsPage from "./pages/InterestsPage";
+import CreateChallengePage from "./pages/CreateChallengePage";
+import ViewRequestsPage from "./pages/ViewRequestsPage";
+
+import SocketPage from "./pages/SocketPage"; //socket
 
 function App() {
 
@@ -21,57 +25,52 @@ function App() {
     <Router>
       <Navigation/>
       <div>
-        {/* <nav>
-          <ul>
-            <li>
-              <Link to="/">HomePage</Link>
-            </li>
-            <li>
-              <Link to="/login">Login Page</Link>
-            </li>
-            <li>
-              <Link to="/register">Register Page</Link>
-            </li>
-          </ul>
-        </nav> */}
-
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
         <Switch>
-          <Route path="/community">
-            <Community />
+        <Route exact path="/">
+            <HomePage />
           </Route>
-          <Route path="/challenge">
-            <Challenge />
-          </Route>
-          <Route path="/register">
-            <RegisterPage />
-          </Route>
-          <Route path="/login">
+          <Route exact path="/login">
             <LoginPage />
           </Route>
+          <Route exact path="/register">
+            <RegisterPage />
+          </Route>
+          <Route exact path="/interests">
+            <InterestsPage />
+          </Route>
+          <Route exact path="/profile">
+            <ProfilePage />
+          </Route>
+          <Route exact path="/community">
+            <CommunityPage />
+          </Route>
+          <Route exact path="/challenge">
+            <ChallengePage />
+          </Route>
+          <Route exact path="/challenge/create">
+            <CreateChallengePage/>
+          </Route>
+          <Route exact path="/challenge/create">
+            <CreateChallengePage/>
+          </Route>
+          <Route exact path="/challenge/view">
+            <ViewRequestsPage/>
+          </Route>
+          
+          {/* TODO: Edit below paths */}
+          <Route exact path="/challenge/arthur">
+            <Challenge/>
+          </Route>
+          /* socket */
           <Route path="/socket">
             <SocketPage />
-          </Route>
-          <Route path="/">
-            <HomePage />
           </Route>
         </Switch>
       </div>
     </Router>
   );
-}
-
-function Profile() {
-  return <h2>This is the users profile, concatenate the url with their pid</h2>;
-}
-
-function Register() {
-  return <h2>This is the register page, Username, Password + Other basic details</h2>;
-}
-
-function Challenge() {
-  return <h2>This is the Challenge page</h2>;
 }
 
 function Community() {
