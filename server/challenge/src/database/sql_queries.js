@@ -1,3 +1,4 @@
+// ! DEPRECATED
 // export const SQL_QUERIES = {
 //     GET_CHALLENGES_BY_USER_ID: "SELECT * FROM Challenges WHERE squirrel_iD = $1 OR racoon_id = $1",
 //     INSERT_NEW_CHALLENGE: "insert into Challenges (squirrel_id, num_of_total_turns, word_limit_per_turn, genre) values ($1, $2, $3, $4) RETURNING challenge_id",
