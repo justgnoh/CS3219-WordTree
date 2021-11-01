@@ -23,6 +23,7 @@ const basicSignIn = async (email, password) => {
     const user = userCredential.user;
     console.log('User Logged In');
     console.log(user);
+    // user.getIdToken(true).then(token => console.log(token))
   })
   .catch((error) => {
     const errorCode = error.code;
