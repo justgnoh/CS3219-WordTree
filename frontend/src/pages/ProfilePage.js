@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Badge, Button, Col, Container, Row } from "react-bootstrap";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useHistory } from "react-router";
+import { getUserProfile, getAllNuts } from "../utils/Api";
 
 import { auth, logout } from "../firebase";
+
+import NutView from "../components/NutView";
 
 function ProfilePage() {
   const [user, loading, error] = useAuthState(auth);
@@ -11,6 +14,12 @@ function ProfilePage() {
 
   const [editProfile, setEditProfile] = useState(false);
   const [viewNut, setViewNut] = useState(false);
+
+  // TODO: API CALL to User Service
+  // const userProfile = getUserProfile(user.uid);
+
+  // TODO: API CALL to NUT SERVICE
+  // const userNuts = getAllNuts(user.uid);
 
   useEffect(() => {
     if (!user) {
@@ -47,11 +56,12 @@ function ProfilePage() {
       return (
         <div className="d-flex flex-column profile-contents-container">
             <div>some image</div>
-          <Container className="borderGrey profile-contents">
+          <Container className=" profile-contents">
             <Row className="justify-content-md-center">
               <Col xs lg="2">
-                  <Row>First Name:</Row>
+                  <Row>First Name</Row>
                   <Row>John</Row>
+                  {/* <Row>userProfile.profile.name</Row> */}
               </Col>
               <Col xs lg="2">
                 <Row>Age:</Row>
@@ -71,6 +81,12 @@ function ProfilePage() {
           </Container>
           <div className="borderGrey">
             Interests:
+            
+            {/* TODO: Map user's interest */}
+            {/* userProfile.profile.interests.map((interest) => {
+              <Badge pill bg="warning">interest</Badge>
+            }); */}
+            
             <Badge pill bg="warning">
               Horror
             </Badge>
@@ -84,8 +100,9 @@ function ProfilePage() {
     if (viewNut) {
       // Nut View
       return (
-        <div className="d-flex flex-column profile-contents-container borderGrey">
-          Nutview
+        <div className="d-flex  align-content-center justify-content-center profile-contents-container borderGrey">
+          <NutView essayNut={10} communityChallengeNut={15} communityEssayNut={15} />
+          {/* <NutView essayNut={userNuts[0]} communityChallengeNut={userNuts[1]} communityEssayNut={userNuts[2]} /> */}
         </div>
       );
     }

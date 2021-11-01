@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Breadcrumb, InputGroup, FormControl, Modal, Button, ToggleButton, ToggleButtonGroup } from 'react-bootstrap'
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
+import { createNewChallenge, getSystemInterests } from '../utils/Api';
 
 export default function CreateChallengePage() {
     const [user, loading, error] = useAuthState(auth);
@@ -25,6 +26,7 @@ export default function CreateChallengePage() {
     ]
 
     const interestsRadio = [{ name: 'crime' }, { name: 'fantasy' }, { name: 'adventure' }, { name: 'horror' }];
+    // const interestsRadio = getSystemInterests();
 
     var request = {
         "uid": user.uid,
@@ -42,7 +44,8 @@ export default function CreateChallengePage() {
         if (request.uid.length != 0 && (request.turns == "6" || request.turns == "4") &&
             (request.wordLimit == "300" || request.wordLimit == "500") && request.interests.length != 0) {
             // TODO: Post
-            console.log("All Good")
+            // console.log("All Good")
+            createNewChallenge(request)
         } else {
             setShow(true);
         }
