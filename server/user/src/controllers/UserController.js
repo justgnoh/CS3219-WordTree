@@ -202,7 +202,7 @@ export async function addInterest(req, res) {
     }
 
     if (!isAdmin) {
-        res.status(400).send(ERROR_NOT_AUTHORIZED);
+        res.status(403).send(ERROR_NOT_AUTHORIZED);
     }
 
     const body = req.body;
@@ -237,7 +237,7 @@ export async function deleteInterest(req, res) {
     }
 
     if (!isAdmin) {
-        res.status(400).send(ERROR_NOT_AUTHORIZED);
+        res.status(403).send(ERROR_NOT_AUTHORIZED);
     }
 
     const body = req.body;
