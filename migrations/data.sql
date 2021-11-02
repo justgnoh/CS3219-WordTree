@@ -1,3 +1,4 @@
+/* Populate sample data into database */
 INSERT INTO UserAccount (user_id, email) VALUES ('oDvs8LMf8JQG4WWMCChvJ0WRQAh1', 'nikhila@gmail.com');
 INSERT INTO UserAccount (user_id, email) VALUES ('JIcmq40600cn8YBLa0uBVv0fJZe2', 'yunqing@gmail.com');
 INSERT INTO UserAccount (user_id, email) VALUES ('fDudvKGcZ7Sn5AAnHLWMggR34R82', 'boonji@gmail.com');
