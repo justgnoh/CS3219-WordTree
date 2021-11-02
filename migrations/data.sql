@@ -1,15 +1,15 @@
 /*
 * populate dummy data
 */
-insert into UserAccount(user_id, username, password, access_token) values (1, 'user1', 'pw1', 'token1');
-insert into UserAccount(user_id, username, password, access_token) values (2, 'user2', 'pw2', 'token2');
-insert into UserAccount(user_id, username, password, access_token) values (3, 'user3', 'pw3', 'token3');
-insert into UserAccount(user_id, username, password, access_token) values (4, 'user4', 'pw4', 'token4');
+insert into useraccount (user_id, email, password) values (1, 'name1@gmail.com', 'password1');
+insert into useraccount (user_id, email, password) values (2, 'name2@gmail.com', 'password2');
+insert into useraccount (user_id, email, password) values (3, 'name3@gmail.com', 'password3');
+insert into useraccount (user_id, email, password) values (4, 'name4@gmail.com', 'password4');
 
-insert into UserProfile(user_id, user_name, total_nut) values (1, 'user1', 100);
-insert into UserProfile(user_id, user_name, total_nut) values (2, 'user2', 200);
-insert into UserProfile(user_id, user_name, total_nut) values (3, 'user3', 300);
-insert into UserProfile(user_id, user_name, total_nut) values (4, 'user4', 400);
+insert into userprofile (user_id, user_name, date_of_birth) values (1, 'name1', '01/01/1996');
+insert into userprofile (user_id, user_name, date_of_birth) values (2, 'name2', '01/01/1997');
+insert into userprofile (user_id, user_name, date_of_birth) values (3, 'name3', '01/01/1998');
+insert into userprofile (user_id, user_name, date_of_birth) values (4, 'name4', '01/01/1999');
 
 insert into Interest (interest) values ('crime');
 insert into Interest (interest) values ('fantasy');
@@ -54,3 +54,10 @@ insert into EssayNut(user_id, nut, challenge_id, seq_num) values (1, 3, 1, 1);
 insert into EssayNut(user_id, nut, challenge_id, seq_num) values (3, 1, 2, 1);
 insert into EssayNut(user_id, nut, challenge_id, seq_num) values (1, 0, 3, 1);
 insert into EssayNut(user_id, nut, challenge_id, seq_num) values (3, 1, 4, 1);
+
+insert into communitychallengenut (upvoter_user_id, upvoted_user_id, challenge_id) values (3, 1, 1);
+insert into communitychallengenut (upvoter_user_id, upvoted_user_id, challenge_id) values (3, 2, 1);
+insert into communitychallengenut (upvoter_user_id, upvoted_user_id, challenge_id) values (3, 2, 4);
+insert into communitychallengenut (upvoter_user_id, upvoted_user_id, challenge_id) values (3, 4, 4);
+
+insert into communityessaynut (upvoter_user_id, upvoted_user_id, challenge_id, seq_num) values (3, 1, 1, 1);
