@@ -29,27 +29,6 @@ spec:
             port: 
               number: 8080
       - pathType: Prefix
-        path: /getUserProfile
-        backend:
-          service: 
-            name: user-service
-            port: 
-              number: 8080
-      - pathType: Prefix
-        path: /getUserInterest
-        backend:
-          service: 
-            name: user-service
-            port: 
-              number: 8080
-      - pathType: Prefix
-        path: /clearUserInterest
-        backend:
-          service: 
-            name: user-service
-            port: 
-              number: 8080
-      - pathType: Prefix
         path: /nut
         backend:
           service: 

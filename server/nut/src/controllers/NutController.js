@@ -214,7 +214,7 @@ export async function updateProfileTotalNut(userId) {
 
         const userTotalNut = parseInt(totalEssayNut.rows[0].total) + parseInt(totalCommunityChallengeNut.rows[0].total) +
                 parseInt(totalCommunityEssayNut.rows[0].total);
-        axios.put('http://localhost:5010/user/updateUserTotalNut', { userId: userId, totalNut: userTotalNut });
+        axios.put('http://user-service:8080/user/updateUserTotalNut', { userId: userId, totalNut: userTotalNut });
     } catch (err) {
         return err;
     }

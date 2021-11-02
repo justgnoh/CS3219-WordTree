@@ -3,17 +3,6 @@ import * as essaydao from '../database/EssayDao.js';
 
 const MISSING_INFO = "Bad Request. Missing fields or parameters.";
 
-export async function test(req, res) {
-    const testing = req.params['test'];
-    const response = await axios.get('http://word-service:8080/testing')
-    res.json("test cross communication success" + response.data);
-}
-
-export async function test2(req, res) {
-    const t = req.body['t'];
-    res.json(t);
-}
-
 export async function postNewPara(req, res) {
     const challengeid = req.params['challengeid'];
     const authorid = req.body['author_id'];
