@@ -43,9 +43,6 @@ export async function createUser(req, res) {
     if (!body.email) {
         return res.status(400).send(ERROR_NO_EMAIL);
     }
-    if (!body.password) {
-        return res.status(400).send(ERROR_NO_PASSWORD);
-    }
     if (!body.name) {
         return res.status(400).send(ERROR_NO_NAME);
     }
@@ -54,7 +51,7 @@ export async function createUser(req, res) {
     }
 
     try {
-        await userAccountDao.createUserAccount(body.userId, body.email, body.password);
+        await userAccountDao.createUserAccount(body.userId, body.email);
         await userProfileDao.createUserProfile(body.userId, body.name, body.dateOfBirth);
         res.status(200).send("OK");
     } catch (err) {
@@ -90,6 +87,9 @@ export async function getUserProfile(req, res) {
 
 export async function updateUserPassword(req, res) {
     console.log("User Service: (PUT) /updateUserPassword");
+
+    /* To be removed in future once password implementation is done */
+    return res.status(403).send(ERROR_NOT_AUTHORIZED);
 
     const accessToken = req.headers['x-access-token'];
     if (!accessToken) {
@@ -186,7 +186,7 @@ export async function updateUserTotalNut(req, res) {
 export async function addInterest(req, res) {
     console.log("User Service: (POST) /addInterest");
 
-    /* To be removed once admin implementation is done */
+    /* To be removed in future once admin implementation is done */
     return res.status(403).send(ERROR_NOT_AUTHORIZED);
 
     const accessToken = req.headers['x-access-token'];
@@ -221,7 +221,7 @@ export async function addInterest(req, res) {
 export async function deleteInterest(req, res) {
     console.log("User Service: (DELETE) /deleteInterest");
 
-    /* To be removed once admin implementation is done */
+    /* To be removed in future once admin implementation is done */
     return res.status(403).send(ERROR_NOT_AUTHORIZED);
 
     const accessToken = req.headers['x-access-token'];
