@@ -141,3 +141,28 @@ spec:
         image: community-service:1.0.0
         ports:
         - containerPort: 5015
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: wordtree
+  name: auth-deployment
+  labels:
+    app: auth-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      name: auth-service
+      labels:
+        app: auth-service
+    spec:
+      containers:
+      - name: auth-service
+        image: auth-service:1.0.0
+        ports:
+        - containerPort: 5000
+        

@@ -1,6 +1,14 @@
 version: '3.9'
 
 services:
+  auth:
+    build:
+      context: ./server/auth
+      dockerfile: Dockerfile
+    image: auth-service:1.0.0
+    ports:
+      - 5000:5000
+
   challenge:
     build:
       context: ./server/challenge
