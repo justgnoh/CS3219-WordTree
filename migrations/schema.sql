@@ -8,7 +8,7 @@ CREATE TABLE UserAccount (
 CREATE TABLE UserProfile (
     user_id VARCHAR(50) PRIMARY KEY,
     user_name VARCHAR(50) NOT NULL,
-    total_nut INT NOT NULL DEFAULT 0,
+    total_nut INTEGER NOT NULL DEFAULT 0,
     date_of_birth DATE NOT NULL,
     joined_datetime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES UserAccount(user_id),
@@ -49,26 +49,26 @@ CREATE TABLE TurnDetails (
 );
 
 CREATE TABLE WordsPerChallenge (
-    challenge_id integer REFERENCES Challenges(challenge_id),
-    seq_num integer,
-    word_list text[] NOT NULL CHECK (cardinality(word_list) = 3),
+    challenge_id INTEGER REFERENCES Challenges(challenge_id),
+    seq_num INTEGER,
+    word_list TEXT[] NOT NULL CHECK (cardinality(word_list) = 3),
     PRIMARY KEY (challenge_id, seq_num)
 );
 
 CREATE TABLE EssayPara (
-    challenge_id integer REFERENCES Challenges(challenge_id),
-    seq_num integer NOT NULL,
+    challenge_id INTEGER REFERENCES Challenges(challenge_id),
+    seq_num INTEGER NOT NULL,
     author_id VARCHAR(50) NOT NULL REFERENCES UserAccount(user_id),
-    essay_para text NOT NULL,
-    words_used text[],
+    essay_para TEXT NOT NULL,
+    words_used TEXT[],
     PRIMARY KEY (challenge_id, seq_num)
 );
 
 CREATE TABLE EssayNut (
-    user_id INT,
-    challenge_id INT,
-    seq_num INT,
-    nut INT NOT NULL,
+    user_id VARCHAR(50),
+    challenge_id INTEGER,
+    seq_num INTEGER,
+    nut INTEGER NOT NULL,
     datetime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (user_id, challenge_id, seq_num),
     FOREIGN KEY (challenge_id, seq_num) REFERENCES EssayPara(challenge_id, seq_num),
@@ -76,10 +76,10 @@ CREATE TABLE EssayNut (
 );
 
 CREATE TABLE CommunityChallengeNut (
-    upvoter_user_id INT,
-    upvoted_user_id INT,
-    challenge_id INT,
-    nut INT NOT NULL DEFAULT 1,
+    upvoter_user_id VARCHAR(50),
+    upvoted_user_id VARCHAR(50),
+    challenge_id INTEGER,
+    nut INTEGER NOT NULL DEFAULT 1,
     datetime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (upvoter_user_id, upvoted_user_id, challenge_id),
     FOREIGN KEY (challenge_id) REFERENCES Challenges(challenge_id),
@@ -88,11 +88,11 @@ CREATE TABLE CommunityChallengeNut (
 );
 
 CREATE TABLE CommunityEssayNut (
-    upvoter_user_id INT,
-    upvoted_user_id INT,
-    challenge_id INT,
-    seq_num INT,
-    nut INT NOT NULL DEFAULT 1,
+    upvoter_user_id VARCHAR(50),
+    upvoted_user_id VARCHAR(50),
+    challenge_id INTEGER,
+    seq_num INTEGER,
+    nut INTEGER NOT NULL DEFAULT 1,
     datetime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (upvoter_user_id, upvoted_user_id, challenge_id, seq_num),
     FOREIGN KEY (challenge_id, seq_num) REFERENCES EssayPara(challenge_id, seq_num),
