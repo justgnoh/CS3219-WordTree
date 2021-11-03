@@ -5,14 +5,14 @@ export const getWordsForSequenceInChallenge = async (
   challengeID,
   sequenceNum,
 ) => {
-  if (isNaN(challengeID)) {
+  if (isNaN(challengeID)|| isNaN(sequenceNum)) {
     return false;
   }
   const requestUrl = WORD_SERVICE_HOST + "/words/" + challengeID + "/" + sequenceNum;
   return await axios
     .get(requestUrl)
     .then(res => res.data)
-    .catch((err) => false);
+    .catch(e => false);
 };
 
 export const initWordsForChallenge = async (

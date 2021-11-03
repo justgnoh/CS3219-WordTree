@@ -38,8 +38,7 @@ CREATE TABLE Challenges (
     interest VARCHAR(100) NOT NULL REFERENCES Interest(interest),
     status_of_challenge VARCHAR(100) NOT NULL DEFAULT 'DRAFT',
     CHECK (squirrel_id != racoon_id),
-    CHECK (((status_of_challenge = 'DRAFT' OR status_of_challenge = 'WAITING_MATCH') AND racoon_id = NULL) OR racoon_id != NULL),
-    CHECK (status_of_challenge != 'COMPLETED' OR title IS NOT NULL)
+    CHECK (((status_of_challenge = 'DRAFT' OR status_of_challenge = 'WAITING_MATCH') AND racoon_id = NULL) OR racoon_id != NULL)
 );
 
 CREATE TABLE TurnDetails (

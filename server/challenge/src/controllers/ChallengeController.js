@@ -9,6 +9,9 @@ import {
   getChallengeByChallengeIdFromDB,
   insertNewTurnDetails,
   getLastModifiedTimeForChallenge,
+  updateRacoonIDForChallengeAcceptance,
+  updateStatusOfChallenge,
+  getAllChallengesWaitingMatchFromDB,
 } from "../database/ChallengesDao.js";
 import {
   getEssayParaFromEssayService,
@@ -19,33 +22,104 @@ import {
   getWordsForSequenceInChallenge,
 } from "../communications/wordInformation.js";
 
+
+
 export const getAllChallengeByUserId = async (req, res) => {
-  const userID = req.query.userid;
-  if (req.query.userid === undefined) {
+  const userID = req.headers["x-access-token"];
+  if (!userID) {
     return res.status(400).send(error_messages.MISSING_FIELDS);
   }
   const challenges = await getChallengeByUserIdFromDB(userID);
-  
-  let updatedChallenges = []
+
+  let updatedChallenges = [];
+
+  if (challenges.length == 0) {
+    return res.status(200).json(updatedChallenges);
+  }
 
   for (let i = 0; i < challenges.length; i++) {
     const ele = challenges[i];
     let challengeID = ele["challenge_id"];
-    getLastModifiedTimeForChallenge(challengeID).then(lastModifiedTimeRes=> {
-      if (lastModifiedTimeRes && lastModifiedTimeRes.length > 0) {
-        return lastModifiedTimeRes[0]["time_of_last_completed_sequence"];
-      } else return ''
-    }).then( lastModifiedTime => {
-      ele['last_modified_time'] = lastModifiedTime;
-      return ele;
-    }).then(finalEle => {
-      updatedChallenges.push(finalEle)
-      if (i == challenges.length - 1) {
-        return res.status(200).json(updatedChallenges);
-      }
-    })
+    getLastModifiedTimeForChallenge(challengeID)
+      .then((lastModifiedTimeRes) => {
+        if (lastModifiedTimeRes && lastModifiedTimeRes.length > 0) {
+          return lastModifiedTimeRes[0]["time_of_last_completed_sequence"];
+        } else return "";
+      })
+      .then((lastModifiedTime) => {
+        ele["last_modified_time"] = lastModifiedTime;
+        return ele;
+      })
+      .then((finalEle) => {
+        updatedChallenges.push(finalEle);
+        if (i == challenges.length - 1) {
+          return res.status(200).json(updatedChallenges);
+        }
+      });
   }
 };
+
+
+
+export const acceptChallenge = async (req, res) => {
+  const userID = req.headers["x-access-token"];
+  const challengeID = req.body["challenge_id"];
+  if (!userID || !challengeID) {
+    return res.status(400).send(error_messages.MISSING_FIELDS);
+  }
+
+  if (isNaN(challengeID)) {
+    return res.status(400).send(error_messages.INVALID_FIELDS);
+  }
+
+  const challenges = await getChallengeByChallengeIdFromDB(challengeID).catch((err) => {
+    return res.status(500).send(err.message);
+  });
+  if (challenges.length == 0) return res.status(404).send(error_messages.NO_SUCH_CHALLENGE_FOUND);
+  const challenge = challenges[0];
+  if (challenge['racoon_id'] !== null) return res.status(403).send(error_messages.CHALLENGE_ACCEPTED);
+
+  const result = await updateRacoonIDForChallengeAcceptance(
+    challengeID,
+    userID
+  ).catch((err) => false);
+  if (!result) return res.status(500).send(error_messages.INTERNAL_ERROR);
+
+  const sequenceNum = await getNumOfCompletedTurnsForChallenge(challengeID)
+    .then((numOfCompletedTurnsRes) => {
+      if (numOfCompletedTurnsRes.length > 0) {
+        // Extracting Results
+        let sequenceNum = numOfCompletedTurnsRes[0].num_of_sequences_completed;
+        if (sequenceNum !== undefined) {
+          return sequenceNum;
+        }
+      }
+      return -1;
+    })
+    .catch((err) => -1);
+
+  if (sequenceNum < 0) {
+    return res.status(500).send(error_messages.INTERNAL_ERROR);
+  }
+
+  const nextWords = await getWordsForSequenceInChallenge(
+    challengeID,
+    sequenceNum + 1
+  );
+
+  await updateStatusOfChallenge(challengeID, 'ONGOING').catch((err) => {
+    return res.status(500).send(err.message);
+  });
+
+  if (nextWords) {
+    return res.status(200).json({
+      words: nextWords,
+    });
+  } else return res.status(500).send(error_messages.INTERNAL_ERROR);
+
+};
+
+
 
 export const createNewChallenge = async (req, res) => {
   const userID = req.headers["x-access-token"];
@@ -96,8 +170,10 @@ export const createNewChallenge = async (req, res) => {
   }
 };
 
+
+
 export const addEssayPara = async (req, res) => {
-  let userID = req.headers["x-access-token"];
+  let userID = parseInt(req.headers["x-access-token"]);
   const { id: challengeID } = req.params;
   const data = req.body;
 
@@ -106,14 +182,12 @@ export const addEssayPara = async (req, res) => {
   if (isNaN(challengeID))
     return res.status(400).send(error_messages.INVALID_FIELDS);
 
-  userID = parseInt(userID);
-
   const allPlayerIDs = await getPlayersInChallenge(challengeID).catch((err) =>
     res.status(500).send(err.message)
   );
 
-  const challenge = await getChallengeByChallengeIdFromDB(challengeID);
-
+  const challenges = await getChallengeByChallengeIdFromDB(challengeID);
+  const challenge = challenges[0]
   if (allPlayerIDs === undefined || allPlayerIDs.length === 0) {
     return res.status(404).send(error_messages.NO_SUCH_CHALLENGE_FOUND);
   }
@@ -134,6 +208,7 @@ export const addEssayPara = async (req, res) => {
   if (sequenceNum < 0 || sequenceNum >= challenge["num_of_total_turns"]) {
     return res.status(403).send(error_messages.WRONG_TURN);
   }
+
   const isCorrectPlayerTurn =
     sequenceNum % 2 === 0
       ? allPlayerIDs.indexOf(userID) === 0 // squirrel turn
@@ -146,7 +221,14 @@ export const addEssayPara = async (req, res) => {
       data.essay_para,
       challengeID
     );
-    if (!result) res.status(500).send(error_messages.INTERNAL_ERROR);
+
+    // if (!result) return res.status(500).send(error_messages.INTERNAL_ERROR);
+
+    const newStatus = getNewStatus(sequenceNum + 1, challenge['num_of_total_turns'])
+    console.log(sequenceNum + 1);
+    await updateStatusOfChallenge(challenge['challenge_id'], newStatus).catch((err) => {
+      return res.status(500).send(err.message);
+    });
     await updateTurnDetails(challengeID).catch((err) => {
       return res.status(500).send(err.message);
     });
@@ -155,6 +237,8 @@ export const addEssayPara = async (req, res) => {
     return res.status(403).send(error_messages.WRONG_TURN);
   }
 };
+
+
 
 export const getChallengeByChallengeId = async (req, res) => {
   const userID = req.headers["x-access-token"];
@@ -207,7 +291,7 @@ export const getChallengeByChallengeId = async (req, res) => {
         challengeID,
         sequenceNum + 1
       );
-      console.log(nextWords);
+
       if (nextWords) challenge["words"] = nextWords;
       else res.status(500).send(error_messages.INTERNAL_ERROR);
     }
@@ -228,3 +312,47 @@ export const getChallengeByChallengeId = async (req, res) => {
 
   return res.status(200).json(challenge);
 };
+
+export const sendTitle = async (req, res) => {
+  const title = req.body['title'];
+  const challenge_id = req.body['challenge_id'];
+  if (!title || !challenge_id) return res.status(400).send(error_messages.MISSING_FIELDS)
+  if (isNaN(challenge_id)) return res.status(400).send(error_messages.INVALID_FIELDS)
+
+}
+
+const getNewStatus = (newSequenceNum, num_of_total_turns) => {
+  if (newSequenceNum == 0) return 'DRAFT'
+  if (newSequenceNum == 1) return 'WAITING_MATCH';
+  if (newSequenceNum >= num_of_total_turns) return 'COMPLETED';
+  if (newSequenceNum > 1) return 'ONGOING';
+  else return 'INVALID';
+}
+
+export const getAllChallengesWaitingMatch = async (req, res) => {
+  const challenges = await getAllChallengesWaitingMatchFromDB();
+  if (challenges.length == 0) {
+    return res.status(200).send(challenges)
+  }
+  for (let i = 0; i < challenges.length; i++) {
+    const ele = challenges[i];
+    const challengeID = ele['challenge_id'];
+    let updatedChallenges = [];
+    getLastModifiedTimeForChallenge(challengeID)
+    .then((lastModifiedTimeRes) => {
+      if (lastModifiedTimeRes && lastModifiedTimeRes.length > 0) {
+        return lastModifiedTimeRes[0]["time_of_last_completed_sequence"];
+      } else return "";
+    })
+    .then((lastModifiedTime) => {
+      ele["last_modified_time"] = lastModifiedTime;
+      return ele;
+    })
+    .then((finalEle) => {
+      updatedChallenges.push(finalEle);
+      if (i == challenges.length - 1) {
+        return res.status(200).json(updatedChallenges);
+      }
+    }); 
+  }
+}

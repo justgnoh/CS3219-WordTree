@@ -7,7 +7,9 @@ export const error_messages = {
     MISSING_FIELDS: "Bad Request. Missing fields.",
     INTERNAL_ERROR: "Something went wrong.",
     WRONG_TURN: "Forbidden. Not this user's turn.",
-    NOT_IN_THIS_CHALLENGE: "Not part of this incomplete challenge",
+    NOT_IN_THIS_CHALLENGE: "Forbidden. Not part of this incomplete challenge",
+    CHALLENGE_ACCEPTED: "Forbidden. Challenge already accepted",
+    NOT_AUTHENTICATED: "User is not authenticated"
 }
 
 dotenv.config();

@@ -75,8 +75,47 @@ export async function insertNewTurnDetails(challengeID) {
 
 export async function getLastModifiedTimeForChallenge(challengeID) {
     try {
-        //Creates a row in the turn table but does not start a turn
         const result = await pool.query("Select time_of_last_completed_sequence from TurnDetails where challenge_id = $1", [challengeID]);
+        return result.rows;
+    } catch (err) {
+        throw err;
+    }
+}
+
+
+export async function updateRacoonIDForChallengeAcceptance(challengeID, racoonID) {
+    try {
+        const result = await pool.query("UPDATE challenges SET racoon_id = $2  WHERE challenge_id = $1", [challengeID, racoonID]);
+        return result;
+    } catch (err) {
+        throw err;
+    }
+}
+
+
+export async function updateStatusOfChallenge(challengeID, status) {
+    try {
+        const result = await pool.query("UPDATE challenges SET status_of_challenge = $2  WHERE challenge_id = $1", [challengeID, status]);
+        return result;
+    } catch (err) {
+        throw err;
+    }
+}
+
+
+
+export async function updateTitleOfChallenge(challengeID, title) {
+    try {
+        const result = await pool.query("UPDATE challenges SET title = $2  WHERE challenge_id = $1", [challengeID, title]);
+        return result;
+    } catch (err) {
+        throw err;
+    }
+}
+
+export async function getAllChallengesWaitingMatchFromDB() {
+    try {
+        const result = await pool.query("Select * from challenges c WHERE c.status_of_challenge = $1", ["WAITING_MATCH"]);
         return result.rows;
     } catch (err) {
         throw err;
