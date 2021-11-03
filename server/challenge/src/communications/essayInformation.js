@@ -19,7 +19,7 @@ export const addEssayParaToEssayService = async (
       essaypara: essaypara,
     })
     .then((res) => true)
-    .catch((err) => console.log(err, "\nERROR"));
+    .catch((err) => false);
 };
 
 export const getEssayParaFromEssayService = async (challengeID) => {
