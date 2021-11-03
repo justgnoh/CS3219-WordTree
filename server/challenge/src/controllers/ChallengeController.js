@@ -16,16 +16,17 @@ import {
 import {
   getEssayParaFromEssayService,
   addEssayParaToEssayService,
-} from "../communications/essayInformation.js";
+} from "../communications/essay.js";
 import {
   initWordsForChallenge,
   getWordsForSequenceInChallenge,
-} from "../communications/wordInformation.js";
+} from "../communications/word.js";
+import { getAuthenticatedUserIDFromAuthService } from "../communications/auth.js";
 
 
 
 export const getAllChallengeByUserId = async (req, res) => {
-  const userID = req.headers["x-access-token"];
+  const userID = await getAuthenticatedUserID(req.headers["x-access-token"]);
   if (!userID) {
     return res.status(400).send(error_messages.MISSING_FIELDS);
   }
@@ -62,7 +63,8 @@ export const getAllChallengeByUserId = async (req, res) => {
 
 
 export const acceptChallenge = async (req, res) => {
-  const userID = req.headers["x-access-token"];
+
+  const userID = await getAuthenticatedUserID(req.headers["x-access-token"]);
   const challengeID = req.body["challenge_id"];
   if (!userID || !challengeID) {
     return res.status(400).send(error_messages.MISSING_FIELDS);
@@ -122,11 +124,11 @@ export const acceptChallenge = async (req, res) => {
 
 
 export const createNewChallenge = async (req, res) => {
-  const userID = req.headers["x-access-token"];
+  const userID = await getAuthenticatedUserID(req.headers["x-access-token"]);
   const data = req.body;
   if (
-    data === undefined ||
-    userID === undefined ||
+    !data ||
+    !userID ||
     !data.num_of_total_turns ||
     !data.word_limit_per_turn ||
     !data.interest
@@ -171,9 +173,9 @@ export const createNewChallenge = async (req, res) => {
 };
 
 
-
 export const addEssayPara = async (req, res) => {
-  let userID = parseInt(req.headers["x-access-token"]);
+
+  const userID = await getAuthenticatedUserID(req.headers["x-access-token"]);
   const { id: challengeID } = req.params;
   const data = req.body;
 
@@ -241,7 +243,8 @@ export const addEssayPara = async (req, res) => {
 
 
 export const getChallengeByChallengeId = async (req, res) => {
-  const userID = req.headers["x-access-token"];
+
+  const userID = await getAuthenticatedUserID(req.headers["x-access-token"]);
   if (!userID) {
     return res.status(400).send(error_messages.MISSING_FIELDS);
   }
@@ -355,4 +358,8 @@ export const getAllChallengesWaitingMatch = async (req, res) => {
       }
     }); 
   }
+}
+
+const getAuthenticatedUserID = async (accessToken) => {
+  return await getAuthenticatedUserIDFromAuthService(accessToken);
 }

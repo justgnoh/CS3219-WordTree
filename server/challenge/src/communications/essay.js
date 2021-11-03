@@ -7,7 +7,6 @@ export const addEssayParaToEssayService = async (
   essaypara,
   challengeID
 ) => {
-  console.log(authorID, seq_num, essaypara, challengeID);
   if (isNaN(challengeID)) {
     return false;
   }
