@@ -114,7 +114,7 @@ export const addEssayPara = async (req, res) => {
     .catch((err) => -1);
 
   if (sequenceNum < 0 || sequenceNum >= challenge["num_of_total_turns"]) {
-    return false;
+    return res.status(403).send(error_messages.WRONG_TURN);;
   }
   const isCorrectPlayerTurn =
     sequenceNum % 2 === 0
@@ -144,26 +144,57 @@ export const getChallengeByChallengeId = async (req, res) => {
     return res.status(400).send(error_messages.MISSING_FIELDS);
   }
   const params = req.params;
+
   if (!params) {
     return res.status(400).send(error_messages.MISSING_FIELDS);
   }
+
   const challengeID = params["id"];
   const challenges = await getChallengeByChallengeIdFromDB(challengeID);
+
   if (challenges.length > 1) {
     console.log("Duplicate Challenge ID found");
     return res.status(500).send(error_messages.INTERNAL_ERROR);
   }
-  if (challenges[0]["status_of_challenge"] != "COMPLETED") {
+  const challenge = challenges[0]
+  if (challenge["status_of_challenge"] != "COMPLETED") {
     if (
-      userID != challenges[0]["squirrel_id"] &&
-      userID != challenges[0]["racoon_id"]
+      userID != challenge["squirrel_id"] &&
+      userID != challenge["racoon_id"]
     ) {
       return res.status(401).send(error_messages.NOT_IN_THIS_CHALLENGE);
     }
   }
 
+
+  if (challenge["status_of_challenge"] != "COMPLETED") {
+    const sequenceNum = await getNumOfCompletedTurnsForChallenge(challengeID)
+    .then((numOfCompletedTurnsRes) => {
+
+      if (numOfCompletedTurnsRes.length > 0) {
+        // Extracting Results
+        let sequenceNum = numOfCompletedTurnsRes[0].num_of_sequences_completed;
+        if (sequenceNum !== undefined) {
+          return sequenceNum;
+        }
+      }
+      return -1;
+    })
+    .catch((err) => -1);
+
+    if (sequenceNum < 0 ) {
+      return res.status(500).send(error_messages.INTERNAL_ERROR);;
+    }
+    if (sequenceNum < challenge['num_of_total_turns']) {
+      const nextWords = await getWordsForSequenceInChallenge(challengeID, sequenceNum + 1)
+      console.log(nextWords)
+      if (nextWords) challenge['words'] = nextWords;
+      else res.status(500).send(error_messages.INTERNAL_ERROR);
+    }
+  }
   const allEssayPara = await getEssayParaFromEssayService(challengeID);
-  if (!allEssayPara) res.status(500).send(error_messages.INTERNAL_ERROR);
-  challenges[0]["essay_paras"] = allEssayPara;
-  return res.status(200).json(challenges[0]);
+  if (allEssayPara) challenge["essay_paras"] = allEssayPara;
+  else res.status(500).send(error_messages.INTERNAL_ERROR);
+
+  return res.status(200).json(challenge);
 };

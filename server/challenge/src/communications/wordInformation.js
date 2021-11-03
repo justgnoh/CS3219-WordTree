@@ -11,6 +11,7 @@ export const getWordsForSequenceInChallenge = async (
   const requestUrl = WORD_SERVICE_HOST + "/words/" + challengeID + "/" + sequenceNum;
   return await axios
     .get(requestUrl)
+    .then(res => res.data)
     .catch((err) => false);
 };
 
