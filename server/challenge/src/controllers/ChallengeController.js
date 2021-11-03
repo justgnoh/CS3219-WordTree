@@ -157,6 +157,7 @@ export const getChallengeByChallengeId = async (req, res) => {
       return res.status(401).send(error_messages.NOT_IN_THIS_CHALLENGE);
     }
   }
-  // TODO Talk to essay service and get all essay para
+
+  const allEssayPara = get
   return res.status(200).json(challenges[0]);
 };
