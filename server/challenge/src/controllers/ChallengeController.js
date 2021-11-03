@@ -59,7 +59,11 @@ export const createNewChallenge = async (req, res) => {
 
   if (challenge && challenge.length > 0 && challenge[0].challenge_id) {
     const challengeID = challenge[0].challenge_id;
-    const wordsToUse = await initWordsForChallenge(challengeID);
+    const wordsToUse = await initWordsForChallenge(
+      challengeID,
+      data.interest,
+      data.num_of_total_turns
+    );
     const resBody = {
       challenge_id: challengeID,
       words: wordsToUse,
@@ -67,7 +71,7 @@ export const createNewChallenge = async (req, res) => {
     await insertNewTurnDetails(challengeID)
       .then(() => res.status(200).json(resBody))
       .catch((err) => {
-        console.log(err);
+
         return res.status(500).send(error_messages.INTERNAL_ERROR);
       });
   }
@@ -80,7 +84,8 @@ export const addEssayPara = async (req, res) => {
 
   if (!userID || !data.essay_para)
     return res.status(400).send(error_messages.MISSING_FIELDS);
-  if (isNaN(challengeID)) return res.status(400).send(error_messages.INVALID_FIELDS);
+  if (isNaN(challengeID))
+    return res.status(400).send(error_messages.INVALID_FIELDS);
 
   userID = parseInt(userID);
 
@@ -96,25 +101,19 @@ export const addEssayPara = async (req, res) => {
 
   const sequenceNum = await getNumOfCompletedTurnsForChallenge(challengeID)
     .then((numOfCompletedTurnsRes) => {
-      console.log(numOfCompletedTurnsRes);
+
       if (numOfCompletedTurnsRes.length > 0) {
         // Extracting Results
-        if (
-          numOfCompletedTurnsRes[0].num_of_sequences_completed !== undefined
-        ) {
-          let sequenceNum =
-            numOfCompletedTurnsRes[0].num_of_sequences_completed;
-          if (sequenceNum >= numchallenge["num_of_total_turns"]) {
-            return false;
-          }
+        let sequenceNum = numOfCompletedTurnsRes[0].num_of_sequences_completed;
+        if (sequenceNum !== undefined) {
           return sequenceNum;
         }
       }
-      return false;
+      return -1;
     })
-    .catch((err) => false);
+    .catch((err) => -1);
 
-  if (sequenceNum && sequenceNum >= numchallenge["num_of_total_turns"]) {
+  if (sequenceNum < 0 || sequenceNum >= challenge["num_of_total_turns"]) {
     return false;
   }
   const isCorrectPlayerTurn =
@@ -123,8 +122,13 @@ export const addEssayPara = async (req, res) => {
       : allPlayerIDs.indexOf(userID) === 1; // racoon turn
 
   if (isCorrectPlayerTurn) {
-    const result = await addEssayParaToEssayService(userID, sequenceNum, data.essay_para, challengeID)
-    console.log(result)
+    const result = await addEssayParaToEssayService(
+      userID,
+      sequenceNum + 1,
+      data.essay_para,
+      challengeID
+    );
+    if (!result) res.status(500).send(error_messages.INTERNAL_ERROR);
     await updateTurnDetails(challengeID).catch((err) => {
       return res.status(500).send(err.message);
     });
@@ -143,8 +147,8 @@ export const getChallengeByChallengeId = async (req, res) => {
   if (!params) {
     return res.status(400).send(error_messages.MISSING_FIELDS);
   }
-  const id = params["id"];
-  const challenges = await getChallengeByChallengeIdFromDB(id);
+  const challengeID = params["id"];
+  const challenges = await getChallengeByChallengeIdFromDB(challengeID);
   if (challenges.length > 1) {
     console.log("Duplicate Challenge ID found");
     return res.status(500).send(error_messages.INTERNAL_ERROR);
@@ -158,6 +162,8 @@ export const getChallengeByChallengeId = async (req, res) => {
     }
   }
 
-  const allEssayPara = get
+  const allEssayPara = await getEssayParaFromEssayService(challengeID);
+  if (!allEssayPara) res.status(500).send(error_messages.INTERNAL_ERROR);
+  challenges[0]["essay_paras"] = allEssayPara;
   return res.status(200).json(challenges[0]);
 };

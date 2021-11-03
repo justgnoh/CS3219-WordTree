@@ -22,15 +22,11 @@ export const initWordsForChallenge = async (
   if (isNaN(challengeID)) {
     return false;
   }
+
   const requestUrl = WORD_SERVICE_HOST + "/wordlist";
   return  axios.post(requestUrl, {
         "challenge_id": challengeID,
         "interest": interest,
         "num_of_total_turns": totalTurns,
       }).then(res => res.data).catch(err => console.log(err))
-  // return await axios
-  //   
-  //   .catch((err) => {
-  //     console.log(err)
-  //     return false});
 };
