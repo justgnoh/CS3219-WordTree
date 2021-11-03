@@ -11,12 +11,12 @@ import {
 } from "../database/ChallengesDao.js";
 import {
   getEssayParaFromEssayService,
-  addEssayParaToEssayService
-} from "../communications/essayInformation.js"
+  addEssayParaToEssayService,
+} from "../communications/essayInformation.js";
 import {
   initWordsForChallenge,
   getWordsForSequenceInChallenge,
-} from "../communications/wordInformation.js"
+} from "../communications/wordInformation.js";
 
 export const getAllChallengeByUserId = async (req, res) => {
   const userID = req.query.userid;
@@ -59,11 +59,11 @@ export const createNewChallenge = async (req, res) => {
 
   if (challenge && challenge.length > 0 && challenge[0].challenge_id) {
     const challengeID = challenge[0].challenge_id;
-    const wordsToUse = await initWordsForChallenge(challengeID)
+    const wordsToUse = await initWordsForChallenge(challengeID);
     const resBody = {
-      "challenge_id" : challengeID,
-      "words" : wordsToUse
-    }
+      challenge_id: challengeID,
+      words: wordsToUse,
+    };
     await insertNewTurnDetails(challengeID)
       .then(() => res.status(200).json(resBody))
       .catch((err) => {
@@ -75,26 +75,26 @@ export const createNewChallenge = async (req, res) => {
 
 export const addEssayPara = async (req, res) => {
   let userID = req.headers["x-access-token"];
-  const { id } = req.params;
+  const { id: challengeID } = req.params;
   const data = req.body;
 
   if (!userID || !data.essay_para)
     return res.status(400).send(error_messages.MISSING_FIELDS);
-  if (isNaN(id)) return res.status(400).send(error_messages.INVALID_FIELDS);
+  if (isNaN(challengeID)) return res.status(400).send(error_messages.INVALID_FIELDS);
 
   userID = parseInt(userID);
 
-  const allPlayerIDs = await getPlayersInChallenge(id).catch((err) =>
+  const allPlayerIDs = await getPlayersInChallenge(challengeID).catch((err) =>
     res.status(500).send(err.message)
   );
 
-  const challenge = await getChallengeByChallengeIdFromDB(id);
+  const challenge = await getChallengeByChallengeIdFromDB(challengeID);
 
   if (allPlayerIDs === undefined || allPlayerIDs.length === 0) {
     return res.status(404).send(error_messages.NO_SUCH_CHALLENGE_FOUND);
   }
 
-  const isCorrectPlayerTurn = await getNumOfCompletedTurnsForChallenge(id)
+  const sequenceNum = await getNumOfCompletedTurnsForChallenge(challengeID)
     .then((numOfCompletedTurnsRes) => {
       console.log(numOfCompletedTurnsRes);
       if (numOfCompletedTurnsRes.length > 0) {
@@ -107,19 +107,25 @@ export const addEssayPara = async (req, res) => {
           if (sequenceNum >= numchallenge["num_of_total_turns"]) {
             return false;
           }
-          return sequenceNum % 2 === 0
-            ? allPlayerIDs.indexOf(userID) === 0 // squirrel turn
-            : allPlayerIDs.indexOf(userID) === 1; // racoon turn
+          return sequenceNum;
         }
       }
       return false;
     })
     .catch((err) => false);
 
-  // TODO add essay para from essay service
+  if (sequenceNum && sequenceNum >= numchallenge["num_of_total_turns"]) {
+    return false;
+  }
+  const isCorrectPlayerTurn =
+    sequenceNum % 2 === 0
+      ? allPlayerIDs.indexOf(userID) === 0 // squirrel turn
+      : allPlayerIDs.indexOf(userID) === 1; // racoon turn
 
   if (isCorrectPlayerTurn) {
-    await updateTurnDetails(id).catch((err) => {
+    const result = await addEssayParaToEssayService(userID, sequenceNum, data.essay_para, challengeID)
+    console.log(result)
+    await updateTurnDetails(challengeID).catch((err) => {
       return res.status(500).send(err.message);
     });
     return res.status(200).send(OK_MESSAGE);
