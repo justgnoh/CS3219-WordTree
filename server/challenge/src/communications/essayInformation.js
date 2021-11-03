@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const ESSAY_SERVICE_HOST = "http://localhost:5006";
-export const addEssayParaToEssayService = (authorID, seq_num, essaypara, challengeID) => {
+export const addEssayParaToEssayService = async (authorID, seq_num, essaypara, challengeID) => {
   if (isNaN(challengeID)) {
     return false;
   }
@@ -16,7 +16,7 @@ export const addEssayParaToEssayService = (authorID, seq_num, essaypara, challen
     .catch((err) => false);
 };
 
-export const getEssayParaFromEssayService = (challengeID) => {
+export const getEssayParaFromEssayService = async (challengeID) => {
   if (isNaN(challengeID)) {
     return false;
   }

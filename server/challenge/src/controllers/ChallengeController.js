@@ -9,6 +9,14 @@ import {
   getChallengeByChallengeIdFromDB,
   insertNewTurnDetails,
 } from "../database/ChallengesDao.js";
+import {
+  getEssayParaFromEssayService,
+  addEssayParaToEssayService
+} from "../communications/essayInformation.js"
+import {
+  initWordsForChallenge,
+  getWordsForSequenceInChallenge,
+} from "../communications/wordInformation.js"
 
 export const getAllChallengeByUserId = async (req, res) => {
   const userID = req.query.userid;
@@ -50,9 +58,14 @@ export const createNewChallenge = async (req, res) => {
   });
 
   if (challenge && challenge.length > 0 && challenge[0].challenge_id) {
-    await insertNewTurnDetails(challenge[0].challenge_id)
-      // TODO get words from word service
-      .then(() => res.status(200).send("OK"))
+    const challengeID = challenge[0].challenge_id;
+    const wordsToUse = await initWordsForChallenge(challengeID)
+    const resBody = {
+      "challenge_id" : challengeID,
+      "words" : wordsToUse
+    }
+    await insertNewTurnDetails(challengeID)
+      .then(() => res.status(200).json(resBody))
       .catch((err) => {
         console.log(err);
         return res.status(500).send(error_messages.INTERNAL_ERROR);
