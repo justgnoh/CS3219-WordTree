@@ -8,6 +8,7 @@ import {
   getChallengeByUserIdFromDB,
   getChallengeByChallengeIdFromDB,
   insertNewTurnDetails,
+  getLastModifiedTimeForChallenge,
 } from "../database/ChallengesDao.js";
 import {
   getEssayParaFromEssayService,
@@ -196,5 +197,11 @@ export const getChallengeByChallengeId = async (req, res) => {
   if (allEssayPara) challenge["essay_paras"] = allEssayPara;
   else res.status(500).send(error_messages.INTERNAL_ERROR);
 
+  const lastModifiedTimeRes = await getLastModifiedTimeForChallenge(challengeID)
+  if (lastModifiedTimeRes.length < 0) return res.status(500).send(error_messages.INTERNAL_ERROR)
+  const lastModifiedTime = lastModifiedTimeRes[0]['time_of_last_completed_sequence']
+
+  challenge['last_modified_time'] = lastModifiedTime;
+  
   return res.status(200).json(challenge);
 };

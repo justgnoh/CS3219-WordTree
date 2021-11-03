@@ -72,3 +72,13 @@ export async function insertNewTurnDetails(challengeID) {
         throw err;
     }
 }
+
+export async function getLastModifiedTimeForChallenge(challengeID) {
+    try {
+        //Creates a row in the turn table but does not start a turn
+        const result = await pool.query("Select time_of_last_completed_sequence from TurnDetails where challenge_id = $1", [challengeID]);
+        return result.rows;
+    } catch (err) {
+        throw err;
+    }
+}
