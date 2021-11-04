@@ -5,11 +5,11 @@ const userIdCol = "user_id";
 const emailCol = "email";
 const passwordCol = "password";
 
-export async function createUserAccount(userId, email, password) {
+export async function createUserAccount(userId, email) {
     try {
         const result = await pool.query("INSERT INTO " + userAccountDb +
-                "(" + userIdCol + ", " + emailCol + ", " + passwordCol + ") VALUES ($1, $2, $3);",
-                [userId, email, password]);
+                "(" + userIdCol + ", " + emailCol + ") VALUES ($1, $2);",
+                [userId, email]);
         return result;
     } catch (err) {
         throw err;

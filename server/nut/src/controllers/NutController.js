@@ -8,11 +8,13 @@ const ERROR_NO_CHALLENGE_ID = "Bad Request. No challenge id found.";
 const ERROR_NO_SEQ_NUM = "Bad Request. No sequence number found.";
 const ERROR_NO_UPVOTER_USER_ID = "Bad Request. No upvoter user id found.";
 const ERROR_NO_UPVOTED_USER_ID = "Bad Request. No upvoted user id found.";
+const ERROR_NOT_AUTHENTICATED = "You are not authenticated, please log in and try again.";
+const ERROR_NOT_AUTHORIZED = "You are not authorized to perform this action.";
 
 export async function addEssayNut(req, res) {
-    console.log("addEssayNut: ", req.body);
+    console.log("Nut Service: (POST) /addEssayNut");
     const data = req.body;
-    if (data == undefined) {
+    if (!data) {
         return res.status(400).send(ERROR_NO_DATA);
     }
     if (!data.userId) {
@@ -37,9 +39,9 @@ export async function addEssayNut(req, res) {
 }
 
 export async function deleteEssayNut(req, res) {
-    console.log("deleteEssayNut: ", req.body);
+    console.log("Nut Service: (DELETE) /deleteEssayNut");
     const data = req.body;
-    if (data == undefined) {
+    if (!data) {
         return res.status(400).send(ERROR_NO_DATA);
     }
     if (!data.userId) {
@@ -61,13 +63,23 @@ export async function deleteEssayNut(req, res) {
 }
 
 export async function addCommunityChallengeNut(req, res) {
-    console.log("addCommunityChallengeNut: ", req.body);
-    const data = req.body;
-    if (data == undefined) {
-        return res.status(400).send(ERROR_NO_DATA);
+    console.log("Nut Service: (POST) /addCommunityChallengeNut");
+
+    const accessToken = req.headers['x-access-token'];
+    if (!accessToken) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
-    if (!data.upvoterUserId) {
-        return res.status(400).send(ERROR_NO_UPVOTER_USER_ID);
+
+    try {
+        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.rows.uid;
+    } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    const data = req.body;
+    if (!data) {
+        return res.status(400).send(ERROR_NO_DATA);
     }
     if (!data.upvotedUserId1) {
         return res.status(400).send(ERROR_NO_UPVOTED_USER_ID);
@@ -79,7 +91,7 @@ export async function addCommunityChallengeNut(req, res) {
         return res.status(400).send(ERROR_NO_CHALLENGE_ID);
     }
 
-    await nutDao.addCommunityChallengeNut(data.upvoterUserId, data.upvotedUserId1, data.upvotedUserId2, data.challengeId)
+    await nutDao.addCommunityChallengeNut(reqUserId, data.upvotedUserId1, data.upvotedUserId2, data.challengeId)
         .then(result => {
             updateProfileTotalNut(data.upvotedUserId1);
             updateProfileTotalNut(data.upvotedUserId2);
@@ -89,13 +101,23 @@ export async function addCommunityChallengeNut(req, res) {
 }
 
 export async function deleteCommunityChallengeNut(req, res) {
-    console.log("deleteCommunityChallengeNut: ", req.body);
-    const data = req.body;
-    if (data == undefined) {
-        return res.status(400).send(ERROR_NO_DATA);
+    console.log("Nut Service: (DELETE) /deleteCommunityChallengeNut");
+
+    const accessToken = req.headers['x-access-token'];
+    if (!accessToken) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
-    if (!data.upvoterUserId) {
-        return res.status(400).send(ERROR_NO_UPVOTER_USER_ID);
+
+    try {
+        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.rows.uid;
+    } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    const data = req.body;
+    if (!data) {
+        return res.status(400).send(ERROR_NO_DATA);
     }
     if (!data.upvotedUserId1) {
         return res.status(400).send(ERROR_NO_UPVOTED_USER_ID);
@@ -107,7 +129,7 @@ export async function deleteCommunityChallengeNut(req, res) {
         return res.status(400).send(ERROR_NO_CHALLENGE_ID);
     }
 
-    await nutDao.deleteCommunityChallengeNut(data.upvoterUserId, data.challengeId)
+    await nutDao.deleteCommunityChallengeNut(reqUserId, data.challengeId)
         .then(result1 => {
             updateProfileTotalNut(data.upvotedUserId1);
             updateProfileTotalNut(data.upvotedUserId2);
@@ -117,13 +139,23 @@ export async function deleteCommunityChallengeNut(req, res) {
 }
 
 export async function addCommunityEssayNut(req, res) {
-    console.log("addCommunityEssayNut: ", req.body);
-    const data = req.body;
-    if (data == undefined) {
-        return res.status(400).send(ERROR_NO_DATA);
+    console.log("Nut Service: (POST) /addCommunityEssayNut");
+
+    const accessToken = req.headers['x-access-token'];
+    if (!accessToken) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
-    if (!data.upvoterUserId) {
-        return res.status(400).send(ERROR_NO_UPVOTER_USER_ID);
+
+    try {
+        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.rows.uid;
+    } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    const data = req.body;
+    if (!data) {
+        return res.status(400).send(ERROR_NO_DATA);
     }
     if (!data.upvotedUserId) {
         return res.status(400).send(ERROR_NO_UPVOTED_USER_ID);
@@ -135,7 +167,7 @@ export async function addCommunityEssayNut(req, res) {
         return res.status(400).send(ERROR_NO_SEQ_NUM);
     }
 
-    await nutDao.addCommunityEssayNut(data.upvoterUserId, data.upvotedUserId, data.challengeId, data.seqNum)
+    await nutDao.addCommunityEssayNut(reqUserId, data.upvotedUserId, data.challengeId, data.seqNum)
         .then(result => {
             updateProfileTotalNut(data.upvotedUserId);
             res.status(200).send("OK");
@@ -144,13 +176,23 @@ export async function addCommunityEssayNut(req, res) {
 }
 
 export async function deleteCommunityEssayNut(req, res) {
-    console.log("deleteCommunityEssayNut: ", req.body);
-    const data = req.body;
-    if (data == undefined) {
-        return res.status(400).send(ERROR_NO_DATA);
+    console.log("Nut Service: (DELETE) /deleteCommunityEssayNut");
+
+    const accessToken = req.headers['x-access-token'];
+    if (!accessToken) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
-    if (!data.upvoterUserId) {
-        return res.status(400).send(ERROR_NO_UPVOTER_USER_ID);
+
+    try {
+        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.rows.uid;
+    } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    const data = req.body;
+    if (!data) {
+        return res.status(400).send(ERROR_NO_DATA);
     }
     if (!data.upvotedUserId) {
         return res.status(400).send(ERROR_NO_UPVOTED_USER_ID);
@@ -162,7 +204,7 @@ export async function deleteCommunityEssayNut(req, res) {
         return res.status(400).send(ERROR_NO_SEQ_NUM);
     }
 
-    await nutDao.deleteCommunityEssayNut(data.upvoterUserId, data.challengeId, data.seqNum)
+    await nutDao.deleteCommunityEssayNut(reqUserId, data.challengeId, data.seqNum)
         .then(result1 => {
             updateProfileTotalNut(data.upvotedUserId);
             res.status(200).send("OK");
@@ -171,13 +213,24 @@ export async function deleteCommunityEssayNut(req, res) {
 }
 
 export async function viewUserNut(req, res) {
-    console.log("viewUserNut: ", req.params);
-    const userId = req.params.userId;
+    console.log("Nut Service: (GET) /viewUserNut");
+
+    const accessToken = req.headers['x-access-token'];
+    if (!accessToken) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
 
     try {
-        const essayNut = await nutDao.getEssayNut(userId);
-        const communityChallengeNut = await nutDao.getCommunityChallengeNut(userId);
-        const communityEssayNut = await nutDao.getCommunityEssayNut(userId);
+        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.rows.uid;
+    } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    try {
+        const essayNut = await nutDao.getEssayNut(reqUserId);
+        const communityChallengeNut = await nutDao.getCommunityChallengeNut(reqUserId);
+        const communityEssayNut = await nutDao.getCommunityEssayNut(reqUserId);
 
         const userNut = essayNut.rows.concat(communityChallengeNut.rows.concat(communityEssayNut.rows));
         res.status(200).json(userNut);
@@ -187,17 +240,29 @@ export async function viewUserNut(req, res) {
 }
 
 export async function getUserTotalNut(req, res) {
-    console.log("getUserTotalNut: ", req.params);
-    const userId = req.params.userId;
+    console.log("Nut Service: (GET) /getUserTotalNut");
+
+    const accessToken = req.headers['x-access-token'];
+    if (!accessToken) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
 
     try {
-        const totalEssayNut = await nutDao.getTotalEssayNut(userId);
-        const totalCommunityChallengeNut = await nutDao.getTotalCommunityChallengeNut(userId);
-        const totalCommunityEssayNut = await nutDao.getTotalCommunityEssayNut(userId);
+        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.rows.uid;
+    } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    try {
+        const totalEssayNut = await nutDao.getTotalEssayNut(reqUserId);
+        const totalCommunityChallengeNut = await nutDao.getTotalCommunityChallengeNut(reqUserId);
+        const totalCommunityEssayNut = await nutDao.getTotalCommunityEssayNut(reqUserId);
 
         const userTotalNut = parseInt(totalEssayNut.rows[0].total) + parseInt(totalCommunityChallengeNut.rows[0].total) +
                 parseInt(totalCommunityEssayNut.rows[0].total);
-        axios.put('http://localhost:5010/user/updateUserTotalNut', { userId: userId, totalNut: userTotalNut });
+        axios.put('http://user-service:80/user/updateUserTotalNut', { userId: reqUserId, totalNut: userTotalNut })
+            .catch(err => { /* do nothing */ });
         res.status(200).json(userTotalNut);
     } catch (err) {
         res.status(500).send(err.message);
@@ -205,7 +270,7 @@ export async function getUserTotalNut(req, res) {
 }
 
 export async function updateProfileTotalNut(userId) {
-    console.log("(internal) updateProfileTotalNut: ", userId);
+    console.log("Nut Service: (internal) updateProfileTotalNut");
 
     try {
         const totalEssayNut = await nutDao.getTotalEssayNut(userId);
@@ -214,7 +279,8 @@ export async function updateProfileTotalNut(userId) {
 
         const userTotalNut = parseInt(totalEssayNut.rows[0].total) + parseInt(totalCommunityChallengeNut.rows[0].total) +
                 parseInt(totalCommunityEssayNut.rows[0].total);
-        axios.put('http://user-service:8080/user/updateUserTotalNut', { userId: userId, totalNut: userTotalNut });
+        axios.put('http://user-service:80/user/updateUserTotalNut', { userId: reqUserId, totalNut: userTotalNut })
+            .catch(err => { /* do nothing */ });
     } catch (err) {
         return err;
     }
