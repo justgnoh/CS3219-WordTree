@@ -1,11 +1,8 @@
 import pg from 'pg';
+import { POSTGRES_URL } from '../config/index.js';
 const Pool = pg.Pool;
 const pool = new Pool({
-  user: 'yunqing',
-  host: 'localhost',
-  database: 'testdb',
-  password: '',
-  port: 5432
+  connectionString: POSTGRES_URL
 });
 
 export async function insertNewEssayPara(challengeid, seqnum, authorid, essaypara, wordsused) {
