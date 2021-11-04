@@ -14,16 +14,16 @@ export async function postNewPara(req, res) {
     }
 
     try {
-        const wordsused = await getWordsUsed(challengeid, seqnum, essaypara);
-        await essaydao.insertNewEssayPara(challengeid, seqnum, authorid, essaypara, wordsused);
+       const wordsused = await getWordsUsed(challengeid, seqnum, essaypara);
+       await essaydao.insertNewEssayPara(challengeid, seqnum, authorid, essaypara, wordsused);
 
         //Send points to nuts service
         if (wordsused.length > 0) {
-            await axios.post('http://nut-service:8080/nut/addEssayNut', {
-                challengeId: challengeid,
-                seqNum: seqnum,
+            await axios.post('http://nut-service:5011/nut/addEssayNut', {
+                userId: authorid,
                 nut: wordsused.length,
-                userId: authorid
+                challengeId: challengeid,
+                seqNum: seqnum
             }
             );
         }
