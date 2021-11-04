@@ -63,10 +63,6 @@ function App() {
           <Route exact path="/challenge/arthur">
             <Challenge/>
           </Route>
-          /* socket */
-          <Route path="/socket">
-            <SocketPage />
-          </Route>
         </Switch>
       </div>
     </Router>

@@ -4,7 +4,9 @@ import * as notificationController from '../controllers/NotificationController.j
 const router = Router();
 
 router.post('/addNotification', notificationController.addNotification);
-router.get('/getNotification/:userId', notificationController.getNotification);
-router.get('/getAllNotification/:userId', notificationController.getAllNotification);
+router.get('/getNotification', notificationController.getNotification);
+router.get('/getAllNotification', notificationController.getAllNotification);
+router.put('/viewedNotification', notificationController.viewedNotification);
+router.put('/viewedAllNotification', notificationController.viewedAllNotification);
 
 export default router;

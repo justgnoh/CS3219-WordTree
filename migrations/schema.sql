@@ -102,11 +102,11 @@ CREATE TABLE CommunityEssayNut (
 
 CREATE TABLE Notification (
     notification_id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL,
+    user_id VARCHAR(50) NOT NULL,
     creation_date_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    notification VARCHAR NOT NULL,
+    notification VARCHAR(200) NOT NULL,
     is_viewed BOOLEAN NOT NULL DEFAULT FALSE,
-    viewed_date_time TIMESTAMP,
-    notification_link VARCHAR,
+    viewed_date_time TIMESTAMP DEFAULT NULL,
+    notification_link VARCHAR(200) DEFAULT NULL,
     FOREIGN KEY (user_id) REFERENCES UserAccount(user_id)
 );
