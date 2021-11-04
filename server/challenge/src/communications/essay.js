@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const ESSAY_SERVICE_HOST = "http://localhost:5006";
+const ESSAY_SERVICE_HOST = "http://essay-service:8080";
 export const addEssayParaToEssayService = async (
   authorID,
   seq_num,

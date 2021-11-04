@@ -12,6 +12,7 @@ import {
   updateRacoonIDForChallengeAcceptance,
   updateStatusOfChallenge,
   getAllChallengesWaitingMatchFromDB,
+  updateTitleOfChallenge
 } from "../database/ChallengesDao.js";
 import {
   getEssayParaFromEssayService,
@@ -27,6 +28,7 @@ import { getAuthenticatedUserIDFromAuthService } from "../communications/auth.js
 
 export const getAllChallengeByUserId = async (req, res) => {
   const userID = await getAuthenticatedUserID(req.headers["x-access-token"]);
+  console.log(userID)
   if (!userID) {
     return res.status(400).send(error_messages.MISSING_FIELDS);
   }
@@ -80,6 +82,7 @@ export const acceptChallenge = async (req, res) => {
   if (challenges.length == 0) return res.status(404).send(error_messages.NO_SUCH_CHALLENGE_FOUND);
   const challenge = challenges[0];
   if (challenge['racoon_id'] !== null) return res.status(403).send(error_messages.CHALLENGE_ACCEPTED);
+  if (challenge['squirrel_id'] == userID) return res.status(403).send(error_messages.USER_ALREADY_IN_CHALLENGE)
 
   const result = await updateRacoonIDForChallengeAcceptance(
     challengeID,
@@ -125,6 +128,8 @@ export const acceptChallenge = async (req, res) => {
 
 export const createNewChallenge = async (req, res) => {
   const userID = await getAuthenticatedUserID(req.headers["x-access-token"]);
+  console.log(userID)
+
   const data = req.body;
   if (
     !data ||
@@ -145,6 +150,7 @@ export const createNewChallenge = async (req, res) => {
     data.word_limit_per_turn,
     data.interest
   ).catch((err) => {
+    console.log(err)
     if (err.constraint !== undefined) {
       if (err.constraint.includes("fkey") > 0) {
         return res.status(400).send(error_messages.INVALID_FIELDS);
@@ -319,9 +325,11 @@ export const getChallengeByChallengeId = async (req, res) => {
 export const sendTitle = async (req, res) => {
   const title = req.body['title'];
   const challenge_id = req.body['challenge_id'];
-  if (!title || !challenge_id) return res.status(400).send(error_messages.MISSING_FIELDS)
-  if (isNaN(challenge_id)) return res.status(400).send(error_messages.INVALID_FIELDS)
-
+  if (!title || !challenge_id) return res.status(400).send(error_messages.MISSING_FIELDS);
+  if (isNaN(challenge_id)) return res.status(400).send(error_messages.INVALID_FIELDS);
+  const result = updateTitleOfChallenge(challenge_id, title).then(res => true).catch(err => false);
+  if (!result) return res.status(500).send(error_messages.INTERNAL_ERROR);
+  return res.status(200).send(OK_MESSAGE)
 }
 
 const getNewStatus = (newSequenceNum, num_of_total_turns) => {

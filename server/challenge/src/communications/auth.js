@@ -1,7 +1,7 @@
 import axios from "axios";
 
 
-const AUTH_SERVICE_HOST = "http://localhost:5000";
+const AUTH_SERVICE_HOST = "http://auth-service:8080";
 
 export const getAuthenticatedUserIDFromAuthService = async (accessToken) => {
     if (!accessToken) {

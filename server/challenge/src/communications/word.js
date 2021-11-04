@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const WORD_SERVICE_HOST = "http://localhost:5007";
+const WORD_SERVICE_HOST = "http://word-service:8080";
 export const getWordsForSequenceInChallenge = async (
   challengeID,
   sequenceNum,

@@ -9,4 +9,5 @@ router.post('/', ChallengeController.createNewChallenge);
 router.put('/:id', ChallengeController.addEssayPara);
 router.get('/:id', ChallengeController.getChallengeByChallengeId);
 router.post('/accept', ChallengeController.acceptChallenge);
+router.post('/title', ChallengeController.sendTitle)
 router2.get('/', ChallengeController.getAllChallengesWaitingMatch)

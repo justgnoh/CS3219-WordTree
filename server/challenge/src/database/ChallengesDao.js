@@ -103,7 +103,6 @@ export async function updateStatusOfChallenge(challengeID, status) {
 }
 
 
-
 export async function updateTitleOfChallenge(challengeID, title) {
     try {
         const result = await pool.query("UPDATE challenges SET title = $2  WHERE challenge_id = $1", [challengeID, title]);
