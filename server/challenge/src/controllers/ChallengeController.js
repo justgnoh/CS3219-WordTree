@@ -193,7 +193,7 @@ export const addEssayPara = async (req, res) => {
   const allPlayerIDs = await getPlayersInChallenge(challengeID).catch((err) =>
     res.status(500).send(err.message)
   );
-
+console.log(allPlayerIDs)
   const challenges = await getChallengeByChallengeIdFromDB(challengeID);
   const challenge = challenges[0]
   if (allPlayerIDs === undefined || allPlayerIDs.length === 0) {
@@ -325,8 +325,19 @@ export const getChallengeByChallengeId = async (req, res) => {
 export const sendTitle = async (req, res) => {
   const title = req.body['title'];
   const challenge_id = req.body['challenge_id'];
+  const userID = await getAuthenticatedUserID(req.headers["x-access-token"]);
+
   if (!title || !challenge_id) return res.status(400).send(error_messages.MISSING_FIELDS);
   if (isNaN(challenge_id)) return res.status(400).send(error_messages.INVALID_FIELDS);
+  
+  const allPlayerIDs = await getPlayersInChallenge(challengeID).catch((err) =>
+    res.status(500).send(err.message)
+  );
+  if (allPlayerIDs === undefined || allPlayerIDs.length === 0) {
+    return res.status(404).send(error_messages.NO_SUCH_CHALLENGE_FOUND);
+  }
+  if (!allPlayerIDs.includes(userID)) return res.status(403).send(error_messages.NOT_IN_THIS_CHALLENGE);
+
   const result = updateTitleOfChallenge(challenge_id, title).then(res => true).catch(err => false);
   if (!result) return res.status(500).send(error_messages.INTERNAL_ERROR);
   return res.status(200).send(OK_MESSAGE)

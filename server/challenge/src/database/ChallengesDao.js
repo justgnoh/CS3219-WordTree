@@ -15,14 +15,19 @@ export async function addChallenge(squirrel_id, num_of_total_turns, word_limit_p
 
 export async function getPlayersInChallenge(challengeID) {
     try {
-        const result = await pool.query("SELECT (squirrel_id, racoon_id) FROM Challenges c WHERE c.challenge_id = $1", [challengeID]).then(
+        const squirrel_id = await pool.query("SELECT squirrel_id FROM Challenges c WHERE c.challenge_id = $1", [challengeID]).then(
             (playerIDs) => {
-                if (playerIDs.rows.length === 0 || playerIDs.rows.length > 1 || !playerIDs.rows[0].row) return [];
-                const playerIDString = playerIDs.rows[0].row.match(/\d+/g);
-                return playerIDString.map(str => parseInt(str));
+                if (playerIDs.rows.length === 0 || playerIDs.rows.length > 1 ) return [];
+                return playerIDs.rows[0]['squirrel_id'];
             }
         )
-        return result;
+        const racoon_id = await pool.query("SELECT racoon_id FROM Challenges c WHERE c.challenge_id = $1", [challengeID]).then(
+            (playerIDs) => {
+                if (playerIDs.rows.length === 0 || playerIDs.rows.length > 1 ) return [];
+                return playerIDs.rows[0]['racoon_id'];
+            }
+        )
+        return [squirrel_id, racoon_id];
     } catch (err) {
         throw err;
     }
