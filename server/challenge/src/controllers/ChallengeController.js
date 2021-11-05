@@ -125,7 +125,6 @@ export const acceptChallenge = async (req, res) => {
 };
 
 
-
 export const createNewChallenge = async (req, res) => {
   const userID = await getAuthenticatedUserID(req.headers["x-access-token"]);
   console.log(userID)
@@ -185,7 +184,7 @@ export const addEssayPara = async (req, res) => {
   const { id: challengeID } = req.params;
   const data = req.body;
 
-  if (!userID || !data.essay_para)
+  if (!userID || !data.essay_para || !data.title)
     return res.status(400).send(error_messages.MISSING_FIELDS);
   if (isNaN(challengeID))
     return res.status(400).send(error_messages.INVALID_FIELDS);
@@ -193,7 +192,7 @@ export const addEssayPara = async (req, res) => {
   const allPlayerIDs = await getPlayersInChallenge(challengeID).catch((err) =>
     res.status(500).send(err.message)
   );
-console.log(allPlayerIDs)
+
   const challenges = await getChallengeByChallengeIdFromDB(challengeID);
   const challenge = challenges[0]
   if (allPlayerIDs === undefined || allPlayerIDs.length === 0) {
@@ -240,6 +239,9 @@ console.log(allPlayerIDs)
     await updateTurnDetails(challengeID).catch((err) => {
       return res.status(500).send(err.message);
     });
+    if (data.title && data.title.length > 0) { 
+      updateTitleOfChallenge(challengeID, data.title).then(res => true).catch(err => false);
+    }
     return res.status(200).send(OK_MESSAGE);
   } else {
     return res.status(403).send(error_messages.WRONG_TURN);

@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/challenge/', routers.router);
-app.use('/waiting/', routers.router2);
+app.use('/', routers.router2);
 
 app.listen(PORT, () => {
     console.log(`Started challenge api service on port: ${PORT}`);
