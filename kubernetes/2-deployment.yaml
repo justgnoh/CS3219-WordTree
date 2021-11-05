@@ -165,4 +165,28 @@ spec:
         image: auth-service:1.0.0
         ports:
         - containerPort: 5000
-        
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: wordtree
+  name: notification-deployment
+  labels:
+    app: notification-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      name: notification-service
+      labels:
+        app: notification-service
+    spec:
+      containers:
+        - name: notification-service
+          image: notification-service:1.0.0
+          ports:
+          - containerPort: 5016
+          - containerPort: 5017

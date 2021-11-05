@@ -6,7 +6,7 @@ import ReactDOM from "react-dom";
 
 function SocketPage() {
     // initialise connection to server through socket
-    const socket = io("http://localhost:5017/", {
+    const socket = io("http://localhost:80/connect", {
         transports: ["websocket", "polling"]
     });
 

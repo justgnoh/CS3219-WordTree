@@ -42,4 +42,17 @@ spec:
             name: community-service
             port: 
               number: 8080
-              
+      - pathType: Prefix
+        path: /notification
+        backend:
+          service:
+            name: notification-service
+            port:
+              number: 8080
+      - pathType: Prefix
+        path: /connect
+        backend:
+          service:
+            name: notification-service
+            port:
+              number: 8081
