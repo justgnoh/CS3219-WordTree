@@ -3,12 +3,6 @@ import * as essaydao from '../database/EssayDao.js';
 
 const MISSING_INFO = "Bad Request. Missing fields or parameters.";
 
-export async function test(req, res) {
-    const testing = req.params['test'];
-    res.json("test essay success " + testing);
-}
-
-
 export async function postNewPara(req, res) {
     const challengeid = req.params['challengeid'];
     const authorid = req.body['author_id'];
@@ -20,16 +14,16 @@ export async function postNewPara(req, res) {
     }
 
     try {
-        const wordsused = await getWordsUsed(challengeid, seqnum, essaypara);
-        await essaydao.insertNewEssayPara(challengeid, seqnum, authorid, essaypara, wordsused);
+       const wordsused = await getWordsUsed(challengeid, seqnum, essaypara);
+       await essaydao.insertNewEssayPara(challengeid, seqnum, authorid, essaypara, wordsused);
 
         //Send points to nuts service
         if (wordsused.length > 0) {
-            await axios.post('http://localhost:5011/nut/addEssayNut', {
-                challengeId: challengeid,
-                seqNum: seqnum,
+            await axios.post('http://nut-service:5011/nut/addEssayNut', {
+                userId: authorid,
                 nut: wordsused.length,
-                userId: authorid
+                challengeId: challengeid,
+                seqNum: seqnum
             }
             );
         }
@@ -43,7 +37,7 @@ export async function postNewPara(req, res) {
 
 export async function getWordsUsed(challengeid, seqnum, essaypara) {
     try {
-        let wordarr = await axios.get('http://127.0.0.1:5007/words/' + challengeid + '/' + seqnum);
+        let wordarr = await axios.get('http://word-service:8080/words/' + challengeid + '/' + seqnum);
 
         if (!wordarr.data) {
             throw "Words for this challenge id and sequence number does not exist!"

@@ -4,10 +4,10 @@ WORKDIR /app
 
 COPY ["package.json","package-lock.json*","npm-shrinkwrap.json*", "./"]
 
-RUN npm install && npm cache clean --force
+RUN npm install
 
 COPY . .
 
-EXPOSE 5010
+EXPOSE 5000
 
-CMD [ "npm", "run", "dev" ]
+CMD [ "npm", "run", "start" ]

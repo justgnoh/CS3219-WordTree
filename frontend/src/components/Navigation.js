@@ -3,7 +3,7 @@ import { Container, Navbar, Nav, Button, Form } from "react-bootstrap";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, logout } from "../firebase";
 import { useHistory } from "react-router";
-import {BsFillBellFill, BsBell} from "react-icons/bs";
+import { BsFillBellFill, BsBell } from "react-icons/bs";
 
 export default function Navigation() {
   const [user] = useAuthState(auth);
