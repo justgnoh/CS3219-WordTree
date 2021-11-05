@@ -19,8 +19,7 @@ For DEBUGGING backend services, you can just connect directly to localhost:<node
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.0.4/deploy/static/provider/cloud/deploy.yaml
 
 //check if ingress controller is running
-kubectl get pods -n ingress-nginx \
-  -l app.kubernetes.io/name=ingress-nginx --watch
+kubectl get pods -n ingress-nginx -l app.kubernetes.io/name=ingress-nginx --watch
 
 kubectl apply -f 4-ingress.yaml
 
