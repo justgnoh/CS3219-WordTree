@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS UserAccount, UserProfile, Interest, UserInterest, Challenges, TurnDetails, WordsPerChallenge, EssayPara, EssayNut, CommunityChallengeNut, CommunityEssayNut CASCADE;
+DROP TABLE IF EXISTS UserAccount, UserProfile, Interest, UserInterest, Challenges, TurnDetails, WordsPerChallenge, EssayPara, EssayNut, CommunityChallengeNut, CommunityEssayNut, Notification CASCADE;
 
 CREATE TABLE UserAccount (
     user_id VARCHAR(50) PRIMARY KEY,
@@ -96,4 +96,15 @@ CREATE TABLE CommunityEssayNut (
     FOREIGN KEY (challenge_id, seq_num) REFERENCES EssayPara(challenge_id, seq_num),
     FOREIGN KEY (upvoter_user_id) REFERENCES UserAccount(user_id),
     FOREIGN KEY (upvoted_user_id) REFERENCES UserAccount(user_id)
+);
+
+CREATE TABLE Notification (
+    notification_id SERIAL PRIMARY KEY,
+    user_id VARCHAR(50) NOT NULL,
+    creation_date_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    notification VARCHAR(200) NOT NULL,
+    is_viewed BOOLEAN NOT NULL DEFAULT FALSE,
+    viewed_date_time TIMESTAMP DEFAULT NULL,
+    notification_link VARCHAR(200) DEFAULT NULL,
+    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id)
 );

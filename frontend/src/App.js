@@ -17,6 +17,8 @@ import InterestsPage from "./pages/InterestsPage";
 import CreateChallengePage from "./pages/CreateChallengePage";
 import ViewRequestsPage from "./pages/ViewRequestsPage";
 
+import SocketPage from "./pages/SocketPage"; //socket
+
 function App() {
 
   return (
