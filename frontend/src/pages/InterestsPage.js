@@ -4,7 +4,7 @@ import { getSystemInterests } from '../utils/Api';
 
 export default function InterestsPage() {
     const [interests, setInterests] = useState([]);
-    const interestsRadio = [{ interests: 'crime' }, { interests: 'fantasy' }, { interests: 'adventure' }, { interests: 'horror' }];
+    const interestsRadio = [{ interest: 'crime' }, { interest: 'fantasy' }, { interest: 'adventure' }, { interest: 'horror' }];
     // REPLACE W THIS
     // const interestsRadio = getSystemInterests();
 
@@ -34,8 +34,8 @@ export default function InterestsPage() {
             {/* Selecting Interests from an existing set */}
             <ToggleButtonGroup className="mb-3" type="checkbox" value={interests} onChange={handleInterests} >
                 {interestsRadio.map((item, idx) => (
-                    <ToggleButton className="black-text" id={idx} variant={'outline-warning'} value={item.name}>
-                        {item.interests}
+                    <ToggleButton className="black-text" id={idx} variant={'outline-warning'} value={item.interest}>
+                        {item.interest}
                     </ToggleButton>
                 )
                 )}

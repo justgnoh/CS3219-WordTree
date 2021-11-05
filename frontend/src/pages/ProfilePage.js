@@ -25,6 +25,8 @@ function ProfilePage() {
     if (!user) {
       history.replace("/");
     }
+    console.log(user);
+    // console.log(user.getIdToken(true).then(token => console.log(token)));
   }, [user, history]);
 
   function enableEdit() {
@@ -86,7 +88,7 @@ function ProfilePage() {
             {/* userProfile.profile.interests.map((interest) => {
               <Badge pill bg="warning">interest</Badge>
             }); */}
-            
+
             <Badge pill bg="warning">
               Horror
             </Badge>
