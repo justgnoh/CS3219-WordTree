@@ -14,6 +14,11 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
 #    nginx.org/websocket-services: "notification-service"
 #    nginx.ingress.kubernetes.io/websocket-services: "notification-service"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, DELETE, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      more_set_headers "Access-Control-Allow-Origin: $http_origin";
 spec:
   rules:
   - http:

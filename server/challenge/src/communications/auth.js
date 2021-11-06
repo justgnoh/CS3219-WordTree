@@ -18,6 +18,6 @@ export const getAuthenticatedUserIDFromAuthService = async (accessToken) => {
           }
           return false;
       })
-      .catch((err) => err);
+      .catch((err) => false);
   };
   
