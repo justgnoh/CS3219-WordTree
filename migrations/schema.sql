@@ -29,7 +29,7 @@ CREATE TABLE UserInterest (
 
 CREATE TABLE Challenges (
     challenge_id SERIAL PRIMARY KEY,
-    title VARCHAR(200),
+    title VARCHAR(200) NOT NULL DEFAULT 'Untitled',
     squirrel_id VARCHAR(50) NOT NULL REFERENCES UserAccount(user_id),
     racoon_id VARCHAR(50) REFERENCES UserAccount(user_id) DEFAULT NULL,
     num_of_total_turns INTEGER NOT NULL CHECK (num_of_total_turns = 4 OR num_of_total_turns = 6),

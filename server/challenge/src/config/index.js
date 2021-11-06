@@ -10,7 +10,8 @@ export const error_messages = {
     NOT_IN_THIS_CHALLENGE: "Forbidden. Not part of this incomplete challenge",
     CHALLENGE_ACCEPTED: "Forbidden. Challenge already accepted",
     NOT_AUTHENTICATED: "User is not authenticated",
-    USER_ALREADY_IN_CHALLENGE: "Forbidden. User is already in challenge"
+    USER_ALREADY_IN_CHALLENGE: "Forbidden. User is already in challenge",
+    INVALID_ACCESS_TOKEN: "Access Token is Invalid",
 }
 
 dotenv.config();
