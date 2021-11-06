@@ -22,12 +22,15 @@ const socketToUid = new Map();
 const uidToSocket = new Map();
 
 const httpServer = createServer();
-const io = new Server(httpServer, {
-    transports: ["websocket", "polling"]
+const defaultIo = new Server(httpServer, {
+    transports: ["websocket"]
+//    upgrade: false
 });
 httpServer.listen(SOCKET_PORT);
+const io = defaultIo.of("/connect");
 
 io.on("connection", (socket) => {
+    console.log("Socket: initialise (" + socket.id + ")");
     socket.on("connect_to_server", (firebaseUid) => {
         console.log("Socket: connected (" + socket.id + ", " + firebaseUid + ")");
         socketToUid.set(socket.id, firebaseUid);

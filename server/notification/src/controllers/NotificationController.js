@@ -26,16 +26,20 @@ export async function addNotification(req, res) {
 
     await notificationDao.addNotification(data.userId, data.notification, notificationLink)
         .then(result => {
-            const io = req.app.get("io");
-            const uidToSocket = req.app.get("uidToSocket");
-            const socketSet = uidToSocket.get(data.userId);
-            if (socketSet) {
-                socketSet.forEach(socketId => {
-                    console.log("Socket: send notification (" + socketId + ")");
-                    io.to(socketId).emit("new_notification", result.rows[0])
-                });
+            try {
+                const io = req.app.get("io");
+                const uidToSocket = req.app.get("uidToSocket");
+                const socketSet = uidToSocket.get(data.userId);
+                if (socketSet) {
+                    socketSet.forEach(socketId => {
+                        console.log("Socket: send notification (" + socketId + ")");
+                        io.to(socketId).emit("new_notification", result.rows[0])
+                    });
+                }
+                res.status(200).send("OK");
+            } catch (err) {
+                res.status(500).send(err.message);
             }
-            res.status(200).send("OK");
         })
         .catch(err => { res.status(500).send(err.message); });
 }
@@ -49,8 +53,8 @@ export async function getNotification(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.rows.uid;
+        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.data.uid;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
@@ -69,8 +73,8 @@ export async function getAllNotification(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.rows.uid;
+        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.data.uid;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
@@ -89,8 +93,8 @@ export async function viewedNotification(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.rows.uid;
+        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.data.uid;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
@@ -117,8 +121,8 @@ export async function viewedAllNotification(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.rows.uid;
+        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.data.uid;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }

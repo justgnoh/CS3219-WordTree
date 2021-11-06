@@ -4,12 +4,22 @@ import { auth } from "../firebase.js";
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 
-function SocketPage() {
-    // initialise connection to server through socket
-    const socket = io("http://localhost:80/connect", {
-        transports: ["websocket", "polling"]
-    });
+// initialise connection to server through socket
+const socket = io("http://localhost:80/connect", {
+    transports: ["websocket"]
+});
 
+// receive new notifications from socket connected with server
+socket.on("new_notification", (newNotification) => {
+    console.log("Socket: new notification: ", newNotification);
+    //notificationList.push(newNotification);
+});
+
+//socket.on("connect", () => {
+//
+//});
+
+function SocketPage() {
     const [user] = useAuthState(auth);
     const [notificationList] = useState([]);
 
@@ -19,20 +29,15 @@ function SocketPage() {
     // once retrieved user details from firebase, update server client's firebase uid through socket
     useEffect(() => {
         if (user) {
-            console.log("Socket: connected to server");
+            console.log(user);
             socket.emit("connect_to_server", user.uid);
         }
     }, [user]);
 
-    // receive new notifications from socket connected with server
-    socket.on("new_notification", (newNotification) => {
-        console.log("Socket: new notification", newNotification);
-        notificationList.push(newNotification);
-    });
+    var counter = 0;
 
     // update frontend using useEffect whenever notificationList changes
     useEffect(() => {
-        console.log("tested, working");
         // to be done
     }, [notificationList]);
 

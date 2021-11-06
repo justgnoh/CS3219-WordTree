@@ -24,7 +24,7 @@ export async function createUser(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
+        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
         var reqUserId = result.rows.uid;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
@@ -68,9 +68,11 @@ export async function getUserProfile(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.rows.uid;
+        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.data.uid;
     } catch (err) {
+        console.log("error 2:");
+        console.log(err);
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
 
@@ -97,8 +99,8 @@ export async function updateUserPassword(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.rows.uid;
+        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.data.uid;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
@@ -125,8 +127,8 @@ export async function updateUserProfile(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.rows.uid;
+        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.data.uid;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
@@ -195,8 +197,8 @@ export async function addInterest(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:80/admin', { headers: { 'x-access-token': accessToken } });
-        var isAdmin = result.rows.isAdmin;
+        const result = await axios.get('http://auth-service:8080/admin', { headers: { 'x-access-token': accessToken } });
+        var isAdmin = result.data.isAdmin;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
@@ -230,8 +232,8 @@ export async function deleteInterest(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:80/admin', { headers: { 'x-access-token': accessToken } });
-        var isAdmin = result.rows.isAdmin;
+        const result = await axios.get('http://auth-service:8080/admin', { headers: { 'x-access-token': accessToken } });
+        var isAdmin = result.data.isAdmin;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
@@ -270,8 +272,8 @@ export async function addUserInterest(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.rows.uid;
+        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.data.uid;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
@@ -304,8 +306,8 @@ export async function deleteUserInterest(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.rows.uid;
+        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.data.uid;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
@@ -338,8 +340,8 @@ export async function getUserInterest(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.rows.uid;
+        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.data.uid;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
@@ -358,8 +360,8 @@ export async function clearUserInterest(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.rows.uid;
+        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.data.uid;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
@@ -378,8 +380,8 @@ export async function updateUserInterest(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.rows.uid;
+        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.data.uid;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }

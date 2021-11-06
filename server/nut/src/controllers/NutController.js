@@ -71,8 +71,8 @@ export async function addCommunityChallengeNut(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.rows.uid;
+        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.data.uid;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
@@ -109,8 +109,8 @@ export async function deleteCommunityChallengeNut(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.rows.uid;
+        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.data.uid;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
@@ -147,8 +147,8 @@ export async function addCommunityEssayNut(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.rows.uid;
+        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.data.uid;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
@@ -184,8 +184,8 @@ export async function deleteCommunityEssayNut(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.rows.uid;
+        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.data.uid;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
@@ -221,8 +221,8 @@ export async function viewUserNut(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.rows.uid;
+        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.data.uid;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
@@ -248,8 +248,8 @@ export async function getUserTotalNut(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:80/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.rows.uid;
+        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
+        var reqUserId = result.data.uid;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
