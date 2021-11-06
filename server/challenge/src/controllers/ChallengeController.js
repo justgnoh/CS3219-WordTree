@@ -28,9 +28,8 @@ import { getAuthenticatedUserIDFromAuthService } from "../communications/auth.js
 
 export const getAllChallengeByUserId = async (req, res) => {
   const userID = await getAuthenticatedUserID(req.headers["x-access-token"]);
-  console.log(userID)
   if (!userID) {
-    return res.status(400).send(error_messages.MISSING_FIELDS);
+    return res.status(401).send(error_messages.INVALID_ACCESS_TOKEN);
   }
   const challenges = await getChallengeByUserIdFromDB(userID);
 
@@ -67,8 +66,11 @@ export const getAllChallengeByUserId = async (req, res) => {
 export const acceptChallenge = async (req, res) => {
 
   const userID = await getAuthenticatedUserID(req.headers["x-access-token"]);
+  if (!userID) {
+    return res.status(401).send(error_messages.INVALID_ACCESS_TOKEN);
+  }
   const challengeID = req.body["challenge_id"];
-  if (!userID || !challengeID) {
+  if (!challengeID) {
     return res.status(400).send(error_messages.MISSING_FIELDS);
   }
 
@@ -127,12 +129,12 @@ export const acceptChallenge = async (req, res) => {
 
 export const createNewChallenge = async (req, res) => {
   const userID = await getAuthenticatedUserID(req.headers["x-access-token"]);
-  console.log(userID)
-
   const data = req.body;
+  if (!userID) {
+    return res.status(401).send(error_messages.INVALID_ACCESS_TOKEN);
+  }
   if (
     !data ||
-    !userID ||
     !data.num_of_total_turns ||
     !data.word_limit_per_turn ||
     !data.interest
@@ -181,10 +183,13 @@ export const createNewChallenge = async (req, res) => {
 export const addEssayPara = async (req, res) => {
 
   const userID = await getAuthenticatedUserID(req.headers["x-access-token"]);
+  if (!userID) {
+    return res.status(401).send(error_messages.INVALID_ACCESS_TOKEN);
+  }
   const { id: challengeID } = req.params;
   const data = req.body;
 
-  if (!userID || !data.essay_para || !data.title)
+  if (!data.essay_para || !data.title)
     return res.status(400).send(error_messages.MISSING_FIELDS);
   if (isNaN(challengeID))
     return res.status(400).send(error_messages.INVALID_FIELDS);
@@ -254,7 +259,7 @@ export const getChallengeByChallengeId = async (req, res) => {
 
   const userID = await getAuthenticatedUserID(req.headers["x-access-token"]);
   if (!userID) {
-    return res.status(400).send(error_messages.MISSING_FIELDS);
+    return res.status(401).send(error_messages.INVALID_ACCESS_TOKEN);
   }
   const params = req.params;
 
@@ -328,7 +333,9 @@ export const sendTitle = async (req, res) => {
   const title = req.body['title'];
   const challenge_id = req.body['challenge_id'];
   const userID = await getAuthenticatedUserID(req.headers["x-access-token"]);
-
+  if (!userID) {
+    return res.status(401).send(error_messages.INVALID_ACCESS_TOKEN);
+  }
   if (!title || !challenge_id) return res.status(400).send(error_messages.MISSING_FIELDS);
   if (isNaN(challenge_id)) return res.status(400).send(error_messages.INVALID_FIELDS);
   
@@ -353,7 +360,12 @@ const getNewStatus = (newSequenceNum, num_of_total_turns) => {
   else return 'INVALID';
 }
 
-export const getAllChallengesWaitingMatch = async (req, res) => {
+
+export const getAllChallengesNotAccepted = async (req, res) => {
+  const userID = await getAuthenticatedUserID(req.headers["x-access-token"]);
+  if (!userID) {
+    return res.status(401).send(error_messages.INVALID_ACCESS_TOKEN);
+  }
   const challenges = await getAllChallengesWaitingMatchFromDB();
   if (challenges.length == 0) {
     return res.status(200).send(challenges)
