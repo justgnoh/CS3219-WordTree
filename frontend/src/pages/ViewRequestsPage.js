@@ -1,7 +1,10 @@
 import React from 'react'
 import { Table, Badge, Button, Breadcrumb } from 'react-bootstrap';
+import { useHistory } from "react-router-dom";
 
 export default function ViewRequestsPage() {
+    const history = useHistory();
+
     return (
         <div>
             <div className="ms-5 me-5">

@@ -1,5 +1,6 @@
-import axios from 'axios';
 import * as nutDao from "../database/NutDao.js";
+import { getAuthenticatedUserId } from "../communications/Authentication.js";
+import { updateUserTotalNut } from "../communications/User.js";
 
 const ERROR_NO_DATA = "Bad Request. No data found.";
 const ERROR_NO_USER_ID = "Bad Request. No user id found.";
@@ -71,9 +72,12 @@ export async function addCommunityChallengeNut(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.data.uid;
+        var reqUserId = await getAuthenticatedUserId(accessToken);
     } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    if (!reqUserId) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
 
@@ -109,9 +113,12 @@ export async function deleteCommunityChallengeNut(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.data.uid;
+        var reqUserId = await getAuthenticatedUserId(accessToken);
     } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    if (!reqUserId) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
 
@@ -147,9 +154,12 @@ export async function addCommunityEssayNut(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.data.uid;
+        var reqUserId = await getAuthenticatedUserId(accessToken);
     } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    if (!reqUserId) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
 
@@ -184,9 +194,12 @@ export async function deleteCommunityEssayNut(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.data.uid;
+        var reqUserId = await getAuthenticatedUserId(accessToken);
     } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    if (!reqUserId) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
 
@@ -221,9 +234,12 @@ export async function viewUserNut(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.data.uid;
+        var reqUserId = await getAuthenticatedUserId(accessToken);
     } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    if (!reqUserId) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
 
@@ -248,9 +264,12 @@ export async function getUserTotalNut(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.data.uid;
+        var reqUserId = await getAuthenticatedUserId(accessToken);
     } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    if (!reqUserId) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
 
@@ -261,8 +280,7 @@ export async function getUserTotalNut(req, res) {
 
         const userTotalNut = parseInt(totalEssayNut.rows[0].total) + parseInt(totalCommunityChallengeNut.rows[0].total) +
                 parseInt(totalCommunityEssayNut.rows[0].total);
-        axios.put('http://user-service:80/user/updateUserTotalNut', { userId: reqUserId, totalNut: userTotalNut })
-            .catch(err => { /* do nothing */ });
+        updateUserTotalNut(reqUserId, userTotalNut);
         res.status(200).json(userTotalNut);
     } catch (err) {
         res.status(500).send(err.message);
@@ -279,8 +297,7 @@ export async function updateProfileTotalNut(userId) {
 
         const userTotalNut = parseInt(totalEssayNut.rows[0].total) + parseInt(totalCommunityChallengeNut.rows[0].total) +
                 parseInt(totalCommunityEssayNut.rows[0].total);
-        axios.put('http://user-service:80/user/updateUserTotalNut', { userId: reqUserId, totalNut: userTotalNut })
-            .catch(err => { /* do nothing */ });
+        updateUserTotalNut(reqUserId, userTotalNut);
     } catch (err) {
         return err;
     }

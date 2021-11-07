@@ -12,8 +12,6 @@ metadata:
     nginx.ingress.kubernetes.io/affinity-mode: persistent
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
-#    nginx.org/websocket-services: "notification-service"
-#    nginx.ingress.kubernetes.io/websocket-services: "notification-service"
     nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, DELETE, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"

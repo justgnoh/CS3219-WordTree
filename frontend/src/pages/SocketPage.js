@@ -15,10 +15,6 @@ socket.on("new_notification", (newNotification) => {
     //notificationList.push(newNotification);
 });
 
-//socket.on("connect", () => {
-//
-//});
-
 function SocketPage() {
     const [user] = useAuthState(auth);
     const [notificationList] = useState([]);
@@ -33,8 +29,6 @@ function SocketPage() {
             socket.emit("connect_to_server", user.uid);
         }
     }, [user]);
-
-    var counter = 0;
 
     // update frontend using useEffect whenever notificationList changes
     useEffect(() => {
