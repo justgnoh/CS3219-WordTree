@@ -1,8 +1,8 @@
-import axios from 'axios';
 import * as userAccountDao from "../database/UserAccountDao.js";
 import * as userProfileDao from "../database/UserProfileDao.js";
 import * as userInterestDao from "../database/UserInterestDao.js";
 import * as interestDao from "../database/InterestDao.js";
+import getAuthenticatedUserId from "../communications/Authentication.js";
 
 const ERROR_NO_DATA = "Bad Request. No data found.";
 const ERROR_NO_USER_ID = "Bad Request. No user id found.";
@@ -24,9 +24,12 @@ export async function createUser(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.rows.uid;
+        var reqUserId = await getAuthenticatedUserId(accessToken);
     } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    if (!reqUserId) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
 
@@ -68,11 +71,12 @@ export async function getUserProfile(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.data.uid;
+        var reqUserId = await getAuthenticatedUserId(accessToken);
     } catch (err) {
-        console.log("error 2:");
-        console.log(err);
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    if (!reqUserId) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
 
@@ -87,37 +91,6 @@ export async function getUserProfile(req, res) {
     }
 }
 
-export async function updateUserPassword(req, res) {
-    console.log("User Service: (PUT) /updateUserPassword");
-
-    /* To be removed in future once password implementation is done */
-    return res.status(403).send(ERROR_NOT_AUTHORIZED);
-
-    const accessToken = req.headers['x-access-token'];
-    if (!accessToken) {
-        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
-    }
-
-    try {
-        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.data.uid;
-    } catch (err) {
-        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
-    }
-
-    const body = req.body;
-    if (!body) {
-        return res.status(400).send(ERROR_NO_DATA);
-    }
-    if (!body.password) {
-        return res.status(400).send(ERROR_NO_PASSWORD);
-    }
-
-    await userAccountDao.updateUserPassword(reqUserId, body.password)
-        .then(result => { res.status(200).send("OK"); })
-        .catch(err => { res.status(500).send(err.message); });
-}
-
 export async function updateUserProfile(req, res) {
     console.log("User Service: (PUT) /updateUserProfile");
 
@@ -127,9 +100,12 @@ export async function updateUserProfile(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.data.uid;
+        var reqUserId = await getAuthenticatedUserId(accessToken);
     } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    if (!reqUserId) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
 
@@ -185,76 +161,6 @@ export async function updateUserTotalNut(req, res) {
         .catch(err => { res.status(500).send(err.message); });
 }
 
-export async function addInterest(req, res) {
-    console.log("User Service: (POST) /addInterest");
-
-    /* To be removed in future once admin implementation is done */
-    return res.status(403).send(ERROR_NOT_AUTHORIZED);
-
-    const accessToken = req.headers['x-access-token'];
-    if (!accessToken) {
-        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
-    }
-
-    try {
-        const result = await axios.get('http://auth-service:8080/admin', { headers: { 'x-access-token': accessToken } });
-        var isAdmin = result.data.isAdmin;
-    } catch (err) {
-        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
-    }
-
-    if (!isAdmin) {
-        res.status(403).send(ERROR_NOT_AUTHORIZED);
-    }
-
-    const body = req.body;
-    if (!body) {
-        return res.status(400).send(ERROR_NO_DATA);
-    }
-    if (!body.interest) {
-        return res.status(400).send(ERROR_NO_INTEREST);
-    }
-
-    await interestDao.addInterest(body.interest)
-        .then(result => { res.status(200).send("OK"); })
-        .catch(err => { res.status(500).send(err.message); });
-}
-
-export async function deleteInterest(req, res) {
-    console.log("User Service: (DELETE) /deleteInterest");
-
-    /* To be removed in future once admin implementation is done */
-    return res.status(403).send(ERROR_NOT_AUTHORIZED);
-
-    const accessToken = req.headers['x-access-token'];
-    if (!accessToken) {
-        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
-    }
-
-    try {
-        const result = await axios.get('http://auth-service:8080/admin', { headers: { 'x-access-token': accessToken } });
-        var isAdmin = result.data.isAdmin;
-    } catch (err) {
-        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
-    }
-
-    if (!isAdmin) {
-        res.status(403).send(ERROR_NOT_AUTHORIZED);
-    }
-
-    const body = req.body;
-    if (!body) {
-        return res.status(400).send(ERROR_NO_DATA);
-    }
-    if (!body.interest) {
-        return res.status(400).send(ERROR_NO_INTEREST);
-    }
-
-    await interestDao.deleteInterest(body.interest)
-        .then(result => { res.status(200).send("OK"); })
-        .catch(err => { res.status(500).send(err.message); });
-}
-
 export async function getInterest(req, res) {
     console.log("User Service: (GET) /getInterest");
 
@@ -272,9 +178,12 @@ export async function addUserInterest(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.data.uid;
+        var reqUserId = await getAuthenticatedUserId(accessToken);
     } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    if (!reqUserId) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
 
@@ -306,9 +215,12 @@ export async function deleteUserInterest(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.data.uid;
+        var reqUserId = await getAuthenticatedUserId(accessToken);
     } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    if (!reqUserId) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
 
@@ -340,9 +252,12 @@ export async function getUserInterest(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.data.uid;
+        var reqUserId = await getAuthenticatedUserId(accessToken);
     } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    if (!reqUserId) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
 
@@ -360,9 +275,12 @@ export async function clearUserInterest(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.data.uid;
+        var reqUserId = await getAuthenticatedUserId(accessToken);
     } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    if (!reqUserId) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
 
@@ -380,9 +298,12 @@ export async function updateUserInterest(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.data.uid;
+        var reqUserId = await getAuthenticatedUserId(accessToken);
     } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    if (!reqUserId) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
 

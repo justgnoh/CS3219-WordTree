@@ -1,4 +1,5 @@
 import * as notificationDao from "../database/NotificationDao.js";
+import getAuthenticatedUserId from "../communications/Authentication.js";
 
 const ERROR_NO_DATA = "Bad Request. No data found.";
 const ERROR_NO_USER_ID = "Bad Request. No user id found.";
@@ -53,9 +54,12 @@ export async function getNotification(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.data.uid;
+        var reqUserId = await getAuthenticatedUserId(accessToken);
     } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    if (!reqUserId) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
 
@@ -73,9 +77,12 @@ export async function getAllNotification(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.data.uid;
+        var reqUserId = await getAuthenticatedUserId(accessToken);
     } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    if (!reqUserId) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
 
@@ -93,9 +100,12 @@ export async function viewedNotification(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.data.uid;
+        var reqUserId = await getAuthenticatedUserId(accessToken);
     } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    if (!reqUserId) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
 
@@ -121,9 +131,12 @@ export async function viewedAllNotification(req, res) {
     }
 
     try {
-        const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.data.uid;
+        var reqUserId = await getAuthenticatedUserId(accessToken);
     } catch (err) {
+        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
+    }
+
+    if (!reqUserId) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
 
