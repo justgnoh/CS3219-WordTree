@@ -1,6 +1,6 @@
 import * as nutDao from "../database/NutDao.js";
-import getAuthenticatedUserId from "../communications/Authentication.js";
-import updateUserTotalNut from "../communications/User.js";
+import { getAuthenticatedUserId } from "../communications/Authentication.js";
+import { updateUserTotalNut } from "../communications/User.js";
 
 const ERROR_NO_DATA = "Bad Request. No data found.";
 const ERROR_NO_USER_ID = "Bad Request. No user id found.";

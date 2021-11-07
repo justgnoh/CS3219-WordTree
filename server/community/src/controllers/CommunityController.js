@@ -1,5 +1,5 @@
 import * as communityDao from "../database/CommunityDao.js";
-import getAuthenticatedUserId from "../communications/Authentication.js";
+import { getAuthenticatedUserId } from "../communications/Authentication.js";
 
 const ERROR_NO_DATA = "Bad Request. No data found.";
 const ERROR_NO_CHALLENGE_ID = "Bad Request. No challenge id found.";

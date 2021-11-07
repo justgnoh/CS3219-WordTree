@@ -1,5 +1,5 @@
 import * as notificationDao from "../database/NotificationDao.js";
-import getAuthenticatedUserId from "../communications/Authentication.js";
+import { getAuthenticatedUserId } from "../communications/Authentication.js";
 
 const ERROR_NO_DATA = "Bad Request. No data found.";
 const ERROR_NO_USER_ID = "Bad Request. No user id found.";
