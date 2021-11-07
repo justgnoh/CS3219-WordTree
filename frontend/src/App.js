@@ -63,6 +63,9 @@ function App() {
           <Route exact path="/challenge/arthur">
             <Challenge/>
           </Route>
+          <Route exact path="/socket">
+            <SocketPage/>
+          </Route>
         </Switch>
       </div>
     </Router>

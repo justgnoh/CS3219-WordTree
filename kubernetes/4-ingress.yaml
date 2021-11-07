@@ -10,6 +10,10 @@ metadata:
     nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
     nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
     nginx.ingress.kubernetes.io/affinity-mode: persistent
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+#    nginx.org/websocket-services: "notification-service"
+#    nginx.ingress.kubernetes.io/websocket-services: "notification-service"
     nginx.ingress.kubernetes.io/enable-cors: "true"
     nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, DELETE, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
@@ -47,4 +51,24 @@ spec:
             name: community-service
             port: 
               number: 8080
-              
+      - pathType: Prefix
+        path: /notification
+        backend:
+          service:
+            name: notification-service
+            port:
+              number: 8080
+      - pathType: Prefix
+        path: /connect
+        backend:
+          service:
+            name: notification-service
+            port:
+              number: 8081
+      - pathType: Prefix
+        path: /socket.io
+        backend:
+          service:
+            name: notification-service
+            port:
+              number: 8081

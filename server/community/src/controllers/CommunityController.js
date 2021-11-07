@@ -18,7 +18,7 @@ export async function listChallenges(req, res) {
 
     try {
         const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.rows.uid;
+        var reqUserId = result.data.uid;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
@@ -50,7 +50,7 @@ export async function getChallenge(req, res) {
 
     try {
         const result = await axios.get('http://auth-service:8080/', { headers: { 'x-access-token': accessToken } });
-        var reqUserId = result.rows.uid;
+        var reqUserId = result.data.uid;
     } catch (err) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }

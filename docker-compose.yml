@@ -56,3 +56,12 @@ services:
     image: community-service:1.0.0
     ports:
       - 5015:5015
+
+  notification:
+    build:
+      context: ./server/notification
+      dockerfile: Dockerfile
+    image: notification-service:1.0.0
+    ports:
+      - 5016:5016
+      - 5017:5017
