@@ -25,6 +25,8 @@ export default function ChallengePage() {
             return <Badge pill bg="secondary">{value}</Badge>
         } else if (value == "WAITING_MATCH") {
             return <Badge pill bg="secondary">Awaiting Match</Badge>
+        } else if (value == "ONGOING") {
+            return <Badge pill bg="success">Ongoing</Badge>
         }
     }
 

@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Card, Table, Badge, Button, InputGroup, FormControl, Breadcrumb, Modal } from 'react-bootstrap';
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { getChallengeById, addEssayPara } from '../utils/Api';
 
 export default function Challenge() {
     const { cid } = useParams();
+    const history = useHistory();
     const [wordCount, setWordCount] = useState(0);
     const [countExceeded, setCountExceeded] = useState(false);
     const [user, loading, error] = useAuthState(auth);
@@ -131,13 +132,14 @@ export default function Challenge() {
         for (let i = 0; i < allParaSegments.length; i++) {
             combinedSegments += data.essay_paras[i].essay_para;
         }
-        setEssayThusFar(combinedSegments);
+        setEssayThusFar(combinedSegments + " ");
     }
 
     async function submitEssay() {
         handleClose();
         const token = await user.getIdToken();
         await addEssayPara(token, cid, essay, '<Placeholder>');
+        history.push("/challenge");
     }
 
     function makeBadge(value) {
@@ -145,6 +147,8 @@ export default function Challenge() {
             return <Badge pill bg="secondary">{value}</Badge>
         } else if (value == "WAITING_MATCH") {
             return <Badge pill bg="secondary">Awaiting Match</Badge>
+        } else if (value == "ONGOING") {
+            return <Badge pill bg="success">Ongoing</Badge>
         }
     }
 

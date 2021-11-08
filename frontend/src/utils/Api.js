@@ -81,10 +81,12 @@ export async function getChallengesForUserId(token) {
 
 export async function acceptChallenge(token, challengeId) {
     try {     
-        const resp = await axios.get(`${API_HOST}/challenge/` + challengeId, {
+        const resp = await axios.post(`${API_HOST}/challenge/accept`, {
+            "challenge_id": challengeId
+        }, {
             headers: {
                 'x-access-token': `${token}`
-              }
+            }
         })
         return resp;
     } catch (err) {

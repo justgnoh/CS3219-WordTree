@@ -47,16 +47,18 @@ export default function ViewRequestsPage() {
                 </td>
                 <td>
                     {isOwnRequest ? <Button variant="dark" size="sm" className="primary-color" disabled>Accept</Button> 
-                    : <Button variant="dark" size="sm" className="primary-color" onClick={() => {
+                    : <Button variant="dark" size="sm" className="primary-color" onClick={async () => {
                         console.log(awaitingChallengeList[i]);
                         const challengeData = awaitingChallengeList[i];
                         console.log(challengeData.challenge_id);
                         
-                        user.getIdToken()
+                        await user.getIdToken()
                         .then((token) => {
-                            acceptChallenge(token, challengeData.challengeId);
-                        })
-                        history.push("/challenge/" + challengeData.challenge_id);
+                            console.log(challengeData.challenge_id);
+                            acceptChallenge(token, 2);
+                        }).then(() => {
+                            history.push("/challenge/" + challengeData.challenge_id);
+                        });
                     }}>Accept</Button>}
                     
                 </td>
