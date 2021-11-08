@@ -3,7 +3,7 @@ import { Card, Table, Badge, Button, InputGroup, FormControl, Breadcrumb, Modal 
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
 import { useParams } from 'react-router-dom';
-import { getChallengeById } from '../utils/Api';
+import { getChallengeById, addEssayPara } from '../utils/Api';
 
 export default function Challenge() {
     const { cid } = useParams();
@@ -12,6 +12,7 @@ export default function Challenge() {
     const [user, loading, error] = useAuthState(auth);
     const [essay, setEssay] = useState('');
     const [authorName, setAuthorName] = useState('');
+    const [essayThusFar, setEssayThusFar] = useState('');
 
     // Modals
     const [show, setShow] = useState(false);
@@ -34,6 +35,8 @@ export default function Challenge() {
         racoon_id: ''
     });
 
+    
+
     useEffect(async () => {
         if (user) {
             setAuthorName(user.displayName);
@@ -42,6 +45,7 @@ export default function Challenge() {
                 console.log(resp.data)
                 setChallengeData(resp.data);
                 setWords(resp.data.words);
+                appendParas(resp.data);
                 // setWordCount(resp.data.word_limit_per_turn);
             });
         }
@@ -120,31 +124,29 @@ export default function Challenge() {
         setNutCount(count);
     }
 
-    function submitEssay() {
-        handleClose();
-        // TODO: Submit essay;
-        // /challenge/<:id>
+    function appendParas(data) {
+        console.log(data.essay_paras[0].essay_para);
+        const allParaSegments = data.essay_paras;
+        let combinedSegments = '';
+        for (let i = 0; i < allParaSegments.length; i++) {
+            combinedSegments += data.essay_paras[i].essay_para;
+        }
+        setEssayThusFar(combinedSegments);
+    }
 
-        console.log(essay);
+    async function submitEssay() {
+        handleClose();
+        const token = await user.getIdToken();
+        await addEssayPara(token, cid, essay, '<Placeholder>');
     }
 
     function makeBadge(value) {
         if (value == "DRAFT") {
             return <Badge pill bg="secondary">{value}</Badge>
+        } else if (value == "WAITING_MATCH") {
+            return <Badge pill bg="secondary">Awaiting Match</Badge>
         }
     }
-
-//     challenge_id: 7
-// essay_paras: []
-// interest: "Horror"
-// last_modified_time: "2021-11-08T03:57:48.212Z"
-// num_of_total_turns: 4
-// racoon_id: null
-// squirrel_id: "YbpYEkibzvYD3iJS5j1Y1FjByO72"
-// status_of_challenge: "DRAFT"
-// title: "Untitled"
-// word_limit_per_turn: 300
-// words: (3) ['dread', 'sight', 'horridness']
 
     return (
         <div className="ms-5 me-5">
@@ -157,13 +159,6 @@ export default function Challenge() {
             <Table responsive>
                 <thead>
                     <tr>
-                    {/* <th>ID</th>
-                    <th>Title</th>
-                    <th>Racoon Name</th>
-                    <th>Interest</th>
-                    <th>Turns</th>
-                    <th>Status</th>
-                    <th>Actions</th> */}
                         <th>ID</th>
                         <th>Title</th>
                         <th>Squirrel Name</th>
@@ -175,7 +170,7 @@ export default function Challenge() {
                 </thead>
 
                 <tbody>
-                    <tr onClick={() => console.log("clicked on row")}>
+                    <tr>
                         <td>{challengeData.challenge_id}</td>
                         <td>{challengeData.title}</td>
                         <td>{challengeData.racoon_id}</td>
@@ -200,7 +195,7 @@ export default function Challenge() {
                 <Card.Body>
                     <Card.Text>
                         {/* {challengeData.essay_paras.length == 0 ? 'No previous paras found! Begin by submitting your first para...' : challengeData.essay_paras} */}
-                        stuff
+                        {essayThusFar}
                     </Card.Text>
                 </Card.Body>
             </Card>
