@@ -41,7 +41,7 @@ CREATE TABLE Challenges (
 );
 
 CREATE TABLE TurnDetails (
-    challenge_id SERIAL PRIMARY KEY,
+    challenge_id PRIMARY KEY REFERENCES Challenges(challenge_id),
     num_of_sequences_completed INTEGER NOT NULL DEFAULT 0,
     time_of_last_completed_sequence TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
