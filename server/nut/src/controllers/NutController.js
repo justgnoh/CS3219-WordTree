@@ -297,7 +297,7 @@ export async function updateProfileTotalNut(userId) {
 
         const userTotalNut = parseInt(totalEssayNut.rows[0].total) + parseInt(totalCommunityChallengeNut.rows[0].total) +
                 parseInt(totalCommunityEssayNut.rows[0].total);
-        updateUserTotalNut(reqUserId, userTotalNut);
+        updateUserTotalNut(userId, userTotalNut);
     } catch (err) {
         return err;
     }

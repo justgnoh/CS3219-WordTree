@@ -210,7 +210,6 @@ export async function updateUserInterest(req, res) {
         return res.status(400).send(ERROR_NO_INTEREST);
     }
 
-
     try {
         await userInterestDao.clearUserInterest(reqUserId);
         await userInterestDao.addUserInterest(reqUserId, body.interest);
