@@ -23,6 +23,8 @@ export default function ChallengePage() {
     function makeBadge(value) {
         if (value == "DRAFT") {
             return <Badge pill bg="secondary">{value}</Badge>
+        } else if (value == "WAITING_MATCH") {
+            return <Badge pill bg="secondary">Awaiting Match</Badge>
         }
     }
 
@@ -33,7 +35,7 @@ export default function ChallengePage() {
             <td>{challengeList[i].challenge_id}</td>
             <td>{challengeList[i].title}</td>
             <td>{challengeList[i].racoon_id}</td>
-            <td>{challengeList[i].interest}</td>
+            <td><Badge pill bg="warning" className="black-text">{challengeList[i].interest}</Badge></td>
             {/* TODO: Not in 2/4 turn level */}
             <td>{challengeList[i].num_of_total_turns}</td>
             <td>
