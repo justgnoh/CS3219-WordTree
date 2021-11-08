@@ -1,30 +1,40 @@
-import React, {useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import { ToggleButtonGroup, ToggleButton, Button, Modal } from 'react-bootstrap'
-import { getSystemInterests } from '../utils/Api';
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
+import { getSystemInterests, updateUserInterests } from '../utils/Api';
 
 export default function InterestsPage() {
+    const [user, loading, error] = useAuthState(auth);
     const [interests, setInterests] = useState([]);
-    const interestsRadio = [{ interest: 'crime' }, { interest: 'fantasy' }, { interest: 'adventure' }, { interest: 'horror' }];
-    // REPLACE W THIS
-    // const interestsRadio = getSystemInterests();
+    const [interestsRadio, setInterestsRadio] = useState([]);
+    // let interestsRadio = [{ interest: 'crime' }, { interest: 'fantasy' }, { interest: 'adventure' }, { interest: 'horror' }];
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
-    
+
+    useEffect(() => {
+        getSystemInterests().then((resp) => {
+            setInterestsRadio(resp.data);
+        })
+    }, []);
+
     function handleInterests(val) {
         setInterests(val);
     }
 
-    function addInterests() {
+    async function addInterests() {
         console.log(interests);
         if (interests.length != 0) {
             // TODO: Post
             console.log("All Good")
+            const userToken = await user.getIdToken(true);
+            console.log(userToken);
+            await updateUserInterests(userToken);
         } else {
             setShow(true);
         }
     }
-
 
     return (
         <div className="ms-5 me-5">
@@ -56,7 +66,7 @@ export default function InterestsPage() {
                     <Modal.Title>Ooops!</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    Please check if you have selected all required option.
+                    Please check if you have selected all required options.
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>

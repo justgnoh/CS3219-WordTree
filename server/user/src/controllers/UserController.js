@@ -162,6 +162,7 @@ export async function updateUserTotalNut(req, res) {
 }
 
 export async function getInterest(req, res) {
+    res.set('Access-Control-Allow-Origin', '*');
     console.log("User Service: (GET) /getInterest");
 
     await interestDao.getInterest()

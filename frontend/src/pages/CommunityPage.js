@@ -1,6 +1,7 @@
 import React from 'react'
 import { Table, Button, Badge } from 'react-bootstrap';
 import { getCommunityChallenges } from '../utils/Api';
+import { BsArrowUpSquare } from 'react-icons/bs';
 
 
 export default function CommunityPage() {
@@ -14,7 +15,7 @@ export default function CommunityPage() {
     for (let i = 0; i < 50; i++) {
         rows.push(<tr>
             {Array.from({ length: 7 }).map((_, index) => (
-            <td key={index}>Table cell {index}</td>
+            <td key={index}>Table cell {index} <BsArrowUpSquare/> </td>
         ))}</tr>)
     }
 
@@ -41,7 +42,7 @@ export default function CommunityPage() {
 
                 <tbody>
                     <tr>
-                        <td>128</td>
+                        <td>128 <BsArrowUpSquare/></td>
                         <td>The Blood red Sky</td>
                         <td>
                             <Badge pill bg="warning" className="black-text">Horror</Badge>
@@ -63,7 +64,7 @@ export default function CommunityPage() {
                         </td>
                     </tr>
                     <tr>
-                        <td>72</td>
+                        <td>72 <BsArrowUpSquare/></td>
                         <td>Hash Slinging Slayer</td>
                         <td>
                             <Badge pill bg="warning" className="black-text">Crime</Badge>

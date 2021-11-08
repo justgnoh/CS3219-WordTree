@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Breadcrumb, InputGroup, FormControl, Modal, Button, ToggleButton, ToggleButtonGroup } from 'react-bootstrap'
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
@@ -29,24 +29,27 @@ export default function CreateChallengePage() {
     const interestsRadio = [{ interest: 'crime' }, { interest: 'fantasy' }, { interest: 'adventure' }, { interest: 'horror' }];
     // const interestsRadio = getSystemInterests();
 
-    var request = {
-        "uid": 'user.uid',
-        "turns": turns,
-        "wordLimit": wordLimit,
-        "interests": interests
-    }
-
     function handleInterests(val) {
         setInterests(val);
     }
 
-    function createChallengeRequest() {
-        console.log(request);
+    async function createChallengeRequest() {
+        var request = {
+        "uid": user.uid,
+        "turns": turns,
+        "wordLimit": wordLimit,
+        "interests": interests
+        }
+
         if (request.uid.length != 0 && (request.turns == "6" || request.turns == "4") &&
             (request.wordLimit == "300" || request.wordLimit == "500") && request.interests.length != 0) {
             // TODO: Post
-            // console.log("All Good")
-            createNewChallenge(request)
+            console.log("All Good")
+            console.log(request);
+            
+            console.log(request);
+            const token = await user.getIdToken();
+            await createNewChallenge(request, token);
         } else {
             setShow(true);
         }

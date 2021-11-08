@@ -1,9 +1,23 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { Table, Badge, Button, Breadcrumb } from 'react-bootstrap';
 import { useHistory } from "react-router-dom";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
+import { getChallengeRequests, acceptChallenge } from '../utils/Api';
 
 export default function ViewRequestsPage() {
+    const [user, loading, error] = useAuthState(auth);
     const history = useHistory();
+
+    useEffect(() => {
+        if (user) {
+            console.log(user.uid);
+            user.getIdToken(true).then(token => console.log(token));
+            user.getIdToken(true).then(token => {
+                console.log(getChallengeRequests(token))
+            });
+        }
+      }, [user]);
 
     return (
         <div>
@@ -21,6 +35,7 @@ export default function ViewRequestsPage() {
                     <th>Username</th>
                     <th>Genres</th>
                     <th>Turns</th>
+                    <th>Word Limit</th>
                     <th>Actions</th>
                     </tr>
                 </thead>
@@ -37,6 +52,9 @@ export default function ViewRequestsPage() {
                             4 rounds
                         </td>
                         <td>
+                            300 word limit
+                        </td>
+                        <td>
                         <Button variant="dark" size="sm" className="primary-color" onClick={()=> {
                             history.push("/challenge/arthur");
                         }}>Accept</Button>
@@ -50,6 +68,9 @@ export default function ViewRequestsPage() {
                         </td>
                         <td>
                             6 rounds
+                        </td>
+                        <td>
+                            500 word limit
                         </td>
                         <td>
                         <Button variant="dark" size="sm" className="primary-color">Accept</Button>

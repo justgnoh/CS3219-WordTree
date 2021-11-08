@@ -1,19 +1,23 @@
 import axios from 'axios';
 
 const API_HOST = 'http://localhost:80';
+// const API_HOST = 'http://071d-103-252-200-244.ngrok.io'
 
 // ===============================
 // CHALLENGE SERVICE
 // ===============================
-export async function createNewChallenge(challengeDetails) {
+export async function createNewChallenge(challengeDetails, token) {
     try {
         const resp = await axios.post(API_HOST + '/challenge/', {
             squirrel_id: challengeDetails.uid,
             num_of_total_turns: challengeDetails.turns,
             word_limit_per_turn: challengeDetails.wordLimit,
             genre: challengeDetails.interests
+        }, {
+            headers: {
+                'x-access-token': `${token}`,
+            }
         });
-
         return resp;
     } catch (err) {
         console.log(err);
@@ -38,9 +42,45 @@ export async function addEssayPara(challengeId) {
     }
 }
 
-export async function getChallengesForUserId(userId) {
+export async function getChallengeRequests(token) {
     try {
-        const resp = await axios.get(API_HOST + '/challenge/' + userId);
+        const resp = await axios.get(`${API_HOST}/challenge/waiting`, {
+            headers: {
+                'x-access-token': `${token}`,
+              }
+        })
+        return resp;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export async function getChallengesForUserId(token, userId) {
+    try {
+        const header = {
+            'x-access-token': `${token}`
+        }
+        
+        const resp = await axios.get(`${API_HOST}/challenge/1`, {
+            headers: {
+                'x-access-token': `${token}`,
+                "Access-Control-Allow-Origin": process.env.REACT_APP_API_URL
+              }
+        })
+        return resp;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export async function acceptChallenge(token, challengeId) {
+    try {     
+        const resp = await axios.get(`${API_HOST}/challenge/1`, {
+            headers: {
+                'x-access-token': `${token}`,
+                "Access-Control-Allow-Origin": process.env.REACT_APP_API_URL
+              }
+        })
         return resp;
     } catch (err) {
         console.log(err);
@@ -89,6 +129,20 @@ export async function getSystemInterests() {
         console.log(err);
     }
 }
+
+export async function updateUserInterests(token) {
+    try {
+        const resp = await axios.put(API_HOST + '/user/updateUserInterest', {
+            headers: {
+                'x-access-token': `${token}`,
+              }
+        })
+        return resp;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 
 // ===============================
 // NUT SERVICE
