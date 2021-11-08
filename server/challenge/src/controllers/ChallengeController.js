@@ -189,7 +189,7 @@ export const addEssayPara = async (req, res) => {
   const { id: challengeID } = req.params;
   const data = req.body;
 
-  if (!data.essay_para || !data.title)
+  if (!data.essay_para || data.title == undefined)
     return res.status(400).send(error_messages.MISSING_FIELDS);
   if (isNaN(challengeID))
     return res.status(400).send(error_messages.INVALID_FIELDS);
