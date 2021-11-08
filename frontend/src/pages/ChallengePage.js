@@ -15,10 +15,15 @@ export default function ChallengePage() {
             const token = await user.getIdToken();
             getChallengesForUserId(token).then((resp) => {
                 console.log(resp.data)
+                determineTurn();
                 setChallengeList(resp.data);
             });
         }
     }, [user]);
+
+    function determineTurn() {
+        
+    }
 
     function makeBadge(value) {
         if (value == "DRAFT") {

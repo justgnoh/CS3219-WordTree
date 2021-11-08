@@ -14,6 +14,7 @@ export default function Challenge() {
     const [essay, setEssay] = useState('');
     const [authorName, setAuthorName] = useState('');
     const [essayThusFar, setEssayThusFar] = useState('');
+    const [isMyTurn, setIsMyTurn] = useState(false);
 
     // Modals
     const [show, setShow] = useState(false);
@@ -33,20 +34,22 @@ export default function Challenge() {
     const [words, setWords] = useState([]);
 
     const [challengeData, setChallengeData] = useState({
-        racoon_id: ''
+        racoon_id: '',
+        essay_paras: []
     });
 
-    
 
     useEffect(async () => {
+        console.log(loading);
         if (user) {
             setAuthorName(user.displayName);
             const token = await user.getIdToken();
             getChallengeById(token, cid).then((resp) => {
-                console.log(resp.data)
-                setChallengeData(resp.data);
+                console.log(resp.data.essay_paras.length)
+                determineTurn(resp.data);
                 setWords(resp.data.words);
                 appendParas(resp.data);
+                setChallengeData(resp.data);
                 // setWordCount(resp.data.word_limit_per_turn);
             });
         }
@@ -126,13 +129,43 @@ export default function Challenge() {
     }
 
     function appendParas(data) {
-        console.log(data.essay_paras[0].essay_para);
         const allParaSegments = data.essay_paras;
         let combinedSegments = '';
         for (let i = 0; i < allParaSegments.length; i++) {
             combinedSegments += data.essay_paras[i].essay_para;
         }
         setEssayThusFar(combinedSegments + " ");
+    }
+
+    function determineTurn(data) {
+        console.log(data);
+        console.log(user.uid);
+        const userID = user.uid;
+        if (data.essay_paras.length % 2 == 0) {
+            console.log('Squirrels turn');
+            // if i am squirrel -> my turn
+            // if i am racoon -> not my turn
+            if (userID == data.squirrel_id) {
+                setIsMyTurn(true);
+            }
+
+            if (userID == data.racoon_id) {
+                setIsMyTurn(false);
+            }
+        } 
+
+        if (data.essay_paras.length % 2 == 1) {
+            console.log('Racoons Turn')
+            // if i am racoon -> my turn
+            // if i am squirrel -> not my turn
+            if (userID == data.racoon_id) {
+                setIsMyTurn(true);
+            }
+
+            if (userID == data.squirrel_id) {
+                setIsMyTurn(false);
+            }
+        }
     }
 
     async function submitEssay() {
@@ -148,7 +181,11 @@ export default function Challenge() {
         } else if (value == "WAITING_MATCH") {
             return <Badge pill bg="secondary">Awaiting Match</Badge>
         } else if (value == "ONGOING") {
-            return <Badge pill bg="success">Ongoing</Badge>
+            if (isMyTurn) {
+                return <Badge pill bg="success">Your Turn</Badge>
+            } else {
+                return <Badge pill bg="danger">Awaiting Turn</Badge>
+            }
         }
     }
 
@@ -157,7 +194,7 @@ export default function Challenge() {
             <h1>Ongoing Challenge</h1>
             <Breadcrumb>
                 <Breadcrumb.Item href="/challenge">Challenges</Breadcrumb.Item>
-                <Breadcrumb.Item active>{challengeData.racoon_id ? challengeData.challenge_id : 'Draft'}</Breadcrumb.Item>
+                <Breadcrumb.Item active>Challenge ID: {challengeData.racoon_id ? challengeData.challenge_id : 'Draft'}</Breadcrumb.Item>
             </Breadcrumb>
 
             <Table responsive>
@@ -168,7 +205,7 @@ export default function Challenge() {
                         <th>Squirrel Name</th>
                         <th>Racoon Name</th>
                         <th>Interests</th>
-                        <th>Turns</th>
+                        <th>Rounds</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -184,7 +221,7 @@ export default function Challenge() {
                         </td>
                         <td>
                             {/* TODO: Current turns 2/4 rounds etc.. */}
-                            {challengeData.num_of_total_turns}
+                            {challengeData.essay_paras.length}/{challengeData.num_of_total_turns}
                         </td>
                         <td>
                             {/* TODO: Determine how to do this */}
@@ -251,10 +288,15 @@ export default function Challenge() {
             </div>
 
             <InputGroup className="mb-3 mt-3">
-                <textarea style={{ width: '100%', minHeight: '30vh' }} placeholder="Input your story here..." onKeyUp={handleWordCount} />
+                {isMyTurn ? <textarea style={{ width: '100%', minHeight: '30vh' }} 
+                            placeholder=" Input your story here... " 
+                            onKeyUp={handleWordCount} />
+                            : <textarea style={{ width: '100%', minHeight: '30vh' }} 
+                            placeholder=" It is currently not your turn... " 
+                            disabled />}
+                
                 <div className="d-flex flex-row-reverse">
-                    <Button variant="dark" size="sm" className="primary-color" onClick={handleShow}>Submit</Button>
-                    {/* <Button variant="dark" size="sm" className="primary-color">Save as Draft</Button> */}
+                    {isMyTurn && <Button variant="dark" size="sm" className="primary-color" onClick={handleShow}>Submit</Button>}
                 </div>
             </InputGroup>
 
