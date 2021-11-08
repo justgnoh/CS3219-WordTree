@@ -4954,15 +4954,9 @@
     "base64-arraybuffer" "~1.0.1"
 
 "engine.io@~6.0.0":
-<<<<<<< Updated upstream
   "integrity" "sha512-Y53UaciUh2Rmx5MiogtMxOQcfh7pnemday+Bb4QDg0Wjmnvo/VTvuEyNGQgYmh8L7VOe8Je1QuiqjLNDelMqLA=="
   "resolved" "https://registry.npmjs.org/engine.io/-/engine.io-6.0.1.tgz"
   "version" "6.0.1"
-=======
-  "integrity" "sha512-Ui7yl3JajEIaACg8MOUwWvuuwU7jepZqX3BKs1ho7NQRuP4LhN4XIykXhp8bEy+x/DhA0LBZZXYSCkZDqrwMMg=="
-  "resolved" "https://registry.npmjs.org/engine.io/-/engine.io-6.0.0.tgz"
-  "version" "6.0.0"
->>>>>>> Stashed changes
   dependencies:
     "@types/cookie" "^0.4.1"
     "@types/cors" "^2.8.12"

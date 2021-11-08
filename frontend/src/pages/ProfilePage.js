@@ -24,10 +24,17 @@ function ProfilePage() {
   useEffect(() => {
     if (!user) {
       history.replace("/");
+    } else {
+      pullUserProfile();
     }
-    console.log(user);
-    // console.log(user.getIdToken(true).then(token => console.log(token)));
+    
   }, [user, history]);
+
+  async function pullUserProfile() {
+    const token = await user.getIdToken(true);
+    const userProfile = await getUserProfile(token);
+    console.log(userProfile);
+  }
 
   function enableEdit() {
     setEditProfile(true);
