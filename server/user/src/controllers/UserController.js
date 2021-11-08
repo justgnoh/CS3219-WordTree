@@ -308,6 +308,14 @@ export async function updateUserInterest(req, res) {
         return res.status(401).send(ERROR_NOT_AUTHENTICATED);
     }
 
+    const body = req.body;
+    if (!body) {
+        return res.status(400).send(ERROR_NO_DATA);
+    }
+    if (!body.interest) {
+        return res.status(400).send(ERROR_NO_INTEREST);
+    }
+
     try {
         var interestArr = JSON.parse(body.interest);
     } catch (err) {
