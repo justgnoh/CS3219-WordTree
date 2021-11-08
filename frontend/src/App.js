@@ -52,12 +52,10 @@ function App() {
           <Route exact path="/challenge/create">
             <CreateChallengePage/>
           </Route>
-          <Route exact path="/challenge/create">
-            <CreateChallengePage/>
-          </Route>
           <Route exact path="/challenge/view">
             <ViewRequestsPage/>
           </Route>
+          <Route path="/challenge/:cid" children={<Challenge/>} />
           
           {/* TODO: Edit below paths */}
           <Route exact path="/challenge/arthur">

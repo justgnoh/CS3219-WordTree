@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, registerWithEmailAndPassword } from "../firebase.js";
-import { createUserAccount } from "../utils/Api.js";
 
 import "./styles/RegisterPage.css";
 
@@ -17,21 +16,13 @@ function RegisterPage() {
   const register = () => {
     // TODO: Add more error handling
     if (!name) alert("Please enter name");
-
-    // Firebase Registration
-    registerWithEmailAndPassword(name, email, password);
-
-    // Internal DB Registration
-    const formData = {
-      userId: user.uid,
-      email: email,
-      password: password,
-      name: name,
-      dateOfBirth: dob
-    }
-    createUserAccount(formData);
-
-    console.log("done");
+      // Process DOB (YYYY-MM-DD -> DD-MM-YYYY)
+      const splitDate = dob.split("-");
+      const processedDOB = splitDate[2] + '/' + splitDate[1] + '/' + splitDate[0];
+      console.log(processedDOB);
+    
+      // Firebase Registration
+    registerWithEmailAndPassword(name, email, password, processedDOB);
   };
 
   useEffect(() => {

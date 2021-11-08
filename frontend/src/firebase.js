@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { createUserAccount } from './utils/Api';
 
 const firebaseConfig = {
     apiKey: "AIzaSyAYsPoQAOnfBuPcx-TM2hceDs5R1s3c8Dc",
@@ -32,32 +33,26 @@ const basicSignIn = async (email, password) => {
 };
 
 // Register with Email & Password
-const registerWithEmailAndPassword = async (name, email, password) => {
+const registerWithEmailAndPassword = async (name, email, password, dob) => {
   createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
+    .then(async (userCredential) => {
       // Signed in 
+      console.log(userCredential);
       const user = userCredential.user;
-      console.log(user);
+      const userId = userCredential.user.uid;
+      const token = await user.getIdToken(true);
+      const data = {
+        "userId" : userId,
+        "email" : email,
+        "password" : password,
+        "name" : name,
+        "dateOfBirth" : dob
+      }
+      createUserAccount(token, data);
     })
     .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // ..
+      console.log(error);
     });
-    // try {
-    //   const res = await auth.createUserWithEmailAndPassword(email, password);
-    //   const user = res.user;
-    //   await db.collection("users").add({
-    //     uid: user.uid,
-    //     name,
-    //     authProvider: "local",
-    //     email,
-    //   });
-    // //   TODO: Add entry to GCP UserAccount table
-    // } catch (err) {
-    //   console.error(err);
-    //   alert(err.message);
-    // }
 };
 
 // Reset Password

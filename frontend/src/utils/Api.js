@@ -9,10 +9,10 @@ const API_HOST = 'http://localhost:80';
 export async function createNewChallenge(challengeDetails, token) {
     try {
         const resp = await axios.post(API_HOST + '/challenge/', {
-            squirrel_id: challengeDetails.uid,
-            num_of_total_turns: challengeDetails.turns,
-            word_limit_per_turn: challengeDetails.wordLimit,
-            genre: challengeDetails.interests
+            "squirrel_id": challengeDetails.uid,
+            "num_of_total_turns": challengeDetails.turns,
+            "word_limit_per_turn": challengeDetails.wordLimit,
+            "interest": challengeDetails.interest
         }, {
             headers: {
                 'x-access-token': `${token}`,
@@ -24,9 +24,13 @@ export async function createNewChallenge(challengeDetails, token) {
     }
 }
 
-export async function getChallengeById(challengeId) {
+export async function getChallengeById(token, challengeId) {
     try {
-        const resp = await axios.get(API_HOST + '/challenge/' + challengeId);
+        const resp = await axios.get(API_HOST + '/challenge/' + challengeId, {
+            headers: {
+                'x-access-token': `${token}`,
+              }
+        });
         return resp;
     } catch (err) {
         console.log(err);
@@ -55,17 +59,12 @@ export async function getChallengeRequests(token) {
     }
 }
 
-export async function getChallengesForUserId(token, userId) {
-    try {
-        const header = {
-            'x-access-token': `${token}`
-        }
-        
-        const resp = await axios.get(`${API_HOST}/challenge/1`, {
+export async function getChallengesForUserId(token) {
+    try {       
+        const resp = await axios.get(`${API_HOST}/challenge`, {
             headers: {
                 'x-access-token': `${token}`,
-                "Access-Control-Allow-Origin": process.env.REACT_APP_API_URL
-              }
+            }
         })
         return resp;
     } catch (err) {
@@ -90,18 +89,32 @@ export async function acceptChallenge(token, challengeId) {
 // ===============================
 // USER SERVICE
 // ===============================
-export async function createUserAccount(formData) {
+export async function createUserAccount(token, formData) {
     try {
-        const resp = await axios.get(API_HOST + '/user/createUser');
+        const resp = await axios.post(API_HOST + '/user/createUser', {
+            "userId" : formData.userId,
+            "email" : formData.email,
+            "password" : formData.password,
+            "name" : formData.name,
+            "dateOfBirth" : formData.dateOfBirth
+        }, { 
+            headers: {
+                'x-access-token': `${token}`
+            }
+        });
         return resp;
     } catch (err) {
         console.log(err);
     }
 }
 
-export async function getUserProfile(userId) {
+export async function getUserProfile(token) {
     try {
-        const resp = await axios.get(API_HOST + '/getUserProfile/' + userId);
+        const resp = await axios.get(API_HOST + '/getUserProfile', {
+            headers: {
+                'x-access-token': `${token}`
+            }
+        });
         return resp;
     } catch (err) {
         console.log(err);

@@ -12,6 +12,7 @@ export default function CreateChallengePage() {
     const [wordLimit, setWordLimit] = useState('');
     // const [interests, setInterests] = useState([]);
     const [interests, setInterests] = useState('');
+    const [interestsRadio, setInterestsRadio] = useState([]);
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -26,8 +27,11 @@ export default function CreateChallengePage() {
         { name: '500 words', value: '500' },
     ]
 
-    const interestsRadio = [{ interest: 'crime' }, { interest: 'fantasy' }, { interest: 'adventure' }, { interest: 'horror' }];
-    // const interestsRadio = getSystemInterests();
+    useEffect(() => {
+        getSystemInterests().then((resp) => {
+            setInterestsRadio(resp.data);
+        })
+    }, []);
 
     function handleInterests(val) {
         setInterests(val);
@@ -36,17 +40,15 @@ export default function CreateChallengePage() {
     async function createChallengeRequest() {
         var request = {
         "uid": user.uid,
-        "turns": turns,
-        "wordLimit": wordLimit,
-        "interests": interests
+        "turns": parseInt(turns),
+        "wordLimit": parseInt(wordLimit),
+        "interest": interests
         }
 
-        if (request.uid.length != 0 && (request.turns == "6" || request.turns == "4") &&
-            (request.wordLimit == "300" || request.wordLimit == "500") && request.interests.length != 0) {
+        if (request.uid != '' && (request.turns == "6" || request.turns == "4") &&
+            (request.wordLimit == "300" || request.wordLimit == "500") && request.interest.length != 0) {
             // TODO: Post
             console.log("All Good")
-            console.log(request);
-            
             console.log(request);
             const token = await user.getIdToken();
             await createNewChallenge(request, token);
