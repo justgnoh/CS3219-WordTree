@@ -1,28 +1,29 @@
 import React from 'react'
 
 export default function NutView(props) {
-    const { essayNut, communityChallengeNut, communityEssayNut } = props;
+    const { totalNut, essayNut, communityChallengeNut, communityEssayNut } = props;
     
     return (
         <div>
-            <h1>Total Nuts earned</h1>
+            <h3 className="d-flex align-content-center justify-content-center">Total Nuts earned</h3>
             <div className="d-flex align-content-center justify-content-center">
-                <h1>{essayNut + communityChallengeNut + communityEssayNut}</h1>
+                <h3>{totalNut}</h3>
+            </div>
+        
+
+            <h5 className="d-flex align-content-center justify-content-center">Earned from essays</h5>
+            <div className="d-flex align-content-center justify-content-center">
+                <h5>{essayNut}</h5>
             </div>
 
-            <h3>Nuts earned from essays</h3>
+            <h5 className="d-flex align-content-center justify-content-center">Earned from challenges</h5>
             <div className="d-flex align-content-center justify-content-center">
-                <h3>{essayNut}</h3>
+                <h5>{communityChallengeNut}</h5>
             </div>
 
-            <h3>Nuts earned from challenges</h3>
+            <h5 className="d-flex align-content-center justify-content-center">Earned from upvotes</h5>
             <div className="d-flex align-content-center justify-content-center">
-                <h3>{communityChallengeNut}</h3>
-            </div>
-
-            <h3>Nuts earned from upvotes</h3>
-            <div className="d-flex align-content-center justify-content-center">
-                <h3>{communityEssayNut}</h3>
+                <h5>{communityEssayNut}</h5>
             </div>
 
         </div>
