@@ -16,7 +16,7 @@ function RegisterPage() {
   const register = () => {
     // TODO: Add more error handling
     if (!name) alert("Please enter name");
-      // Process DOB (YYYY-MM-DD -> DD-MM-YYYY)
+      // Process DOB (YYYY-MM-DD -> DD/MM/YYYY)
       const splitDate = dob.split("-");
       const processedDOB = splitDate[2] + '/' + splitDate[1] + '/' + splitDate[0];
       console.log(processedDOB);

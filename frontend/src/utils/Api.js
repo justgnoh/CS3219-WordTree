@@ -37,9 +37,16 @@ export async function getChallengeById(token, challengeId) {
     }
 }
 
-export async function addEssayPara(challengeId) {
+export async function addEssayPara(token, challengeId, essay, title) {
     try {
-        const resp = await axios.put(API_HOST + '/challenge/' + challengeId);
+        const resp = await axios.put(API_HOST + '/challenge/' + challengeId, {
+            "essay_para": essay,
+            "title": title
+        },{
+            headers: {
+                'x-access-token': `${token}`,
+              }
+        });
         return resp;
     } catch (err) {
         console.log(err);
@@ -74,10 +81,9 @@ export async function getChallengesForUserId(token) {
 
 export async function acceptChallenge(token, challengeId) {
     try {     
-        const resp = await axios.get(`${API_HOST}/challenge/1`, {
+        const resp = await axios.get(`${API_HOST}/challenge/` + challengeId, {
             headers: {
-                'x-access-token': `${token}`,
-                "Access-Control-Allow-Origin": process.env.REACT_APP_API_URL
+                'x-access-token': `${token}`
               }
         })
         return resp;
@@ -110,7 +116,7 @@ export async function createUserAccount(token, formData) {
 
 export async function getUserProfile(token) {
     try {
-        const resp = await axios.get(API_HOST + '/getUserProfile', {
+        const resp = await axios.get(API_HOST + '/user/getUserProfile', {
             headers: {
                 'x-access-token': `${token}`
             }
@@ -121,12 +127,16 @@ export async function getUserProfile(token) {
     }
 }
 
-export async function updateUserProfile(userId, formData) {
+export async function updateUserProfile(token, formData) {
     try {
         const resp = await axios.put(API_HOST + '/user/updateUserProfile', {
-            userId: formData.uid,
-            name: formData.name,
-            dateOfBirth: formData.dob
+            "userId": formData.uid,
+            "name": formData.name,
+            "dateOfBirth": formData.dob
+        }, {
+            headers: {
+                'x-access-token': `${token}`
+            }
         });
         return resp;
     } catch (err) {
@@ -143,9 +153,12 @@ export async function getSystemInterests() {
     }
 }
 
-export async function updateUserInterests(token) {
+export async function updateUserInterests(token, interests) {
     try {
+        
         const resp = await axios.put(API_HOST + '/user/updateUserInterest', {
+            "interest": interests
+        } ,{
             headers: {
                 'x-access-token': `${token}`,
               }
