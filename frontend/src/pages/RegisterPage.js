@@ -29,8 +29,7 @@ function RegisterPage() {
     if (loading) return;
     // TODO: Add post Auth Page
     if (user) {
-        // history.replace("/interests");
-        history.replace("/profile");
+        history.replace("/interests");
     }
   }, [user, loading]);
 

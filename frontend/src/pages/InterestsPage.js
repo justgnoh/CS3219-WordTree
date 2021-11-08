@@ -3,12 +3,13 @@ import { ToggleButtonGroup, ToggleButton, Button, Modal } from 'react-bootstrap'
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
 import { getSystemInterests, updateUserInterests } from '../utils/Api';
+import { useHistory } from "react-router-dom";
 
 export default function InterestsPage() {
     const [user, loading, error] = useAuthState(auth);
     const [interests, setInterests] = useState([]);
     const [interestsRadio, setInterestsRadio] = useState([]);
-    // let interestsRadio = [{ interest: 'crime' }, { interest: 'fantasy' }, { interest: 'adventure' }, { interest: 'horror' }];
+    const history = useHistory();
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -29,8 +30,8 @@ export default function InterestsPage() {
             // TODO: Post
             console.log("All Good")
             const userToken = await user.getIdToken(true);
-            console.log(userToken);
-            await updateUserInterests(userToken);
+            await updateUserInterests(userToken, interests);
+            history.push("/profile");
         } else {
             setShow(true);
         }
