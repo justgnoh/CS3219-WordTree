@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { Breadcrumb, InputGroup, FormControl, Modal, Button, ToggleButton, ToggleButtonGroup } from 'react-bootstrap'
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
+import { useHistory } from 'react-router';
 import { createNewChallenge, getSystemInterests } from '../utils/Api';
 
 export default function CreateChallengePage() {
     const [user, loading, error] = useAuthState(auth);
+    const history = useHistory();
 
     // Request Values
     const [turns, setTurns] = useState('');
@@ -52,6 +54,7 @@ export default function CreateChallengePage() {
             console.log(request);
             const token = await user.getIdToken();
             await createNewChallenge(request, token);
+            history.replace("/challenge");
         } else {
             setShow(true);
         }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Table, Badge } from 'react-bootstrap'
+import { Button, Table, Badge, Spinner } from 'react-bootstrap'
 import { useHistory } from 'react-router';
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
@@ -15,25 +15,67 @@ export default function ChallengePage() {
             const token = await user.getIdToken();
             getChallengesForUserId(token).then((resp) => {
                 console.log(resp.data)
-                determineTurn();
+                // determineTurn(resp.data);
                 setChallengeList(resp.data);
             });
         }
     }, [user]);
 
-    function determineTurn() {
+    function determineTurn(id, seq, squirrelId, racoonId) {
+        if (seq % 2 == 0) {
+            console.log('Squirrels turn');
+            if (id == squirrelId) {
+                return true;
+            }
 
-    }
+            if (id == racoonId) {
+                return false;
+            }
+        }
 
-    function makeBadge(value) {
-        if (value == "DRAFT") {
-            return <Badge pill bg="secondary">{value}</Badge>
-        } else if (value == "WAITING_MATCH") {
-            return <Badge pill bg="secondary">Awaiting Match</Badge>
-        } else if (value == "ONGOING") {
-            return <Badge pill bg="success">Ongoing</Badge>
+        if (seq % 2 == 1) {
+            console.log('Racoons Turn')
+            if (id == racoonId) {
+                return true;
+            }
+
+            if (id == squirrelId) {
+                return false;
+            }
         }
     }
+
+    function makeBadge(challengeData) {
+        const status = challengeData.status_of_challenge;
+        const curr_seq = challengeData.num_of_sequences_completed;
+        const squirrel_id = challengeData.squirrel_id;
+        const racoon_id = challengeData.racoon_id;
+        const userId = user.uid;
+
+        const isMyTurn = determineTurn(userId, curr_seq, squirrel_id, racoon_id);
+
+        if (status == "DRAFT") {
+            return <Badge pill bg="secondary">{status}</Badge>
+        } else if (status == "WAITING_MATCH") {
+            return <Badge pill bg="secondary">Awaiting Match</Badge>
+        } else if (status == "ONGOING") {
+            if (isMyTurn) {
+                return <Badge pill bg="success">Your Turn</Badge>
+            } else {
+                return <Badge pill bg="danger">Awaiting Turn</Badge>
+            }
+        } else if (status == "COMPLETED") {
+            return <Badge pill bg="success">Completed</Badge>
+        }
+    }
+
+    let emptyChallengeData = [];
+    emptyChallengeData.push(
+        <tr>
+            <br></br>
+            <Spinner animation="border" variant="success" />
+        </tr>
+    )
 
     let challengeData = [];
     for (let i = 0; i < challengeList.length; i++) {
@@ -41,17 +83,22 @@ export default function ChallengePage() {
         <tr>
             <td>{challengeList[i].challenge_id}</td>
             <td>{challengeList[i].title}</td>
-            <td>{challengeList[i].racoon_id}</td>
+            <td>{challengeList[i].squirrel_name}</td>
+            <td>{challengeList[i].racoon_name}</td>
             <td><Badge pill bg="warning" className="black-text">{challengeList[i].interest}</Badge></td>
-            {/* TODO: Not in 2/4 turn level */}
-            <td>{challengeList[i].num_of_total_turns}</td>
+            <td>{challengeList[i].num_of_sequences_completed}/{challengeList[i].num_of_total_turns}</td>
             <td>
-                {makeBadge(challengeList[i].status_of_challenge)}
+                {makeBadge(challengeList[i])}
             </td>
             <td>
                 <Button variant="dark" size="sm" className="primary-color" onClick={()=> {
-                            history.push("/challenge/" + challengeList[i].challenge_id);
-                        }}>View</Button>
+                    const status = challengeList[i].status_of_challenge;
+                    if (status == "COMPLETED") {
+                        history.push("/community/" + challengeList[i].challenge_id);
+                    } else {
+                        history.push("/challenge/" + challengeList[i].challenge_id);
+                    }
+                }}>View</Button>
             </td>
         </tr>)
     }
@@ -68,6 +115,7 @@ export default function ChallengePage() {
                     <tr>
                     <th>ID</th>
                     <th>Title</th>
+                    <th>Squirrel Name</th>
                     <th>Racoon Name</th>
                     <th>Interest</th>
                     <th>Turns</th>
@@ -78,44 +126,7 @@ export default function ChallengePage() {
 
                 <tbody>
                     {challengeData}
-                    {/* <tr>
-                        <td>1</td>
-                        <td>The Story of a man</td>
-                        <td>Arthur</td>
-                        <td>
-                            <Badge pill bg="warning" className="black-text">Horror</Badge>
-                            <Badge pill bg="warning" className="black-text">Sci-Fi</Badge>
-                        </td>
-                        <td>
-                            2/4 rounds
-                        </td>
-                        <td>
-                            <Badge pill bg="success">Your Turn</Badge>
-                        </td>
-                        <td>
-                        <Button variant="dark" size="sm" className="primary-color" onClick={()=> {
-                            history.push("/challenge/arthur");
-                        }}>View</Button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>dp</td>
-                        <td>The Story of a man</td>
-                        <td>Kevin</td>
-                        <td>
-                            <Badge pill bg="warning" className="black-text">Crime</Badge>
-                        </td>
-                        <td>
-                            3/6 rounds
-                        </td>
-                        <td>
-                            <Badge pill bg="danger">Awaiting Turn</Badge>
-                        </td>
-                        <td>
-                        <Button variant="dark" size="sm" className="primary-color">View</Button>
-                        </td>
-                    </tr> */}
-
+                    {challengeData.length == 0 ? emptyChallengeData : challengeData}
                 </tbody>
             </Table>
             

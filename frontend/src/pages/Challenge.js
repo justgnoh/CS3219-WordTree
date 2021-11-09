@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Badge, Button, InputGroup, FormControl, Breadcrumb, Modal } from 'react-bootstrap';
+import { Card, Table, Badge, Button, InputGroup, FormControl, Breadcrumb, Modal, Spinner } from 'react-bootstrap';
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
 import { useParams, useHistory } from 'react-router-dom';
@@ -181,7 +181,11 @@ export default function Challenge() {
         if (value == "DRAFT") {
             return <Badge pill bg="secondary">{value}</Badge>
         } else if (value == "WAITING_MATCH") {
-            return <Badge pill bg="secondary">Awaiting Match</Badge>
+            if (isMyTurn) {
+                return <Badge pill bg="success">Your Turn</Badge>
+            } else {
+                return <Badge pill bg="secondary">Awaiting Match</Badge>
+            }
         } else if (value == "ONGOING") {
             if (isMyTurn) {
                 return <Badge pill bg="success">Your Turn</Badge>
@@ -190,6 +194,14 @@ export default function Challenge() {
             }
         }
     }
+
+    let emptyChallengeData = [];
+    emptyChallengeData.push(
+        <tr>
+            <br></br>
+            <Spinner animation="border" variant="success" />
+        </tr>
+    )
 
     return (
         <div className="ms-5 me-5">
@@ -211,35 +223,40 @@ export default function Challenge() {
                         <th>Status</th>
                     </tr>
                 </thead>
+                {!challengeData.challenge_id ? emptyChallengeData
+                    : <tbody>
+                        <tr>
+                            <td>{challengeData.challenge_id}</td>
+                            <td>{challengeData.title}</td>
+                            <td>{challengeData.squirrel_name}</td>
+                            <td>{challengeData.racoon_name}</td>
+                            <td>
+                                <Badge pill bg="warning" className="black-text">{challengeData.interest}</Badge>
+                            </td>
+                            <td>
+                                {/* TODO: Current turns 2/4 rounds etc.. */}
+                                {challengeData.essay_paras.length}/{challengeData.num_of_total_turns}
+                            </td>
+                            <td>
+                                {/* TODO: Determine how to do this */}
+                                {makeBadge(challengeData.status_of_challenge)}
+                            </td>
+                        </tr>
+                    </tbody>
+                }
 
-                <tbody>
-                    <tr>
-                        <td>{challengeData.challenge_id}</td>
-                        <td>{challengeData.title}</td>
-                        <td>{challengeData.racoon_id}</td>
-                        <td>{authorName}</td>
-                        <td>
-                            <Badge pill bg="warning" className="black-text">{challengeData.interest}</Badge>
-                        </td>
-                        <td>
-                            {/* TODO: Current turns 2/4 rounds etc.. */}
-                            {challengeData.essay_paras.length}/{challengeData.num_of_total_turns}
-                        </td>
-                        <td>
-                            {/* TODO: Determine how to do this */}
-                            {makeBadge(challengeData.status_of_challenge)}
-                        </td>
-                    </tr>
-                </tbody>
             </Table>
 
             <InputGroup className="mb-3">
                 <InputGroup.Text id="basic-addon1">Title</InputGroup.Text>
-                <FormControl
+                {isMyTurn ? <FormControl
                     // placeholder="No Title"
                     placeholder={challengeData.title}
-                    onChange={(e) => setTitle(e.target.value)}
-                />
+                    onChange={(e) => setTitle(e.target.value)} />
+                    : <FormControl
+                        // placeholder="No Title"
+                        placeholder={challengeData.title}
+                        onChange={(e) => setTitle(e.target.value)} disabled />}
             </InputGroup>
 
             <Card>
@@ -247,7 +264,7 @@ export default function Challenge() {
                 <Card.Body>
                     <Card.Text>
                         {/* {challengeData.essay_paras.length == 0 ? 'No previous paras found! Begin by submitting your first para...' : challengeData.essay_paras} */}
-                        {essayThusFar}
+                        {essayThusFar.length == 0 ? <Spinner animation="border" variant="success" /> : essayThusFar}
                     </Card.Text>
                 </Card.Body>
             </Card>
@@ -260,6 +277,7 @@ export default function Challenge() {
                             <Card.Text>
                                 Here are your word prompts. Use the words below to earn nuts!
                                 <br></br>
+                                {words.length == 0 && <Spinner animation="border" variant="success" /> }
                                 {word1Used ? <Badge pill bg="success" className="black-text me-3">{words[0]}</Badge> : <Badge pill bg="warning" className="black-text me-3">{words[0]}</Badge>}
                                 {word2Used ? <Badge pill bg="success" className="black-text me-3">{words[1]}</Badge> : <Badge pill bg="warning" className="black-text me-3">{words[1]}</Badge>}
                                 {word3Used ? <Badge pill bg="success" className="black-text me-3">{words[2]}</Badge> : <Badge pill bg="warning" className="black-text me-3">{words[2]}</Badge>}
@@ -273,7 +291,6 @@ export default function Challenge() {
                         <Card.Header>Round Statistics</Card.Header>
                         <Card.Body>
                             <Card.Text>
-                                (GET STATS from Challenge Service)
                                 <br></br>
                                 Time Left: 20h 31m left
                                 <br></br>
