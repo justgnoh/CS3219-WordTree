@@ -22,6 +22,8 @@ const getEssayParaDetailsQuery = "SELECT e.challenge_id, e.seq_num, author_id, e
 
 const getChallengeUserDetailsQuery = "SELECT * FROM UserProfile WHERE user_id = $1 OR user_id = $2;";
 
+const checkChallengeQuery = "SELECT COUNT(*) FROM Challenges WHERE challenge_id = $1 AND status_of_challenge = 'COMPLETED';";
+
 export async function listChallenges(userId, limit, offset) {
     try {
         const result = await pool.query(listChallengeQuery, [userId, limit, offset]);
@@ -52,6 +54,15 @@ export async function getEssayParaDetails(userId, challengeId) {
 export async function getChallengeUserDetails(squirrelId, racoonId) {
     try {
         const result = await pool.query(getChallengeUserDetailsQuery, [squirrelId, racoonId]);
+        return result;
+    } catch (err) {
+        throw err;
+    }
+}
+
+export async function checkChallenge(challengeId) {
+    try {
+        const result = await pool.query(checkChallengeQuery, [challengeId]);
         return result;
     } catch (err) {
         throw err;

@@ -119,21 +119,12 @@ export async function updateUserProfile(req, res) {
     if (!body.dateOfBirth) {
         return res.status(400).send(ERROR_NO_DATE_OF_BIRTH);
     }
-    if (!body.interest) {
-        var interestArr;
-    } else {
-        try {
-            var interestArr = JSON.parse(body.interest);
-        } catch (err) {
-            var interestArr = [body.interest];
-        }
-    }
 
     try {
         await userProfileDao.updateUserName(reqUserId, body.name, body.dateOfBirth);
-        await userInterestDao.clearUserInterest(reqUserId);
-        if (interestArr) {
-            await userInterestDao.addUserInterest(reqUserId, interestArr);
+        if (body.interest) {
+            await userInterestDao.clearUserInterest(reqUserId);
+            await userInterestDao.addUserInterest(reqUserId, body.interest);
         }
         res.status(200).send("OK");
     } catch (err) {
@@ -170,80 +161,6 @@ export async function getInterest(req, res) {
         .catch(err => { res.status(500).send(err.message); });
 }
 
-export async function addUserInterest(req, res) {
-    console.log("User Service: (POST) /addUserInterest");
-
-    const accessToken = req.headers['x-access-token'];
-    if (!accessToken) {
-        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
-    }
-
-    try {
-        var reqUserId = await getAuthenticatedUserId(accessToken);
-    } catch (err) {
-        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
-    }
-
-    if (!reqUserId) {
-        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
-    }
-
-    const body = req.body;
-    if (!body) {
-        return res.status(400).send(ERROR_NO_DATA);
-    }
-    if (!body.interest) {
-        return res.status(400).send(ERROR_NO_INTEREST);
-    }
-
-    try {
-        var interestArr = JSON.parse(body.interest);
-    } catch (err) {
-        var interestArr = [body.interest];
-    }
-
-    await userInterestDao.addUserInterest(reqUserId, interestArr)
-        .then(result => { res.status(200).send("OK"); })
-        .catch(err => { res.status(500).send(err.message); });
-}
-
-export async function deleteUserInterest(req, res) {
-    console.log("User Service: (DELETE) /deleteUserInterest");
-
-    const accessToken = req.headers['x-access-token'];
-    if (!accessToken) {
-        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
-    }
-
-    try {
-        var reqUserId = await getAuthenticatedUserId(accessToken);
-    } catch (err) {
-        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
-    }
-
-    if (!reqUserId) {
-        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
-    }
-
-    const body = req.body;
-    if (!body) {
-        return res.status(400).send(ERROR_NO_DATA);
-    }
-    if (!body.interest) {
-        return res.status(400).send(ERROR_NO_INTEREST);
-    }
-
-    try {
-        var interestArr = JSON.parse(body.interest);
-    } catch (err) {
-        var interestArr = [body.interest];
-    }
-
-    await userInterestDao.deleteUserInterest(reqUserId, interestArr)
-        .then(result => { res.status(200).send("OK"); })
-        .catch(err => { res.status(500).send(err.message); });
-}
-
 export async function getUserInterest(req, res) {
     console.log("User Service: (GET) /getUserInterest");
 
@@ -264,29 +181,6 @@ export async function getUserInterest(req, res) {
 
     await userInterestDao.getUserInterest(reqUserId)
         .then(result => { res.status(200).json(result.rows); })
-        .catch(err => { res.status(500).send(err.message); });
-}
-
-export async function clearUserInterest(req, res) {
-    console.log("User Service: (DELETE) /clearUserInterest");
-
-    const accessToken = req.headers['x-access-token'];
-    if (!accessToken) {
-        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
-    }
-
-    try {
-        var reqUserId = await getAuthenticatedUserId(accessToken);
-    } catch (err) {
-        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
-    }
-
-    if (!reqUserId) {
-        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
-    }
-
-    await userInterestDao.clearUserInterest(reqUserId)
-        .then(result => { res.status(200).send("OK"); })
         .catch(err => { res.status(500).send(err.message); });
 }
 
@@ -317,14 +211,8 @@ export async function updateUserInterest(req, res) {
     }
 
     try {
-        var interestArr = JSON.parse(body.interest);
-    } catch (err) {
-        var interestArr = [body.interest];
-    }
-
-    try {
         await userInterestDao.clearUserInterest(reqUserId);
-        await userInterestDao.addUserInterest(reqUserId, interestArr);
+        await userInterestDao.addUserInterest(reqUserId, body.interest);
         res.status(200).send("OK");
     } catch (err) {
         res.status(500).send(err.message);
