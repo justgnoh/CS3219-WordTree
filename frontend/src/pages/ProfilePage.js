@@ -64,9 +64,9 @@ function ProfilePage() {
     }
     if (!editProfile && !viewNut) {
       // Normal Profile
-      if (user) {
+      if (user && userProfile) {
       return (
-        <ProfileView userProfile={userProfile} user={user} />
+        <ProfileView userProfile={userProfile} user={user} interests={userProfile.interest} />
       );
       }
     }
