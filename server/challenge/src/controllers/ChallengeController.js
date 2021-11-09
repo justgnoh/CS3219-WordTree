@@ -22,8 +22,11 @@ import {
   initWordsForChallenge,
   getWordsForSequenceInChallenge,
 } from "../communications/word.js";
+import {
+  addNotificationChallengeAccepted,
+  addNotificationForOtherUserOnTurnEnd
+} from "../communications/notifications.js"
 import { getAuthenticatedUserIDFromAuthService } from "../communications/auth.js";
-
 
 
 export const getAllChallengeByUserId = async (req, res) => {
@@ -32,56 +35,29 @@ export const getAllChallengeByUserId = async (req, res) => {
     return res.status(401).send(error_messages.INVALID_ACCESS_TOKEN);
   }
   const challenges = await getChallengeByUserIdFromDB(userID);
-
-  let updatedChallenges = [];
-
-  if (challenges.length == 0) {
-    return res.status(200).json(updatedChallenges);
-  }
-
   for (let i = 0; i < challenges.length; i++) {
-    const ele = challenges[i];
-    let challengeID = ele["challenge_id"];
-    getLastModifiedTimeForChallenge(challengeID)
-      .then((lastModifiedTimeRes) => {
-        if (lastModifiedTimeRes && lastModifiedTimeRes.length > 0) {
-          return lastModifiedTimeRes[0]["time_of_last_completed_sequence"];
-        } else return "";
-      })
-      .then((lastModifiedTime) => {
-        ele["last_modified_time"] = lastModifiedTime;
-        return ele;
-      })
-      .then((finalEle) => {
-        updatedChallenges.push(finalEle);
-        if (i == challenges.length - 1) {
-          return res.status(200).json(updatedChallenges);
-        }
-      });
+    let sqnum = challenges[i].num_of_sequences_completed;
+    let squirrel_id = challenges[i].squirrel_id;
+    let racoon_id = challenges[i].racoon_id;
+    let awaitingID = sqnum % 2 == 0 ? squirrel_id : racoon_id;
+    challenges[i]['awaiting_turn_uid'] = awaitingID;
   }
+  return res.status(200).json(challenges); 
 };
-
-
 
 export const acceptChallenge = async (req, res) => {
 
   const userID = await getAuthenticatedUserID(req.headers["x-access-token"]);
-  if (!userID) {
-    return res.status(401).send(error_messages.INVALID_ACCESS_TOKEN);
-  }
   const challengeID = req.body["challenge_id"];
-  if (!challengeID) {
-    return res.status(400).send(error_messages.MISSING_FIELDS);
-  }
-
-  if (isNaN(challengeID)) {
-    return res.status(400).send(error_messages.INVALID_FIELDS);
-  }
+  if (!userID) return res.status(401).send(error_messages.INVALID_ACCESS_TOKEN);
+  if (!challengeID) return res.status(400).send(error_messages.MISSING_FIELDS);
+  if (isNaN(challengeID)) return res.status(400).send(error_messages.INVALID_FIELDS);
 
   const challenges = await getChallengeByChallengeIdFromDB(challengeID).catch((err) => {
-    return res.status(500).send(err.message);
+    return res.status(500).send(error_messages.INTERNAL_ERROR);
   });
   if (challenges.length == 0) return res.status(404).send(error_messages.NO_SUCH_CHALLENGE_FOUND);
+  
   const challenge = challenges[0];
   if (challenge['racoon_id'] !== null) return res.status(403).send(error_messages.CHALLENGE_ACCEPTED);
   if (challenge['squirrel_id'] == userID) return res.status(403).send(error_messages.USER_ALREADY_IN_CHALLENGE)
@@ -92,40 +68,20 @@ export const acceptChallenge = async (req, res) => {
   ).catch((err) => false);
   if (!result) return res.status(500).send(error_messages.INTERNAL_ERROR);
 
-  const sequenceNum = await getNumOfCompletedTurnsForChallenge(challengeID)
-    .then((numOfCompletedTurnsRes) => {
-      if (numOfCompletedTurnsRes.length > 0) {
-        // Extracting Results
-        let sequenceNum = numOfCompletedTurnsRes[0].num_of_sequences_completed;
-        if (sequenceNum !== undefined) {
-          return sequenceNum;
-        }
-      }
-      return -1;
-    })
-    .catch((err) => -1);
-
-  if (sequenceNum < 0) {
-    return res.status(500).send(error_messages.INTERNAL_ERROR);
-  }
+  const sequenceNum = challenge['num_of_sequences_completed']
+  if (sequenceNum < 0) return res.status(500).send(error_messages.INTERNAL_ERROR);
 
   const nextWords = await getWordsForSequenceInChallenge(
     challengeID,
     sequenceNum + 1
   );
-
   await updateStatusOfChallenge(challengeID, 'ONGOING').catch((err) => {
     return res.status(500).send(err.message);
   });
-
-  if (nextWords) {
-    return res.status(200).json({
-      words: nextWords,
-    });
-  } else return res.status(500).send(error_messages.INTERNAL_ERROR);
-
+  await addNotificationChallengeAccepted(challenge['squirrel_id']);
+  if (nextWords) return res.status(200).json({ words: nextWords,});
+  else return res.status(500).send(error_messages.INTERNAL_ERROR);
 };
-
 
 export const createNewChallenge = async (req, res) => {
   const userID = await getAuthenticatedUserID(req.headers["x-access-token"]);
@@ -179,7 +135,6 @@ export const createNewChallenge = async (req, res) => {
   }
 };
 
-
 export const addEssayPara = async (req, res) => {
 
   const userID = await getAuthenticatedUserID(req.headers["x-access-token"]);
@@ -189,7 +144,7 @@ export const addEssayPara = async (req, res) => {
   const { id: challengeID } = req.params;
   const data = req.body;
 
-  if (!data.essay_para || !data.title)
+  if (!data.essay_para || data.title == undefined)
     return res.status(400).send(error_messages.MISSING_FIELDS);
   if (isNaN(challengeID))
     return res.status(400).send(error_messages.INVALID_FIELDS);
@@ -204,18 +159,7 @@ export const addEssayPara = async (req, res) => {
     return res.status(404).send(error_messages.NO_SUCH_CHALLENGE_FOUND);
   }
 
-  const sequenceNum = await getNumOfCompletedTurnsForChallenge(challengeID)
-    .then((numOfCompletedTurnsRes) => {
-      if (numOfCompletedTurnsRes.length > 0) {
-        // Extracting Results
-        let sequenceNum = numOfCompletedTurnsRes[0].num_of_sequences_completed;
-        if (sequenceNum !== undefined) {
-          return sequenceNum;
-        }
-      }
-      return -1;
-    })
-    .catch((err) => -1);
+  const sequenceNum = challenge['num_of_sequences_completed']
 
   if (sequenceNum < 0 || sequenceNum >= challenge["num_of_total_turns"]) {
     return res.status(403).send(error_messages.WRONG_TURN);
@@ -234,16 +178,20 @@ export const addEssayPara = async (req, res) => {
       challengeID
     );
 
-    // if (!result) return res.status(500).send(error_messages.INTERNAL_ERROR);
+    if (!result) return res.status(500).send(error_messages.INTERNAL_ERROR);
 
     const newStatus = getNewStatus(sequenceNum + 1, challenge['num_of_total_turns'])
-    console.log(sequenceNum + 1);
+
     await updateStatusOfChallenge(challenge['challenge_id'], newStatus).catch((err) => {
       return res.status(500).send(err.message);
     });
     await updateTurnDetails(challengeID).catch((err) => {
       return res.status(500).send(err.message);
     });
+
+    const other_user_uid = userID == challenge['squirrel_id'] ? challenge['racoon_id'] : userID
+    await addNotificationForOtherUserOnTurnEnd(other_user_uid, challengeID);
+
     if (data.title && data.title.length > 0) { 
       updateTitleOfChallenge(challengeID, data.title).then(res => true).catch(err => false);
     }
@@ -252,8 +200,6 @@ export const addEssayPara = async (req, res) => {
     return res.status(403).send(error_messages.WRONG_TURN);
   }
 };
-
-
 
 export const getChallengeByChallengeId = async (req, res) => {
 
@@ -271,37 +217,24 @@ export const getChallengeByChallengeId = async (req, res) => {
   const challenges = await getChallengeByChallengeIdFromDB(challengeID);
 
   if (challenges.length > 1) {
-    console.log("Duplicate Challenge ID found");
     return res.status(500).send(error_messages.INTERNAL_ERROR);
   }
+  if (challenges.length == 0) {
+    return res.status(404).send(error_messages.NO_SUCH_CHALLENGE_FOUND);
+  }
   const challenge = challenges[0];
+
   if (challenge["status_of_challenge"] != "COMPLETED") {
     if (
       userID != challenge["squirrel_id"] &&
       userID != challenge["racoon_id"]
-    ) {
-      return res.status(401).send(error_messages.NOT_IN_THIS_CHALLENGE);
-    }
+    ) return res.status(401).send(error_messages.NOT_IN_THIS_CHALLENGE);
   }
 
   if (challenge["status_of_challenge"] != "COMPLETED") {
-    const sequenceNum = await getNumOfCompletedTurnsForChallenge(challengeID)
-      .then((numOfCompletedTurnsRes) => {
-        if (numOfCompletedTurnsRes.length > 0) {
-          // Extracting Results
-          let sequenceNum =
-            numOfCompletedTurnsRes[0].num_of_sequences_completed;
-          if (sequenceNum !== undefined) {
-            return sequenceNum;
-          }
-        }
-        return -1;
-      })
-      .catch((err) => -1);
+    const sequenceNum = challenge['num_of_sequences_completed']
 
-    if (sequenceNum < 0) {
-      return res.status(500).send(error_messages.INTERNAL_ERROR);
-    }
+    if (sequenceNum < 0) return res.status(500).send(error_messages.INTERNAL_ERROR);
     if (sequenceNum < challenge["num_of_total_turns"]) {
       const nextWords = await getWordsForSequenceInChallenge(
         challengeID,
@@ -360,37 +293,14 @@ const getNewStatus = (newSequenceNum, num_of_total_turns) => {
   else return 'INVALID';
 }
 
-
 export const getAllChallengesNotAccepted = async (req, res) => {
   const userID = await getAuthenticatedUserID(req.headers["x-access-token"]);
   if (!userID) {
     return res.status(401).send(error_messages.INVALID_ACCESS_TOKEN);
   }
-  const challenges = await getAllChallengesWaitingMatchFromDB();
-  if (challenges.length == 0) {
-    return res.status(200).send(challenges)
-  }
-  for (let i = 0; i < challenges.length; i++) {
-    const ele = challenges[i];
-    const challengeID = ele['challenge_id'];
-    let updatedChallenges = [];
-    getLastModifiedTimeForChallenge(challengeID)
-    .then((lastModifiedTimeRes) => {
-      if (lastModifiedTimeRes && lastModifiedTimeRes.length > 0) {
-        return lastModifiedTimeRes[0]["time_of_last_completed_sequence"];
-      } else return "";
-    })
-    .then((lastModifiedTime) => {
-      ele["last_modified_time"] = lastModifiedTime;
-      return ele;
-    })
-    .then((finalEle) => {
-      updatedChallenges.push(finalEle);
-      if (i == challenges.length - 1) {
-        return res.status(200).json(updatedChallenges);
-      }
-    }); 
-  }
+  let challenges = await getAllChallengesWaitingMatchFromDB();
+  challenges = challenges.filter(ele => ele['squirrel_id'] != userID)
+  return res.status(200).send(challenges)
 }
 
 const getAuthenticatedUserID = async (accessToken) => {

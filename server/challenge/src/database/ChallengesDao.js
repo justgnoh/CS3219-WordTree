@@ -44,7 +44,15 @@ export async function getNumOfCompletedTurnsForChallenge(challengeID) {
 
 export async function getChallengeByChallengeIdFromDB(challengeID) {
     try {
-        const result = await pool.query("SELECT * FROM Challenges c WHERE c.challenge_id = $1", [challengeID]);
+        const result = await pool.query("SELECT c.challenge_id, title, squirrel_id, racoon_id, " +
+        "num_of_total_turns, word_limit_per_turn, interest, status_of_challenge, " +
+        "num_of_sequences_completed, time_of_last_completed_sequence, " +
+        "inter.user_name as racoon_name, inter1.user_name as squirrel_name " +
+        "FROM (Challenges c INNER JOIN TurnDetails t ON c.challenge_id = t.challenge_id) " +
+        "LEFT OUTER JOIN (SELECT user_name, user_id FROM UserProfile) inter ON inter.user_id = c.racoon_id " +
+        "LEFT OUTER JOIN (SELECT user_name, user_id FROM UserProfile) inter1 ON inter1.user_id = c.squirrel_id " +
+        "WHERE c.challenge_id = $1 " +
+        "ORDER BY t.time_of_last_completed_sequence DESC;", [challengeID]);
         return result.rows;
     } catch (err) {
         throw err;
@@ -53,7 +61,16 @@ export async function getChallengeByChallengeIdFromDB(challengeID) {
 
 export async function getChallengeByUserIdFromDB(userID) {
     try {
-        const result = await pool.query("SELECT * FROM Challenges WHERE squirrel_iD = $1 OR racoon_id = $1", [userID])
+
+        const result = await pool.query("SELECT c.challenge_id, title, squirrel_id, racoon_id, " +
+        "num_of_total_turns, word_limit_per_turn, interest, status_of_challenge, " +
+        "num_of_sequences_completed, time_of_last_completed_sequence, " +
+        "inter.user_name as racoon_name, inter1.user_name as squirrel_name " +
+        "FROM (Challenges c INNER JOIN TurnDetails t ON c.challenge_id = t.challenge_id) " +
+        "LEFT OUTER JOIN (SELECT user_name, user_id FROM UserProfile) inter ON inter.user_id = c.racoon_id " +
+        "LEFT OUTER JOIN (SELECT user_name, user_id FROM UserProfile) inter1 ON inter1.user_id = c.squirrel_id " +
+        "WHERE c.squirrel_id = $1 OR c.racoon_id = $1 " +
+        "ORDER BY t.time_of_last_completed_sequence DESC;" , [userID])
         return result.rows;
     } catch (err) {
         throw err;
@@ -119,7 +136,15 @@ export async function updateTitleOfChallenge(challengeID, title) {
 
 export async function getAllChallengesWaitingMatchFromDB() {
     try {
-        const result = await pool.query("Select * from challenges c WHERE c.status_of_challenge = $1", ["WAITING_MATCH"]);
+        const result = await pool.query("SELECT c.challenge_id, title, squirrel_id, racoon_id, " +
+        "num_of_total_turns, word_limit_per_turn, interest, status_of_challenge, " +
+        "num_of_sequences_completed, time_of_last_completed_sequence, " +
+        "inter.user_name as racoon_name, inter1.user_name as squirrel_name " +
+        "FROM (Challenges c INNER JOIN TurnDetails t ON c.challenge_id = t.challenge_id) " +
+        "LEFT OUTER JOIN (SELECT user_name, user_id FROM UserProfile) inter ON inter.user_id = c.racoon_id " +
+        "LEFT OUTER JOIN (SELECT user_name, user_id FROM UserProfile) inter1 ON inter1.user_id = c.squirrel_id " +
+        "WHERE c.status_of_challenge = $1 " +
+        "ORDER BY t.time_of_last_completed_sequence DESC;", ["WAITING_MATCH"]);
         return result.rows;
     } catch (err) {
         throw err;
