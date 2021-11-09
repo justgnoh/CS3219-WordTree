@@ -22,9 +22,6 @@ function ProfilePage() {
     }
   });
 
-  // TODO: API CALL to NUT SERVICE
-  // const userNuts = getAllNuts(user.uid);
-
   useEffect(() => {
     if (!user) {
       history.replace("/");
