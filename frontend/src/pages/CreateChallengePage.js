@@ -6,13 +6,12 @@ import { useHistory } from 'react-router';
 import { createNewChallenge, getSystemInterests } from '../utils/Api';
 
 export default function CreateChallengePage() {
-    const [user, loading, error] = useAuthState(auth);
+    const [user] = useAuthState(auth);
     const history = useHistory();
 
     // Request Values
     const [turns, setTurns] = useState('');
     const [wordLimit, setWordLimit] = useState('');
-    // const [interests, setInterests] = useState([]);
     const [interests, setInterests] = useState('');
     const [interestsRadio, setInterestsRadio] = useState([]);
 
@@ -25,8 +24,8 @@ export default function CreateChallengePage() {
     ];
 
     const wordLimitRadio = [
-        { name: '300 words', value: '300' },
-        { name: '500 words', value: '500' },
+        { name: '1000 characters', value: '1000' },
+        { name: '1500 characters', value: '1500' },
     ]
 
     useEffect(() => {
@@ -48,9 +47,7 @@ export default function CreateChallengePage() {
         }
 
         if (request.uid != '' && (request.turns == "6" || request.turns == "4") &&
-            (request.wordLimit == "300" || request.wordLimit == "500") && request.interest.length != 0) {
-            // TODO: Post
-            console.log("All Good")
+            (request.wordLimit == "1000" || request.wordLimit == "1500") && request.interest.length != 0) {
             console.log(request);
             const token = await user.getIdToken();
             await createNewChallenge(request, token);
@@ -76,7 +73,6 @@ export default function CreateChallengePage() {
                     aria-label="Username"
                     aria-describedby="basic-addon1"
                     disabled
-                    // value={user.uid}
                 />
             </InputGroup>
 
@@ -117,16 +113,6 @@ export default function CreateChallengePage() {
             ))}
 
             <h3 className="mt-3">Genre selection</h3>
-
-            {/* TODO: Get Genres */}
-            {/* <ToggleButtonGroup className="mb-3" type="checkbox" value={interests} onChange={handleInterests} >
-                {interestsRadio.map((item, idx) => (
-                    <ToggleButton className="black-text" id={idx} variant={'outline-warning'} value={item.name}>
-                        {item.name}
-                    </ToggleButton>
-                )
-                )}
-            </ToggleButtonGroup> */}
 
             {interestsRadio.map((item, idx) => (
                 <ToggleButton
