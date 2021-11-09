@@ -1,8 +1,7 @@
 import axios from "axios";
 
 
-// const NOTIF_SERVICE_HOST = "http://notification-service:8080/";
-const NOTIF_SERVICE_HOST = "http://localhost:5016/";
+const NOTIF_SERVICE_HOST = "http://notification-service:8080/";
 
 export const addNotificationChallengeAccepted = async (squirrel_id, challenge_id) => {
     if (!squirrel_id || !challenge_id) return false
