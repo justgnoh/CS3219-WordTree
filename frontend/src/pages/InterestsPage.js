@@ -6,7 +6,7 @@ import { getSystemInterests, updateUserInterests } from '../utils/Api';
 import { useHistory } from "react-router-dom";
 
 export default function InterestsPage() {
-    const [user, loading, error] = useAuthState(auth);
+    const [user] = useAuthState(auth);
     const [interests, setInterests] = useState([]);
     const [interestsRadio, setInterestsRadio] = useState([]);
     const history = useHistory();

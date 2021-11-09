@@ -6,7 +6,7 @@ import { auth } from "../firebase";
 import { getChallengeRequests, acceptChallenge } from '../utils/Api';
 
 export default function ViewRequestsPage() {
-    const [user, loading, error] = useAuthState(auth);
+    const [user] = useAuthState(auth);
     const history = useHistory();
     const [awaitingChallengeList, setAwaitingChallengeList] = useState([]);
 
@@ -21,12 +21,26 @@ export default function ViewRequestsPage() {
     }, [user]);
 
     let emptyChallengeData = [];
-    emptyChallengeData.push(
-        <tr>
-            <br></br>
-            <Spinner animation="border" variant="success" />
-        </tr>
-    )
+    if (user) {
+        emptyChallengeData.push(
+            <tr>
+                <td>There are no challenge requests at the moment.</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        )
+    } else {
+        emptyChallengeData.push(
+            <tr>
+                <br></br>
+                <Spinner animation="border" variant="success" />
+            </tr>
+        )
+    }
 
     let awaitingChallengeData = [];
     for (let i = 0; i < awaitingChallengeList.length; i++) {
@@ -41,7 +55,6 @@ export default function ViewRequestsPage() {
                 <td>{awaitingChallengeList[i].squirrel_name}</td>
                 <td>{awaitingChallengeList[i].title}</td>
                 <td><Badge pill bg="warning" className="black-text">{awaitingChallengeList[i].interest}</Badge></td>
-                {/* TODO: Not in 2/4 turn level */}
                 <td>{awaitingChallengeList[i].num_of_total_turns} rounds</td>
                 <td>
                     {awaitingChallengeList[i].word_limit_per_turn} char limit

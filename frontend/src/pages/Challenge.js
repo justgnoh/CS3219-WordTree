@@ -10,7 +10,7 @@ export default function Challenge() {
     const history = useHistory();
     const [wordCount, setWordCount] = useState(0);
     const [countExceeded, setCountExceeded] = useState(false);
-    const [user, loading, error] = useAuthState(auth);
+    const [user] = useAuthState(auth);
     const [essay, setEssay] = useState('');
     const [authorName, setAuthorName] = useState('');
     const [essayThusFar, setEssayThusFar] = useState('');
@@ -41,7 +41,6 @@ export default function Challenge() {
 
 
     useEffect(async () => {
-        console.log(loading);
         if (user) {
             setAuthorName(user.displayName);
             const token = await user.getIdToken();
@@ -234,11 +233,9 @@ export default function Challenge() {
                                 <Badge pill bg="warning" className="black-text">{challengeData.interest}</Badge>
                             </td>
                             <td>
-                                {/* TODO: Current turns 2/4 rounds etc.. */}
                                 {challengeData.essay_paras.length}/{challengeData.num_of_total_turns}
                             </td>
                             <td>
-                                {/* TODO: Determine how to do this */}
                                 {makeBadge(challengeData.status_of_challenge)}
                             </td>
                         </tr>
@@ -250,11 +247,9 @@ export default function Challenge() {
             <InputGroup className="mb-3">
                 <InputGroup.Text id="basic-addon1">Title</InputGroup.Text>
                 {isMyTurn ? <FormControl
-                    // placeholder="No Title"
                     placeholder={challengeData.title}
                     onChange={(e) => setTitle(e.target.value)} />
                     : <FormControl
-                        // placeholder="No Title"
                         placeholder={challengeData.title}
                         onChange={(e) => setTitle(e.target.value)} disabled />}
             </InputGroup>
@@ -263,7 +258,6 @@ export default function Challenge() {
                 <Card.Header>Story thus far...</Card.Header>
                 <Card.Body>
                     <Card.Text>
-                        {/* {challengeData.essay_paras.length == 0 ? 'No previous paras found! Begin by submitting your first para...' : challengeData.essay_paras} */}
                         {essayThusFar.length == 0 ? <Spinner animation="border" variant="success" /> : essayThusFar}
                     </Card.Text>
                 </Card.Body>
@@ -278,9 +272,9 @@ export default function Challenge() {
                                 Here are your word prompts. Use the words below to earn nuts!
                                 <br></br>
                                 {words.length == 0 && <Spinner animation="border" variant="success" /> }
-                                {word1Used ? <Badge pill bg="success" className="black-text me-3">{words[0]}</Badge> : <Badge pill bg="warning" className="black-text me-3">{words[0]}</Badge>}
-                                {word2Used ? <Badge pill bg="success" className="black-text me-3">{words[1]}</Badge> : <Badge pill bg="warning" className="black-text me-3">{words[1]}</Badge>}
-                                {word3Used ? <Badge pill bg="success" className="black-text me-3">{words[2]}</Badge> : <Badge pill bg="warning" className="black-text me-3">{words[2]}</Badge>}
+                                {word1Used ? <Badge pill bg="success" className="white-text me-3">{words[0]}</Badge> : <Badge pill bg="warning" className="black-text me-3">{words[0]}</Badge>}
+                                {word2Used ? <Badge pill bg="success" className="white-text me-3">{words[1]}</Badge> : <Badge pill bg="warning" className="black-text me-3">{words[1]}</Badge>}
+                                {word3Used ? <Badge pill bg="success" className="white-text me-3">{words[2]}</Badge> : <Badge pill bg="warning" className="black-text me-3">{words[2]}</Badge>}
                             </Card.Text>
                         </Card.Body>
                     </Card>
@@ -291,10 +285,7 @@ export default function Challenge() {
                         <Card.Header>Round Statistics</Card.Header>
                         <Card.Body>
                             <Card.Text>
-                                <br></br>
-                                Time Left: 20h 31m left
-                                <br></br>
-                                {countExceeded ? <span className="red-text">Word Count: {wordCount}/{challengeData.word_limit_per_turn}</span> : <span className="green-text">Word Count: {wordCount}/{challengeData.word_limit_per_turn}</span>}
+                                {countExceeded ? <span className="red-text">Character Count: {wordCount}/{challengeData.word_limit_per_turn}</span> : <span className="green-text">Character Count: {wordCount}/{challengeData.word_limit_per_turn}</span>}
                             </Card.Text>
                         </Card.Body>
                     </Card>
@@ -336,9 +327,9 @@ export default function Challenge() {
                     You're good to go!
                     <br></br>
                     <br></br>
-                    You will earn {nutCount} nuts.
+                    Nuts Earned: {nutCount}
                     <br></br>
-                    Words Used: { }
+                    Words Used: {word1Used && words[0]} {word2Used && words[1]} {word3Used && words[2]}
                     <br></br>
                     Great Job!
                 </Modal.Body>
@@ -356,7 +347,7 @@ export default function Challenge() {
                 <Modal.Header closeButton>
                     <Modal.Title>Oops!</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>You have exceeded the word count. Please keep to the word limit.</Modal.Body>
+                <Modal.Body>You have exceeded the character count. Please keep to the word limit.</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
                         Close
@@ -368,7 +359,7 @@ export default function Challenge() {
                 <Modal.Header closeButton>
                     <Modal.Title>Oops!</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>You cannot submit an essay with 0 word count. Please type your essay.</Modal.Body>
+                <Modal.Body>You cannot submit an essay with 0 character count. Please type your essay.</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
                         Close

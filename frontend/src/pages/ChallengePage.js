@@ -6,7 +6,7 @@ import { auth } from "../firebase";
 import { getChallengesForUserId } from '../utils/Api';
 
 export default function ChallengePage() {
-    const [user, loading, error] = useAuthState(auth);
+    const [user] = useAuthState(auth);
     const history = useHistory();
     const [challengeList, setChallengeList] = useState([]);
 
@@ -15,7 +15,6 @@ export default function ChallengePage() {
             const token = await user.getIdToken();
             getChallengesForUserId(token).then((resp) => {
                 console.log(resp.data)
-                // determineTurn(resp.data);
                 setChallengeList(resp.data);
             });
         }
@@ -125,7 +124,6 @@ export default function ChallengePage() {
                 </thead>
 
                 <tbody>
-                    {challengeData}
                     {challengeData.length == 0 ? emptyChallengeData : challengeData}
                 </tbody>
             </Table>
