@@ -173,27 +173,49 @@ export async function updateUserInterests(token, interests) {
 
 
 // ===============================
-// NUT SERVICE
+// Community SERVICE
 // ===============================
-// export async function 
-
-
-export async function getChallenges(userId, challengeId) {
-    return await axios.get(API_HOST + '/community/getChallenge');
+export async function getCommunityChallengeById(token, challengeId) {
+    return await axios.get(API_HOST + '/community/getChallenge/' + challengeId, {
+        headers: {
+            'x-access-token': `${token}`
+        }
+    });
 }
-
-export async function getCommunityChallenges(userId) {
-    const result = await axios.get(API_HOST + '/community/listChallenges' + userId);
+// /community/listChallenges/<offset?>/<limit?>
+export async function getCommunityChallenges(token) {
+    const offset = "0";
+    const limit = "default";
+    const result = await axios.get(API_HOST + '/community/listChallenges/' + offset + "/50", {
+        headers: {
+            'x-access-token': `${token}`
+        }
+    });
     return result;
 }
 
 
 // NUT SERVICE
-export async function getAllNuts(userId) {
-    return await axios.get(API_HOST + '/nut/viewUserNut/' + userId);
+export async function getAllNuts(token) {
+    return await axios.get(API_HOST + '/nut/viewUserNut/', { 
+        headers: {
+            'x-access-token': `${token}`
+        }
+    });
+}
+
+export async function getTotalNuts(token) {
+    return await axios.get(API_HOST + '/nut/getUserTotalNut', { 
+        headers: {
+            'x-access-token': `${token}`
+        }
+    });
 }
 
 export async function removeCommunityNut() {
     // Delete request
     // {user.uid}, 
 }
+
+
+

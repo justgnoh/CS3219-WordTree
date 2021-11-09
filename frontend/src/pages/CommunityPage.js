@@ -1,14 +1,17 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Table, Button, Badge } from 'react-bootstrap';
-import { getCommunityChallenges } from '../utils/Api';
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
+import { useHistory } from 'react-router';
 import { BsArrowUpSquare } from 'react-icons/bs';
+
+import { getCommunityChallenges, getCommunityChallengeById } from '../utils/Api';
 
 
 export default function CommunityPage() {
-
-    // GET all completed challenges
-    // const challenges = getCommunityChallenges(user.uid);
-    // const viewChallengeById = getChallenge({challengeID});
+    const [user, loading, error] = useAuthState(auth);
+    const [communityChallengeList, setCommunityChallengeList] = useState([]);
+    const history = useHistory();
     
     // For visual purposes
     let rows = [];
@@ -17,6 +20,45 @@ export default function CommunityPage() {
             {Array.from({ length: 7 }).map((_, index) => (
             <td key={index}>Table cell {index} <BsArrowUpSquare/> </td>
         ))}</tr>)
+    }
+
+    useEffect(async () => {
+        if (user) {
+            const token = await user.getIdToken();
+            getCommunityChallenges(token).then((resp) => {
+                setCommunityChallengeList(resp.data);
+                console.log(resp.data)
+            });
+        }
+    }, [user]);
+
+    let communityChallengeData = [];
+    for (let i = 0; i < communityChallengeList.length; i++) {
+        const current = communityChallengeList[i];
+        communityChallengeData.push(
+            <tr>
+               <td>{current.challenge_id}</td>
+               <td>{current.upvotes} <BsArrowUpSquare className={"upvote-button"} onClick={() => console.log("upvote")}/></td>
+               <td>{current.title}</td>
+               <td>{current.interest}</td>
+               <td>
+                    <Badge pill bg="success">{current.squirrel_name}</Badge>
+                    ,
+                    <Badge pill bg="success">{current.racoon_name}</Badge>
+                </td>
+               <td>20-09-2021</td>
+               <td>{current.num_of_total_turns}</td>
+               <td>
+                    <Button variant="dark" size="sm" className="primary-color" onClick={async () => {
+                        const token = await user.getIdToken();
+                        const challenge = await getCommunityChallengeById(token, current.challenge_id)
+                        console.log(challenge);
+                        history.push("/community/" + current.challenge_id);
+                        console.log("View Challenge Id:" + current.challenge_id);
+                    }}>View</Button>
+               </td>
+        </tr>
+       )
     }
 
     return (
@@ -30,9 +72,10 @@ export default function CommunityPage() {
             <Table responsive>
                 <thead>
                     <tr>
+                        <th>Id</th>
                         <th>Upvotes</th>
                         <th>Title</th>
-                        <th>Genres</th>
+                        <th>Interest</th>
                         <th>Authors</th>
                         <th>Date Completed</th>
                         <th>Turns</th>
@@ -41,79 +84,8 @@ export default function CommunityPage() {
                 </thead>
 
                 <tbody>
-                    <tr>
-                        <td>128 <BsArrowUpSquare/></td>
-                        <td>The Blood red Sky</td>
-                        <td>
-                            <Badge pill bg="warning" className="black-text">Horror</Badge>
-                            <Badge pill bg="warning" className="black-text">Sci-Fi</Badge>
-                        </td>
-                        <td>
-                            Arthur, Jessie
-                        </td>
-                        <td>
-                            19/09/2021
-                        </td>
-                        <td>
-                            4
-                        </td>
-                        <td>
-                            <Button variant="dark" size="sm" className="primary-color" onClick={() => {
-                                console.log("history.push");
-                            }}>View</Button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>72 <BsArrowUpSquare/></td>
-                        <td>Hash Slinging Slayer</td>
-                        <td>
-                            <Badge pill bg="warning" className="black-text">Crime</Badge>
-                        </td>
-                        <td>
-                            Bob, Alice
-                        </td>
-                        <td>
-                            24/08/2021
-                        </td>
-                        <td>
-                            6
-                        </td>
-                        <td>
-                            <Button variant="dark" size="sm" className="primary-color">View</Button>
-                        </td>
-                    </tr>
-{/* 
-
-                    <tr>
-                        {Array.from({ length: 7 }).map((_, index) => (
-                            <td key={index}>Table cell {index}</td>
-                        ))}
-                    </tr>
-                    <tr>
-                        {Array.from({ length: 7 }).map((_, index) => (
-                            <td key={index}>Table cell {index}</td>
-                        ))}
-                    </tr>
-                    <tr>
-                        {Array.from({ length: 7 }).map((_, index) => (
-                            <td key={index}>Table cell {index}</td>
-                        ))}
-                    </tr>
-                    <tr>
-                        {Array.from({ length: 7 }).map((_, index) => (
-                            <td key={index}>Table cell {index}</td>
-                        ))}
-                    </tr>
-                    <tr>
-                        {Array.from({ length: 7 }).map((_, index) => (
-                            <td key={index}>Table cell {index}</td>
-                        ))}
-                    </tr> */}
-
-                   
-                        {rows}
-                    
-
+                    {communityChallengeData}
+                    {rows}
                 </tbody>
             </Table>
         </div>

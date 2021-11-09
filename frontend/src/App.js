@@ -16,6 +16,7 @@ import CommunityPage from "./pages/CommunityPage";
 import InterestsPage from "./pages/InterestsPage";
 import CreateChallengePage from "./pages/CreateChallengePage";
 import ViewRequestsPage from "./pages/ViewRequestsPage";
+import ViewCompletedChallenge from "./pages/ViewCompletedChallenge";
 
 import SocketPage from "./pages/SocketPage"; //socket
 
@@ -55,12 +56,10 @@ function App() {
           <Route exact path="/challenge/view">
             <ViewRequestsPage/>
           </Route>
-          <Route path="/challenge/:cid" children={<Challenge/>} />
           
-          {/* TODO: Edit below paths */}
-          <Route exact path="/challenge/arthur">
-            <Challenge/>
-          </Route>
+          <Route path="/challenge/:cid" children={<Challenge/>} />
+          <Route path="/community/:cid" children={<ViewCompletedChallenge/>} />
+
           <Route exact path="/socket">
             <SocketPage/>
           </Route>

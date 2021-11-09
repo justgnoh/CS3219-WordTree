@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Table, Badge, Button, Breadcrumb } from 'react-bootstrap';
+import { Table, Badge, Button, Breadcrumb, Spinner } from 'react-bootstrap';
 import { useHistory } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
@@ -14,19 +14,19 @@ export default function ViewRequestsPage() {
         if (user) {
             const token = await user.getIdToken();
             getChallengeRequests(token).then(resp => {
+                console.log(resp.data);
                 setAwaitingChallengeList(resp.data);
             });
         }
     }, [user]);
 
-    function accept(challengeData) {
-        // if (challengeData)
-        console.log(challengeData);
-        console.log("hello")
-        // const token = await user.getIdToken();
-        // await acceptChallenge(token, challengeData.challenge_id);
-        // history.push("/challenge/" + challengeData.challenge_id);
-    }
+    let emptyChallengeData = [];
+    emptyChallengeData.push(
+        <tr>
+            <br></br>
+            <Spinner animation="border" variant="success" />
+        </tr>
+    )
 
     let awaitingChallengeData = [];
     for (let i = 0; i < awaitingChallengeList.length; i++) {
@@ -38,7 +38,8 @@ export default function ViewRequestsPage() {
         awaitingChallengeData.push(
             <tr>
                 <td>{awaitingChallengeList[i].challenge_id}</td>
-                <td>{awaitingChallengeList[i].squirrel_id}</td>
+                <td>{awaitingChallengeList[i].squirrel_name}</td>
+                <td>{awaitingChallengeList[i].title}</td>
                 <td><Badge pill bg="warning" className="black-text">{awaitingChallengeList[i].interest}</Badge></td>
                 {/* TODO: Not in 2/4 turn level */}
                 <td>{awaitingChallengeList[i].num_of_total_turns} rounds</td>
@@ -51,11 +52,12 @@ export default function ViewRequestsPage() {
                         console.log(awaitingChallengeList[i]);
                         const challengeData = awaitingChallengeList[i];
                         console.log(challengeData.challenge_id);
-                        
+
+                        const challengeId = challengeData.challenge_id;
                         await user.getIdToken()
                         .then((token) => {
                             console.log(challengeData.challenge_id);
-                            acceptChallenge(token, 2);
+                            acceptChallenge(token, challengeId);
                         }).then(() => {
                             history.push("/challenge/" + challengeData.challenge_id);
                         });
@@ -78,7 +80,8 @@ export default function ViewRequestsPage() {
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Username</th>
+                            <th>Squirrel</th>
+                            <th>Title</th>
                             <th>Interests</th>
                             <th>Turns</th>
                             <th>Word Limit</th>
@@ -87,43 +90,7 @@ export default function ViewRequestsPage() {
                     </thead>
 
                     <tbody>
-                        {awaitingChallengeData}
-                        <tr onClick={() => console.log("clicked on row")}>
-                            <td>dp</td>
-                            <td>Arthur</td>
-                            <td>
-                                <Badge pill bg="warning" className="black-text">Horror</Badge>
-                                <Badge pill bg="warning" className="black-text">Sci-Fi</Badge>
-                            </td>
-                            <td>
-                                4 rounds
-                            </td>
-                            <td>
-                                300 word limit
-                            </td>
-                            <td>
-                                <Button variant="dark" size="sm" className="primary-color" onClick={() => {
-                                    history.push("/challenge/arthur");
-                                }}>Accept</Button>
-                            </td>
-                        </tr>
-                        <tr onClick={() => console.log("clicked on row")}>
-                            <td>user.uid</td>
-                            <td>Kevin</td>
-                            <td>
-                                <Badge pill bg="warning" className="black-text">Crime</Badge>
-                            </td>
-                            <td>
-                                6 rounds
-                            </td>
-                            <td>
-                                500 word limit
-                            </td>
-                            <td>
-                                <Button variant="dark" size="sm" className="primary-color">Accept</Button>
-                            </td>
-                        </tr>
-
+                        {awaitingChallengeData.length == 0 ? emptyChallengeData : awaitingChallengeData}
                     </tbody>
                 </Table>
 
