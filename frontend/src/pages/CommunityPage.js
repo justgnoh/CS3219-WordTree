@@ -1,26 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { Table, Button, Badge } from 'react-bootstrap';
+import { Table, Button, Badge, Spinner } from 'react-bootstrap';
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
 import { useHistory } from 'react-router';
-import { BsArrowUpSquare } from 'react-icons/bs';
+import { BsArrowUpSquare, BsArrowUpSquareFill } from 'react-icons/bs';
 
-import { getCommunityChallenges, getCommunityChallengeById } from '../utils/Api';
+import { getCommunityChallenges, removeVoteCompletedEssay, upVoteCompletedEssay } from '../utils/Api';
 
 
 export default function CommunityPage() {
-    const [user, loading, error] = useAuthState(auth);
+    const [user] = useAuthState(auth);
     const [communityChallengeList, setCommunityChallengeList] = useState([]);
     const history = useHistory();
-    
-    // For visual purposes
-    let rows = [];
-    for (let i = 0; i < 50; i++) {
-        rows.push(<tr>
-            {Array.from({ length: 7 }).map((_, index) => (
-            <td key={index}>Table cell {index} <BsArrowUpSquare/> </td>
-        ))}</tr>)
-    }
 
     useEffect(async () => {
         if (user) {
@@ -32,33 +23,63 @@ export default function CommunityPage() {
         }
     }, [user]);
 
+
+    let emptyChallengeData = [];
+    emptyChallengeData.push(
+        <tr>
+            <br></br>
+            <Spinner animation="border" variant="success" />
+        </tr>
+    )
+
     let communityChallengeData = [];
     for (let i = 0; i < communityChallengeList.length; i++) {
         const current = communityChallengeList[i];
         communityChallengeData.push(
             <tr>
-               <td>{current.challenge_id}</td>
-               <td>{current.upvotes} <BsArrowUpSquare className={"upvote-button"} onClick={() => console.log("upvote")}/></td>
-               <td>{current.title}</td>
-               <td>{current.interest}</td>
-               <td>
+                <td>{current.challenge_id}</td>
+                <td>{current.upvotes} {' '}
+                    {current.upvoted == null ? <BsArrowUpSquare className={"upvote-button"} onClick={async () => {
+                        console.log(current);
+                        const reqBody = {
+                            "uid1": current.squirrel_id,
+                            "uid2": current.racoon_id,
+                            "cid": current.challenge_id
+                        }
+                        const token = await user.getIdToken();
+                        await upVoteCompletedEssay(token, reqBody);
+                    }} /> : <BsArrowUpSquareFill className={"upvote-button"} onClick={async () => {
+                        console.log(current);
+                        const reqBody1 = {
+                            "uid1": current.squirrel_id,
+                            "uid2": current.racoon_id,
+                            "cid": current.challenge_id
+                        }
+                        const token1 = await user.getIdToken();
+                        await removeVoteCompletedEssay(token1, reqBody1);
+                    }} />}
+
+
+
+
+                </td>
+                <td>{current.title}</td>
+                <td>
+                    <Badge pill bg="warning" className="black-text">{current.interest}</Badge>
+                </td>
+                <td>
                     <Badge pill bg="success">{current.squirrel_name}</Badge>
                     ,
                     <Badge pill bg="success">{current.racoon_name}</Badge>
                 </td>
-               <td>20-09-2021</td>
-               <td>{current.num_of_total_turns}</td>
-               <td>
-                    <Button variant="dark" size="sm" className="primary-color" onClick={async () => {
-                        const token = await user.getIdToken();
-                        const challenge = await getCommunityChallengeById(token, current.challenge_id)
-                        console.log(challenge);
+                <td>{current.num_of_total_turns}</td>
+                <td>
+                    <Button variant="dark" size="sm" className="primary-color" onClick={() => {
                         history.push("/community/" + current.challenge_id);
-                        console.log("View Challenge Id:" + current.challenge_id);
                     }}>View</Button>
-               </td>
-        </tr>
-       )
+                </td>
+            </tr>
+        )
     }
 
     return (
@@ -72,20 +93,18 @@ export default function CommunityPage() {
             <Table responsive>
                 <thead>
                     <tr>
-                        <th>Id</th>
+                        <th>ID</th>
                         <th>Upvotes</th>
                         <th>Title</th>
                         <th>Interest</th>
                         <th>Authors</th>
-                        <th>Date Completed</th>
                         <th>Turns</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    {communityChallengeData}
-                    {rows}
+                    {communityChallengeData.length == 0 ? emptyChallengeData : communityChallengeData}
                 </tbody>
             </Table>
         </div>

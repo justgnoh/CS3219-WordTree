@@ -4,13 +4,13 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useHistory } from "react-router";
 import { getUserProfile } from "../utils/Api";
 
-import { auth, logout } from "../firebase";
+import { auth } from "../firebase";
 
 import NutView from "../components/NutView";
 import ProfileView from "../components/ProfileView";
 
 function ProfilePage() {
-  const [user, loading, error] = useAuthState(auth);
+  const [user] = useAuthState(auth);
   const history = useHistory();
 
   const [editProfile, setEditProfile] = useState(false);
@@ -56,11 +56,11 @@ function ProfilePage() {
   function renderMainContents() {
     if (editProfile && !viewNut) {
       // Edit Profile
-      // if (user) {
-      //   return (
-      //     <EditProfileView userProfile={userProfile} user={user} />
-      //   );
-      // }
+      if (user && userProfile) { 
+          return (
+          <EditProfileView userProfile={userProfile} user={user} />
+        );
+      }
     }
     if (!editProfile && !viewNut) {
       // Normal Profile
@@ -79,8 +79,6 @@ function ProfilePage() {
       );
     }
   }
-
-  // <ButtonGroup vertical className="profile-menu-nav gap-3">
 
   return (
     <div className="d-flex justify-content-center profile-container borderGrey ">
