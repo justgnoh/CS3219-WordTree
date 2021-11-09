@@ -3,6 +3,7 @@ import * as userProfileDao from "../database/UserProfileDao.js";
 import * as userInterestDao from "../database/UserInterestDao.js";
 import * as interestDao from "../database/InterestDao.js";
 import { getAuthenticatedUserId } from "../communications/Authentication.js";
+import { getUserNut } from "../communications/Nut.js";
 
 const ERROR_NO_DATA = "Bad Request. No data found.";
 const ERROR_NO_USER_ID = "Bad Request. No user id found.";
@@ -10,7 +11,6 @@ const ERROR_NO_EMAIL = "Bad Request. No email found.";
 const ERROR_NO_PASSWORD = "Bad Request. No password found.";
 const ERROR_NO_NAME = "Bad Request. No name found.";
 const ERROR_NO_INTEREST = "Bad Request. No interest found.";
-const ERROR_NO_TOTAL_NUT = "Bad Request. No total nut found.";
 const ERROR_NO_DATE_OF_BIRTH = "Bad Request. No date of birth found.";
 const ERROR_NOT_AUTHENTICATED = "You are not authenticated, please log in and try again.";
 const ERROR_NOT_AUTHORIZED = "You are not authorized to perform this action.";
@@ -83,8 +83,9 @@ export async function getUserProfile(req, res) {
     try {
         const profileDetails = await userProfileDao.getUserProfile(reqUserId);
         const interestDetails = await userInterestDao.getUserInterest(reqUserId);
+        const nutDetails = await getUserNut(reqUserId);
 
-        const details = { profile: profileDetails.rows[0], interest: interestDetails.rows };
+        const details = { profile: profileDetails.rows[0], interest: interestDetails.rows, nut: nutDetails.data };
         res.status(200).json(details);
     } catch (err) {
         res.status(500).send(err.message);
@@ -130,26 +131,6 @@ export async function updateUserProfile(req, res) {
     } catch (err) {
         res.status(500).send(err.message);
     }
-}
-
-export async function updateUserTotalNut(req, res) {
-    console.log("User Service: (PUT) /updateUserTotalNut");
-    const body = req.body;
-    if (!body) {
-        return res.status(400).send(ERROR_NO_DATA);
-    }
-    if (!body.userId) {
-        return res.status(400).send(ERROR_NO_USER_ID);
-    }
-    if (!body.totalNut) {
-        if (body.totalNut != 0) {
-            return res.status(400).send(ERROR_NO_TOTAL_NUT);
-        }
-    }
-
-    await userProfileDao.updateUserTotalNut(body.userId, body.totalNut)
-        .then(result => { res.status(200).send("OK"); })
-        .catch(err => { res.status(500).send(err.message); });
 }
 
 export async function getInterest(req, res) {

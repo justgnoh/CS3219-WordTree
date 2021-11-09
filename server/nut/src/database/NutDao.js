@@ -77,36 +77,6 @@ export async function deleteCommunityEssayNut(upvoterUserId, challengeId, seqNum
     }
 }
 
-export async function getEssayNut(userId) {
-    try {
-        const result = await pool.query("SELECT * FROM " + essayNutDb +
-                " WHERE  " + userIdCol + " = $1;", [userId]);
-        return result;
-    } catch (err) {
-        throw err;
-    }
-}
-
-export async function getCommunityChallengeNut(userId) {
-    try {
-        const result = await pool.query("SELECT * FROM " + communityChallengeNutDb +
-                " WHERE  " + upvotedUserIdCol + " = $1;", [userId]);
-        return result;
-    } catch (err) {
-        throw err;
-    }
-}
-
-export async function getCommunityEssayNut(userId) {
-    try {
-        const result = await pool.query("SELECT * FROM " + communityEssayNutDb +
-                " WHERE  " + upvotedUserIdCol + " = $1;", [userId]);
-        return result;
-    } catch (err) {
-        throw err;
-    }
-}
-
 export async function getTotalEssayNut(userId) {
     try {
         const result = await pool.query("SELECT COALESCE( SUM(" + nutCol + "), 0) AS TOTAL FROM " + essayNutDb +
