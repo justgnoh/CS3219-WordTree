@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const API_HOST = 'http://localhost:80';
-// const API_HOST = 'http://071d-103-252-200-244.ngrok.io'
 
 // ===============================
 // CHALLENGE SERVICE
@@ -29,7 +28,7 @@ export async function getChallengeById(token, challengeId) {
         const resp = await axios.get(API_HOST + '/challenge/' + challengeId, {
             headers: {
                 'x-access-token': `${token}`,
-              }
+            }
         });
         return resp;
     } catch (err) {
@@ -42,10 +41,10 @@ export async function addEssayPara(token, challengeId, essay, title) {
         const resp = await axios.put(API_HOST + '/challenge/' + challengeId, {
             "essay_para": essay,
             "title": title
-        },{
+        }, {
             headers: {
                 'x-access-token': `${token}`,
-              }
+            }
         });
         return resp;
     } catch (err) {
@@ -58,7 +57,7 @@ export async function getChallengeRequests(token) {
         const resp = await axios.get(`${API_HOST}/challenge/waiting`, {
             headers: {
                 'x-access-token': `${token}`,
-              }
+            }
         })
         return resp;
     } catch (err) {
@@ -67,7 +66,7 @@ export async function getChallengeRequests(token) {
 }
 
 export async function getChallengesForUserId(token) {
-    try {       
+    try {
         const resp = await axios.get(`${API_HOST}/challenge`, {
             headers: {
                 'x-access-token': `${token}`,
@@ -80,7 +79,7 @@ export async function getChallengesForUserId(token) {
 }
 
 export async function acceptChallenge(token, challengeId) {
-    try {     
+    try {
         const resp = await axios.post(`${API_HOST}/challenge/accept`, {
             "challenge_id": challengeId
         }, {
@@ -100,12 +99,12 @@ export async function acceptChallenge(token, challengeId) {
 export async function createUserAccount(token, formData) {
     try {
         const resp = await axios.post(API_HOST + '/user/createUser', {
-            "userId" : formData.userId,
-            "email" : formData.email,
-            "password" : formData.password,
-            "name" : formData.name,
-            "dateOfBirth" : formData.dateOfBirth
-        }, { 
+            "userId": formData.userId,
+            "email": formData.email,
+            "password": formData.password,
+            "name": formData.name,
+            "dateOfBirth": formData.dateOfBirth
+        }, {
             headers: {
                 'x-access-token': `${token}`
             }
@@ -157,13 +156,13 @@ export async function getSystemInterests() {
 
 export async function updateUserInterests(token, interests) {
     try {
-        
+
         const resp = await axios.put(API_HOST + '/user/updateUserInterest', {
             "interest": interests
-        } ,{
+        }, {
             headers: {
                 'x-access-token': `${token}`,
-              }
+            }
         })
         return resp;
     } catch (err) {
@@ -176,45 +175,112 @@ export async function updateUserInterests(token, interests) {
 // Community SERVICE
 // ===============================
 export async function getCommunityChallengeById(token, challengeId) {
-    return await axios.get(API_HOST + '/community/getChallenge/' + challengeId, {
-        headers: {
-            'x-access-token': `${token}`
-        }
-    });
+    try {
+        return await axios.get(API_HOST + '/community/getChallenge/' + challengeId, {
+            headers: {
+                'x-access-token': `${token}`
+            }
+        });
+    } catch (err) {
+        console.log(err);
+    }
 }
-// /community/listChallenges/<offset?>/<limit?>
+
 export async function getCommunityChallenges(token) {
-    const offset = "0";
-    const limit = "default";
-    const result = await axios.get(API_HOST + '/community/listChallenges/' + offset + "/50", {
-        headers: {
-            'x-access-token': `${token}`
-        }
-    });
-    return result;
+    try {
+        const offset = "0";
+        const limit = "default";
+        const result = await axios.get(API_HOST + '/community/listChallenges/' + offset + "/50", {
+            headers: {
+                'x-access-token': `${token}`
+            }
+        });
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+
 }
 
 
 // NUT SERVICE
-export async function getAllNuts(token) {
-    return await axios.get(API_HOST + '/nut/viewUserNut/', { 
-        headers: {
-            'x-access-token': `${token}`
-        }
-    });
+export async function getAllNuts(userId) {
+    try {
+        return await axios.get(API_HOST + '/nut/getUserNut/' + userId);
+    } catch (err) {
+        console.log(err);
+    }
+
 }
 
 export async function getTotalNuts(token) {
-    return await axios.get(API_HOST + '/nut/getUserTotalNut', { 
+    try {
+        return await axios.get(API_HOST + '/nut/getUserTotalNut', {
+            headers: {
+                'x-access-token': `${token}`
+            }
+        });
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export async function upVoteCompletedEssay(token, formData) {
+    try {
+        return await axios.post(API_HOST + '/nut/addCommunityChallengeNut', {
+            "upvotedUserId1": formData.uid1,
+            "upvotedUserId2": formData.uid2,
+            "challengeId": formData.cid
+        }, {
+            headers: {
+                'x-access-token': `${token}`
+            }
+        });
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+
+export async function removeVoteCompletedEssay(token, formData) {
+    try {
+        return await axios.delete(API_HOST + '/nut/deleteCommunityChallengeNut', {
+            data: {
+                "upvotedUserId1": formData.uid1,
+                "upvotedUserId2": formData.uid2,
+                "challengeId": formData.cid
+            }, headers: {
+                'x-access-token': `${token}`
+            }
+        });
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+
+export async function upVoteEssayPara(token, formData) {
+    return await axios.post(API_HOST + '/nut/addCommunityEssayNut', {
+        "upvotedUserId": formData.uid1,
+        "challengeId": formData.cid,
+        "seqNum": formData.seqNum
+    }, {
         headers: {
             'x-access-token': `${token}`
         }
     });
 }
 
-export async function removeCommunityNut() {
-    // Delete request
-    // {user.uid}, 
+export async function removeVoteEssayPara(token, formData) {
+    return await axios.delete(API_HOST + '/nut/deleteCommunityChallengeNut', {
+        data: {
+            "upvotedUserId": formData.uid1,
+            "challengeId": formData.cid,
+            "seqNum": formData.seqNum
+        }, headers: {
+            'x-access-token': `${token}`
+        }
+    });
 }
 
 

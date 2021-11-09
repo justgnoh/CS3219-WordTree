@@ -16,12 +16,12 @@ export default function NutView(props) {
                 <h5>{essayNut}</h5>
             </div>
 
-            <h5 className="d-flex align-content-center justify-content-center">Earned from challenges</h5>
+            <h5 className="d-flex align-content-center justify-content-center">Earned from challenge upvotes</h5>
             <div className="d-flex align-content-center justify-content-center">
                 <h5>{communityChallengeNut}</h5>
             </div>
 
-            <h5 className="d-flex align-content-center justify-content-center">Earned from upvotes</h5>
+            <h5 className="d-flex align-content-center justify-content-center">Earned from essay upvotes</h5>
             <div className="d-flex align-content-center justify-content-center">
                 <h5>{communityEssayNut}</h5>
             </div>

@@ -4,16 +4,20 @@ import NutView from './NutView';
 import { getAllNuts } from '../utils/Api';
 
 export default function ProfileView(props) {
-    // Add interest as props
     const { userProfile, user, interests } = props;
     const [currentName, setCurrentName] = useState('');
     const [currentDOB, setCurrentDOB] = useState('');
-    const [allNuts, setAllNuts] = useState([0,0,0]);
+    const [allNuts, setAllNuts] = useState({
+        communityChallengeNut: 0,
+        communityEssayNut: 0,
+        essayNut: 0,
+        totalNut: 0
+    });
     const [displayUserInterests, setDisplayUserInterests] = useState([]);
     
 
     useEffect(() => {
-        if (userProfile && interests) {
+        if (userProfile && interests && user) {
             setCurrentName(userProfile.profile.user_name);
             setCurrentDOB(userProfile.profile.date_of_birth);
 
@@ -28,16 +32,10 @@ export default function ProfileView(props) {
 
             setDisplayUserInterests(interestBadge);
 
-            user.getIdToken().then((token) => {
-                getAllNuts(token)
-                .then((resp) => setAllNuts(resp.data));
-            })
-        }
-    }, [userProfile, interests]);
-
-    useEffect(() => {
-        console.log(props);
-    }, []);
+            getAllNuts(user.uid)
+                .then((resp) => {console.log(resp.data); setAllNuts(resp.data);})
+            }
+    }, [user, userProfile, interests]);
 
     return (
         <div className="d-flex flex-column profile-contents-container">
@@ -64,8 +62,8 @@ export default function ProfileView(props) {
             </Container>
 
             <div className="d-flex  align-content-center justify-content-center profile-contents-container mt-3">
-                <NutView totalNut={userProfile.profile.total_nut} essayNut={allNuts[0].nut} communityChallengeNut={allNuts[1].nut} communityEssayNut={allNuts[2].nut} />
+                <NutView totalNut={allNuts.totalNut} essayNut={allNuts.essayNut} communityChallengeNut={allNuts.communityChallengeNut} communityEssayNut={allNuts.communityEssayNut} />
             </div>
-        </div>
+        </div>  
     )
 }
