@@ -22,7 +22,7 @@ export default function ChallengePage() {
     }, [user]);
 
     function determineTurn() {
-        
+
     }
 
     function makeBadge(value) {
@@ -78,7 +78,7 @@ export default function ChallengePage() {
 
                 <tbody>
                     {challengeData}
-                    <tr>
+                    {/* <tr>
                         <td>1</td>
                         <td>The Story of a man</td>
                         <td>Arthur</td>
@@ -114,7 +114,7 @@ export default function ChallengePage() {
                         <td>
                         <Button variant="dark" size="sm" className="primary-color">View</Button>
                         </td>
-                    </tr>
+                    </tr> */}
 
                 </tbody>
             </Table>
