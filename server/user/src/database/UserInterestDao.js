@@ -25,3 +25,13 @@ export async function getUserInterest(userId) {
         throw err;
     }
 }
+
+export async function clearUserInterest(userId) {
+    try {
+        const result = await pool.query("DELETE FROM " + userInterestDb +
+                " WHERE  " + userIdCol + " = $1;", [userId]);
+        return result;
+    } catch (err) {
+        throw err;
+    }
+}
