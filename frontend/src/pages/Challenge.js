@@ -14,6 +14,7 @@ export default function Challenge() {
     const [essay, setEssay] = useState('');
     const [authorName, setAuthorName] = useState('');
     const [essayThusFar, setEssayThusFar] = useState('');
+    const [title, setTitle] = useState('');
     const [isMyTurn, setIsMyTurn] = useState(false);
 
     // Modals
@@ -50,6 +51,7 @@ export default function Challenge() {
                 setWords(resp.data.words);
                 appendParas(resp.data);
                 setChallengeData(resp.data);
+                setTitle(resp.data.title);
                 // setWordCount(resp.data.word_limit_per_turn);
             });
         }
@@ -64,8 +66,8 @@ export default function Challenge() {
     function handleShow() {
         if (wordCount >= challengeData.word_limit_per_turn) {
             setShowFailureModal(true);
-        } 
-        
+        }
+
         if (wordCount === 0) {
             setShowZeroWordCountModal(true);
         }
@@ -122,7 +124,7 @@ export default function Challenge() {
             if (d.includes(element)) {
                 console.log('plus');
                 count++;
-            } 
+            }
         });
 
         setNutCount(count);
@@ -152,7 +154,7 @@ export default function Challenge() {
             if (userID == data.racoon_id) {
                 setIsMyTurn(false);
             }
-        } 
+        }
 
         if (data.essay_paras.length % 2 == 1) {
             console.log('Racoons Turn')
@@ -171,7 +173,7 @@ export default function Challenge() {
     async function submitEssay() {
         handleClose();
         const token = await user.getIdToken();
-        await addEssayPara(token, cid, essay, '<Placeholder>');
+        await addEssayPara(token, cid, essay, title);
         history.push("/challenge");
     }
 
@@ -231,6 +233,15 @@ export default function Challenge() {
                 </tbody>
             </Table>
 
+            <InputGroup className="mb-3">
+                <InputGroup.Text id="basic-addon1">Title</InputGroup.Text>
+                <FormControl
+                    // placeholder="No Title"
+                    placeholder={challengeData.title}
+                    onChange={(e) => setTitle(e.target.value)}
+                />
+            </InputGroup>
+
             <Card>
                 <Card.Header>Story thus far...</Card.Header>
                 <Card.Body>
@@ -247,11 +258,11 @@ export default function Challenge() {
                         <Card.Header>Today's Prompt</Card.Header>
                         <Card.Body>
                             <Card.Text>
-                                Here are your word prompts. Use the words below to earn nuts! 
+                                Here are your word prompts. Use the words below to earn nuts!
                                 <br></br>
                                 {word1Used ? <Badge pill bg="success" className="black-text me-3">{words[0]}</Badge> : <Badge pill bg="warning" className="black-text me-3">{words[0]}</Badge>}
-                                {word2Used ? <Badge pill bg="success" className="black-text me-3">{words[1]}</Badge> :<Badge pill bg="warning" className="black-text me-3">{words[1]}</Badge>}
-                                {word3Used ? <Badge pill bg="success" className="black-text me-3">{words[2]}</Badge>: <Badge pill bg="warning" className="black-text me-3">{words[2]}</Badge>}
+                                {word2Used ? <Badge pill bg="success" className="black-text me-3">{words[1]}</Badge> : <Badge pill bg="warning" className="black-text me-3">{words[1]}</Badge>}
+                                {word3Used ? <Badge pill bg="success" className="black-text me-3">{words[2]}</Badge> : <Badge pill bg="warning" className="black-text me-3">{words[2]}</Badge>}
                             </Card.Text>
                         </Card.Body>
                     </Card>
@@ -288,13 +299,13 @@ export default function Challenge() {
             </div>
 
             <InputGroup className="mb-3 mt-3">
-                {isMyTurn ? <textarea style={{ width: '100%', minHeight: '30vh' }} 
-                            placeholder=" Input your story here... " 
-                            onKeyUp={handleWordCount} />
-                            : <textarea style={{ width: '100%', minHeight: '30vh' }} 
-                            placeholder=" It is currently not your turn... " 
-                            disabled />}
-                
+                {isMyTurn ? <textarea style={{ width: '100%', minHeight: '30vh' }}
+                    placeholder=" Input your story here... "
+                    onKeyUp={handleWordCount} />
+                    : <textarea style={{ width: '100%', minHeight: '30vh' }}
+                        placeholder=" It is currently not your turn... "
+                        disabled />}
+
                 <div className="d-flex flex-row-reverse">
                     {isMyTurn && <Button variant="dark" size="sm" className="primary-color" onClick={handleShow}>Submit</Button>}
                 </div>
@@ -310,7 +321,7 @@ export default function Challenge() {
                     <br></br>
                     You will earn {nutCount} nuts.
                     <br></br>
-                    Words Used: {}
+                    Words Used: { }
                     <br></br>
                     Great Job!
                 </Modal.Body>
@@ -347,7 +358,7 @@ export default function Challenge() {
                     </Button>
                 </Modal.Footer>
             </Modal>
-        
+
         </div>
     )
 }
