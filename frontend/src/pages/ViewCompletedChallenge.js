@@ -17,6 +17,7 @@ export default function ViewCompletedChallenge() {
         },
         essay_para: []
     });
+    const [upvoted, setUpvoted] = useState(false);
 
     useEffect(async () => {
         if (user) {
@@ -54,7 +55,7 @@ export default function ViewCompletedChallenge() {
                 essayData.push(
                     <Card className="mt-3 primary-beige">
                         <Card.Header>
-                            <span style={{ "font-weight": "bold" }}>Squirrel:</span> {' '}
+                            <span style={{ "fontWeight": "bold" }}>Squirrel:</span> {' '}
                             {challengeData.challengeUser[0].user_name} {' '}
 
                             {challengeData.essayPara[i].upvoted == null ? <BsArrowUpSquare className={"upvote-button"} onClick={async () => {
@@ -65,6 +66,7 @@ export default function ViewCompletedChallenge() {
                                 }
                                 const token = await user.getIdToken();
                                 await upVoteEssayPara(token, reqBody);
+                                setUpvoted(true);
                             }} />
                                 : <BsArrowUpSquareFill className={"upvote-button"} onClick={async () => {
                                     const reqBody1 = {
@@ -74,6 +76,7 @@ export default function ViewCompletedChallenge() {
                                     }
                                     const token1 = await user.getIdToken();
                                     await removeVoteEssayPara(token1, reqBody1);
+                                    setUpvoted(false);
                                 }} />}
 
                         </Card.Header>
@@ -88,7 +91,7 @@ export default function ViewCompletedChallenge() {
                 essayData.push(
                     <Card className="mt-3">
                         <Card.Header>
-                            <span style={{ "font-weight": "bold" }}>Racoon:</span> {' '}
+                            <span style={{ "fontWeight": "bold" }}>Racoon:</span> {' '}
                             {challengeData.challengeUser[1].user_name} {' '}
                             {challengeData.essayPara[i].upvoted == null ? <BsArrowUpSquare className={"upvote-button"} onClick={async () => {
                                const reqBody = {
