@@ -5,7 +5,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
 import { useHistory } from "react-router";
 
-import logo from "../assets/logo512.png";
+import logo from "../assets/wordtree_logo.jpg";
 
 export default function HomePage() {
   const [user] = useAuthState(auth);
