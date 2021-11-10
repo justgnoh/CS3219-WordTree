@@ -1,0 +1,227 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: wordtree
+  name: user-deployment
+  labels:
+    app: user-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      name: user-service
+      labels:
+        app: user-service
+    spec:
+      containers:
+      - name: user-service
+        image: user-service:1.0.0
+        ports:
+        - containerPort: 5010
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: wordtree
+  name: challenge-deployment
+  labels:
+    app: challenge-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: challenge-service
+  template:
+    metadata:
+      name: challenge-service
+      labels:
+        app: challenge-service
+    spec:
+      containers:
+      - name: challenge-service
+        image: challenge-service:1.0.0
+        ports:
+        - containerPort: 5001
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: wordtree
+  name: essay-deployment
+  labels:
+    app: essay-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: essay-service
+  template:
+    metadata:
+      name: essay-service
+      labels:
+        app: essay-service
+    spec:
+      containers:
+      - name: essay-service
+        image: essay-service:1.0.0
+        ports:
+        - containerPort: 5006
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: wordtree
+  name: nut-deployment
+  labels:
+    app: nut-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nut-service
+  template:
+    metadata:
+      name: nut-service
+      labels:
+        app: nut-service
+    spec:
+      containers:
+      - name: nut-service
+        image: nut-service:1.0.0
+        ports:
+        - containerPort: 5011
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: wordtree
+  name: word-deployment
+  labels:
+    app: word-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: word-service
+  template:
+    metadata:
+      name: word-service
+      labels:
+        app: word-service
+    spec:
+      containers:
+      - name: word-service
+        image: word-service:1.0.0
+        ports:
+        - containerPort: 5007
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: wordtree
+  name: community-deployment
+  labels:
+    app: community-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: community-service
+  template:
+    metadata:
+      name: community-service
+      labels:
+        app: community-service
+    spec:
+      containers:
+      - name: community-service
+        image: community-service:1.0.0
+        ports:
+        - containerPort: 5015
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: wordtree
+  name: auth-deployment
+  labels:
+    app: auth-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      name: auth-service
+      labels:
+        app: auth-service
+    spec:
+      containers:
+      - name: auth-service
+        image: auth-service:1.0.0
+        ports:
+        - containerPort: 5000
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: wordtree
+  name: notification-deployment
+  labels:
+    app: notification-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      name: notification-service
+      labels:
+        app: notification-service
+    spec:
+      containers:
+        - name: notification-service
+          image: notification-service:1.0.0
+          ports:
+          - containerPort: 5016
+          - containerPort: 5017
