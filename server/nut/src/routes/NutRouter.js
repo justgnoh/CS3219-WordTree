@@ -9,7 +9,6 @@ router.post('/addCommunityChallengeNut', nutController.addCommunityChallengeNut)
 router.delete('/deleteCommunityChallengeNut', nutController.deleteCommunityChallengeNut);
 router.post('/addCommunityEssayNut', nutController.addCommunityEssayNut);
 router.delete('/deleteCommunityEssayNut', nutController.deleteCommunityEssayNut);
-router.get('/viewUserNut', nutController.viewUserNut);
-router.get('/getUserTotalNut', nutController.getUserTotalNut);
+router.get('/getUserNut/:userId', nutController.getUserNut);
 
 export default router;

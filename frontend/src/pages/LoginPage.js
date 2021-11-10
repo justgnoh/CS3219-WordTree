@@ -8,7 +8,7 @@ import "./styles/LoginPage.css";
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [user, loading, error] = useAuthState(auth);
+  const [user, error] = useAuthState(auth);
   const history = useHistory();
 
   useEffect(() => {
@@ -35,11 +35,20 @@ function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
         />
+        
         <button
           className="login__btn"
-          onClick={() => basicSignIn(email, password)}
+          onClick={() => {
+            if (email.trim().length === 0) {
+              alert("Empty email field!");
+            } else if (password.trim().length < 6) {
+              alert("Password length is at least 6 characters!")
+            } else {
+              basicSignIn(email, password)};
+            }
+          }
         >
-          Login
+        Login
         </button>
 
         {/* Add other login modes here */}

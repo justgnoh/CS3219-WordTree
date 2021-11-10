@@ -7,7 +7,7 @@ export async function getAuthenticatedUserId(accessToken) {
         return false;
     }
     try {
-        const result = await axios.get(AUTH_SERVICE_URL, { headers: { "x-access-token": accessToken} });
+        const result = await axios.get(AUTH_SERVICE_URL, { headers: { "x-access-token": accessToken } });
         if (result.status != 200) {
             console.log(result);
             return false;

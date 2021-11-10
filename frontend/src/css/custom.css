@@ -15,6 +15,14 @@
     background-color: #606C38;
 }
 
+.primary-beige {
+    background-color: #FEFAE0;
+}
+
+.secondary-beige {
+    background-color: #FFFDED;
+}
+
 .white-text{
     color: white;
 }
@@ -65,4 +73,8 @@
 
 .rounded-buttons {
     border-radius: 15px;
+}
+
+.upvote-button {
+    cursor: pointer;
 }

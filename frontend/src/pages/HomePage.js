@@ -2,20 +2,19 @@ import React, { useEffect } from "react";
 import { Button, Container } from "react-bootstrap";
 
 import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, logout } from "../firebase";
+import { auth } from "../firebase";
 import { useHistory } from "react-router";
 
-import logo from "../assets/logo512.png";
+import logo from "../assets/wordtree_logo.jpg";
 
 export default function HomePage() {
-  const [user, loading, error] = useAuthState(auth);
+  const [user] = useAuthState(auth);
   const history = useHistory();
 
   useEffect(() => {
     if (user) {
       history.replace("/profile");
     }
-    // fetchUserName();
   }, [user, history]);
 
   return (

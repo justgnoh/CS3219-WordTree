@@ -1,21 +1,94 @@
-import React from 'react'
-import { Table, Button, Badge } from 'react-bootstrap';
-import { getCommunityChallenges } from '../utils/Api';
+import React, { useEffect, useState } from 'react'
+import { Table, Button, Badge, Spinner } from 'react-bootstrap';
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
+import { useHistory } from 'react-router';
+import { BsArrowUpSquare, BsArrowUpSquareFill } from 'react-icons/bs';
+
+import { getCommunityChallenges, removeVoteCompletedEssay, upVoteCompletedEssay } from '../utils/Api';
 
 
 export default function CommunityPage() {
+    const [user] = useAuthState(auth);
+    const [communityChallengeList, setCommunityChallengeList] = useState([]);
+    const history = useHistory();
 
-    // GET all completed challenges
-    // const challenges = getCommunityChallenges(user.uid);
-    // const viewChallengeById = getChallenge({challengeID});
-    
-    // For visual purposes
-    let rows = [];
-    for (let i = 0; i < 50; i++) {
-        rows.push(<tr>
-            {Array.from({ length: 7 }).map((_, index) => (
-            <td key={index}>Table cell {index}</td>
-        ))}</tr>)
+    useEffect(async () => {
+        if (user) {
+            const token = await user.getIdToken();
+            getCommunityChallenges(token).then((resp) => {
+                if (resp) {
+                    setCommunityChallengeList(resp.data);
+                    console.log(resp.data)
+                }
+            });
+        }
+    }, [user]);
+
+    let emptyChallengeData = [];
+    if (user) {
+        emptyChallengeData.push(
+            <tr>
+                <td>There are no completed challenges.</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        )
+    } else {
+        emptyChallengeData.push(
+            <tr>
+                <br></br>
+                <Spinner animation="border" variant="success" />
+            </tr>
+        )
+    }
+
+    let communityChallengeData = [];
+    for (let i = 0; i < communityChallengeList.length; i++) {
+        const current = communityChallengeList[i];
+        communityChallengeData.push(
+            <tr>
+                <td>{current.challenge_id}</td>
+                <td>{current.upvotes} {' '}
+                    {current.upvoted == null ? <BsArrowUpSquare className={"upvote-button"} onClick={async () => {
+                        const reqBody = {
+                            "uid1": current.squirrel_id,
+                            "uid2": current.racoon_id,
+                            "cid": current.challenge_id
+                        }
+                        const token = await user.getIdToken();
+                        await upVoteCompletedEssay(token, reqBody).then(() => history.go(0))
+                    }} /> : <BsArrowUpSquareFill className={"upvote-button"} onClick={async () => {
+                        const reqBody1 = {
+                            "uid1": current.squirrel_id,
+                            "uid2": current.racoon_id,
+                            "cid": current.challenge_id
+                        }
+                        const token1 = await user.getIdToken();
+                        await removeVoteCompletedEssay(token1, reqBody1).then(() => history.go(0));
+                    }} />}
+                </td>
+                <td>{current.title}</td>
+                <td>
+                    <Badge pill bg="warning" className="black-text">{current.interest}</Badge>
+                </td>
+                <td>
+                    <Badge pill bg="success">{current.squirrel_name}</Badge>
+                    ,
+                    <Badge pill bg="success">{current.racoon_name}</Badge>
+                </td>
+                <td>{current.num_of_total_turns}</td>
+                <td>
+                    <Button variant="dark" size="sm" className="primary-color" onClick={() => {
+                        history.push("/community/" + current.challenge_id);
+                    }}>View</Button>
+                </td>
+            </tr>
+        )
     }
 
     return (
@@ -29,90 +102,18 @@ export default function CommunityPage() {
             <Table responsive>
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Upvotes</th>
                         <th>Title</th>
-                        <th>Genres</th>
+                        <th>Interest</th>
                         <th>Authors</th>
-                        <th>Date Completed</th>
                         <th>Turns</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    <tr>
-                        <td>128</td>
-                        <td>The Blood red Sky</td>
-                        <td>
-                            <Badge pill bg="warning" className="black-text">Horror</Badge>
-                            <Badge pill bg="warning" className="black-text">Sci-Fi</Badge>
-                        </td>
-                        <td>
-                            Arthur, Jessie
-                        </td>
-                        <td>
-                            19/09/2021
-                        </td>
-                        <td>
-                            4
-                        </td>
-                        <td>
-                            <Button variant="dark" size="sm" className="primary-color" onClick={() => {
-                                console.log("history.push");
-                            }}>View</Button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>72</td>
-                        <td>Hash Slinging Slayer</td>
-                        <td>
-                            <Badge pill bg="warning" className="black-text">Crime</Badge>
-                        </td>
-                        <td>
-                            Bob, Alice
-                        </td>
-                        <td>
-                            24/08/2021
-                        </td>
-                        <td>
-                            6
-                        </td>
-                        <td>
-                            <Button variant="dark" size="sm" className="primary-color">View</Button>
-                        </td>
-                    </tr>
-{/* 
-
-                    <tr>
-                        {Array.from({ length: 7 }).map((_, index) => (
-                            <td key={index}>Table cell {index}</td>
-                        ))}
-                    </tr>
-                    <tr>
-                        {Array.from({ length: 7 }).map((_, index) => (
-                            <td key={index}>Table cell {index}</td>
-                        ))}
-                    </tr>
-                    <tr>
-                        {Array.from({ length: 7 }).map((_, index) => (
-                            <td key={index}>Table cell {index}</td>
-                        ))}
-                    </tr>
-                    <tr>
-                        {Array.from({ length: 7 }).map((_, index) => (
-                            <td key={index}>Table cell {index}</td>
-                        ))}
-                    </tr>
-                    <tr>
-                        {Array.from({ length: 7 }).map((_, index) => (
-                            <td key={index}>Table cell {index}</td>
-                        ))}
-                    </tr> */}
-
-                   
-                        {rows}
-                    
-
+                    {communityChallengeData.length == 0 ? emptyChallengeData : communityChallengeData}
                 </tbody>
             </Table>
         </div>

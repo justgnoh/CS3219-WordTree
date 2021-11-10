@@ -8,11 +8,9 @@ CREATE TABLE UserAccount (
 CREATE TABLE UserProfile (
     user_id VARCHAR(50) PRIMARY KEY,
     user_name VARCHAR(50) NOT NULL,
-    total_nut INTEGER NOT NULL DEFAULT 0,
     date_of_birth DATE NOT NULL,
     joined_datetime TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id),
-    CONSTRAINT valid_total_nut CHECK (total_nut >= 0)
+    FOREIGN KEY (user_id) REFERENCES UserAccount(user_id)
 );
 
 CREATE TABLE Interest (

@@ -1,64 +1,108 @@
-import React from 'react'
-import { Table, Badge, Button, Breadcrumb } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react'
+import { Table, Badge, Button, Breadcrumb, Spinner } from 'react-bootstrap';
 import { useHistory } from "react-router-dom";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../firebase";
+import { getChallengeRequests, acceptChallenge } from '../utils/Api';
 
 export default function ViewRequestsPage() {
+    const [user] = useAuthState(auth);
     const history = useHistory();
+    const [awaitingChallengeList, setAwaitingChallengeList] = useState([]);
+
+    useEffect(async () => {
+        if (user) {
+            const token = await user.getIdToken();
+            getChallengeRequests(token).then(resp => {
+                console.log(resp.data);
+                setAwaitingChallengeList(resp.data);
+            });
+        }
+    }, [user]);
+
+    let emptyChallengeData = [];
+    if (user) {
+        emptyChallengeData.push(
+            <tr>
+                <td>There are no challenge requests at the moment.</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        )
+    } else {
+        emptyChallengeData.push(
+            <tr>
+                <br></br>
+                <Spinner animation="border" variant="success" />
+            </tr>
+        )
+    }
+
+    let awaitingChallengeData = [];
+    for (let i = 0; i < awaitingChallengeList.length; i++) {
+        let isOwnRequest = false;
+        if (awaitingChallengeList[i].squirrel_id == user.uid) {
+            isOwnRequest = true;
+        }
+
+        awaitingChallengeData.push(
+            <tr>
+                <td>{awaitingChallengeList[i].challenge_id}</td>
+                <td>{awaitingChallengeList[i].squirrel_name}</td>
+                <td>{awaitingChallengeList[i].title}</td>
+                <td><Badge pill bg="warning" className="black-text">{awaitingChallengeList[i].interest}</Badge></td>
+                <td>{awaitingChallengeList[i].num_of_total_turns} rounds</td>
+                <td>
+                    {awaitingChallengeList[i].word_limit_per_turn} char limit
+                </td>
+                <td>
+                    {isOwnRequest ? <Button variant="dark" size="sm" className="primary-color" disabled>Accept</Button> 
+                    : <Button variant="dark" size="sm" className="primary-color" onClick={async () => {
+                        const challengeData = awaitingChallengeList[i];
+                        const challengeId = challengeData.challenge_id;
+                        await user.getIdToken()
+                        .then((token) => {
+                            acceptChallenge(token, challengeId);
+                        }).then(() => {
+                            history.push("/challenge/" + challengeData.challenge_id);
+                        });
+                    }}>Accept</Button>}
+                    
+                </td>
+            </tr>)
+    }
 
     return (
         <div>
             <div className="ms-5 me-5">
-            <h1>View Challenge Requests</h1>
-            <Breadcrumb>
-                <Breadcrumb.Item href="/challenge">Challenges</Breadcrumb.Item>
-                <Breadcrumb.Item active>View challenge requests</Breadcrumb.Item>
-            </Breadcrumb>
+                <h1>View Challenge Requests</h1>
+                <Breadcrumb>
+                    <Breadcrumb.Item href="/challenge">Challenges</Breadcrumb.Item>
+                    <Breadcrumb.Item active>View challenge requests</Breadcrumb.Item>
+                </Breadcrumb>
 
-            <Table responsive>
-                <thead>
-                    <tr>
-                    <th>id</th>
-                    <th>Username</th>
-                    <th>Genres</th>
-                    <th>Turns</th>
-                    <th>Actions</th>
-                    </tr>
-                </thead>
+                <Table responsive>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Squirrel</th>
+                            <th>Title</th>
+                            <th>Interests</th>
+                            <th>Turns</th>
+                            <th>Word Limit</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
 
-                <tbody>
-                    <tr onClick={() => console.log("clicked on row")}>
-                        <td>dp</td>
-                        <td>Arthur</td>
-                        <td>
-                            <Badge pill bg="warning" className="black-text">Horror</Badge>
-                            <Badge pill bg="warning" className="black-text">Sci-Fi</Badge>
-                        </td>
-                        <td>
-                            4 rounds
-                        </td>
-                        <td>
-                        <Button variant="dark" size="sm" className="primary-color" onClick={()=> {
-                            history.push("/challenge/arthur");
-                        }}>Accept</Button>
-                        </td>
-                    </tr>
-                    <tr onClick={() => console.log("clicked on row")}>
-                        <td>user.uid</td>
-                        <td>Kevin</td>
-                        <td>
-                            <Badge pill bg="warning" className="black-text">Crime</Badge>
-                        </td>
-                        <td>
-                            6 rounds
-                        </td>
-                        <td>
-                        <Button variant="dark" size="sm" className="primary-color">Accept</Button>
-                        </td>
-                    </tr>
+                    <tbody>
+                        {awaitingChallengeData.length == 0 ? emptyChallengeData : awaitingChallengeData}
+                    </tbody>
+                </Table>
 
-                </tbody>
-            </Table>
-            
             </div>
         </div>
     )

@@ -15,13 +15,3 @@ export async function createUserAccount(userId, email) {
         throw err;
     }
 }
-
-export async function updateUserPassword(userId, password) {
-    try {
-        const result = await pool.query("UPDATE " + userAccountDb +
-                " SET " + passwordCol + " = $1 WHERE " + userIdCol + " = $2;", [password, userId]);
-        return result;
-    } catch (err) {
-        throw err;
-    }
-}

@@ -16,6 +16,7 @@ import CommunityPage from "./pages/CommunityPage";
 import InterestsPage from "./pages/InterestsPage";
 import CreateChallengePage from "./pages/CreateChallengePage";
 import ViewRequestsPage from "./pages/ViewRequestsPage";
+import ViewCompletedChallenge from "./pages/ViewCompletedChallenge";
 
 import SocketPage from "./pages/SocketPage"; //socket
 
@@ -25,8 +26,6 @@ function App() {
     <Router>
       <Navigation/>
       <div>
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
         <Switch>
         <Route exact path="/">
             <HomePage />
@@ -52,17 +51,13 @@ function App() {
           <Route exact path="/challenge/create">
             <CreateChallengePage/>
           </Route>
-          <Route exact path="/challenge/create">
-            <CreateChallengePage/>
-          </Route>
           <Route exact path="/challenge/view">
             <ViewRequestsPage/>
           </Route>
           
-          {/* TODO: Edit below paths */}
-          <Route exact path="/challenge/arthur">
-            <Challenge/>
-          </Route>
+          <Route path="/challenge/:cid" children={<Challenge/>} />
+          <Route path="/community/:cid" children={<ViewCompletedChallenge/>} />
+
           <Route exact path="/socket">
             <SocketPage/>
           </Route>
@@ -70,10 +65,6 @@ function App() {
       </div>
     </Router>
   );
-}
-
-function Community() {
-  return <h2>Welcome to the Treehouse! Come hangout!</h2>;
 }
 
 export default App;

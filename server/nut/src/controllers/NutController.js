@@ -32,10 +32,7 @@ export async function addEssayNut(req, res) {
     }
 
     await nutDao.addEssayNut(data.userId, data.nut, data.challengeId, data.seqNum)
-        .then(result => {
-            updateProfileTotalNut(data.userId);
-            res.status(200).send("OK");
-        })
+        .then(result => { res.status(200).send("OK"); })
         .catch(err => { res.status(500).send(err.message); });
 }
 
@@ -56,10 +53,7 @@ export async function deleteEssayNut(req, res) {
     }
 
     await nutDao.deleteEssayNut(data.userId, data.challengeId, data.seqNum)
-        .then(result1 => {
-            updateProfileTotalNut(data.userId);
-            res.status(200).send("OK");
-        })
+        .then(result1 => { res.status(200).send("OK"); })
         .catch(err => { res.status(500).send(err.message); });
 }
 
@@ -96,11 +90,7 @@ export async function addCommunityChallengeNut(req, res) {
     }
 
     await nutDao.addCommunityChallengeNut(reqUserId, data.upvotedUserId1, data.upvotedUserId2, data.challengeId)
-        .then(result => {
-            updateProfileTotalNut(data.upvotedUserId1);
-            updateProfileTotalNut(data.upvotedUserId2);
-            res.status(200).send("OK");
-        })
+        .then(result => { res.status(200).send("OK"); })
         .catch(err => { res.status(500).send(err.message); });
 }
 
@@ -137,11 +127,7 @@ export async function deleteCommunityChallengeNut(req, res) {
     }
 
     await nutDao.deleteCommunityChallengeNut(reqUserId, data.challengeId)
-        .then(result1 => {
-            updateProfileTotalNut(data.upvotedUserId1);
-            updateProfileTotalNut(data.upvotedUserId2);
-            res.status(200).send("OK");
-        })
+        .then(result1 => { res.status(200).send("OK"); })
         .catch(err => { res.status(500).send(err.message); });
 }
 
@@ -178,10 +164,7 @@ export async function addCommunityEssayNut(req, res) {
     }
 
     await nutDao.addCommunityEssayNut(reqUserId, data.upvotedUserId, data.challengeId, data.seqNum)
-        .then(result => {
-            updateProfileTotalNut(data.upvotedUserId);
-            res.status(200).send("OK");
-        })
+        .then(result => { res.status(200).send("OK"); })
         .catch(err => { res.status(500).send(err.message); });
 }
 
@@ -218,87 +201,23 @@ export async function deleteCommunityEssayNut(req, res) {
     }
 
     await nutDao.deleteCommunityEssayNut(reqUserId, data.challengeId, data.seqNum)
-        .then(result1 => {
-            updateProfileTotalNut(data.upvotedUserId);
-            res.status(200).send("OK");
-        })
+        .then(result1 => { res.status(200).send("OK"); })
         .catch(err => { res.status(500).send(err.message); });
 }
 
-export async function viewUserNut(req, res) {
-    console.log("Nut Service: (GET) /viewUserNut");
+export async function getUserNut(req, res) {
+    console.log("Nut Service: (GET) /getUserNut");
 
-    const accessToken = req.headers['x-access-token'];
-    if (!accessToken) {
-        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
-    }
+    const userId = req.params.userId;
 
     try {
-        var reqUserId = await getAuthenticatedUserId(accessToken);
-    } catch (err) {
-        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
-    }
-
-    if (!reqUserId) {
-        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
-    }
-
-    try {
-        const essayNut = await nutDao.getEssayNut(reqUserId);
-        const communityChallengeNut = await nutDao.getCommunityChallengeNut(reqUserId);
-        const communityEssayNut = await nutDao.getCommunityEssayNut(reqUserId);
-
-        const userNut = essayNut.rows.concat(communityChallengeNut.rows.concat(communityEssayNut.rows));
+        const essayNut = (await nutDao.getTotalEssayNut(userId)).rows[0].total;
+        const communityChallengeNut = (await nutDao.getTotalCommunityChallengeNut(userId)).rows[0].total;
+        const communityEssayNut = (await nutDao.getTotalCommunityEssayNut(userId)).rows[0].total;
+        const totalNut = parseInt(essayNut) + parseInt(communityChallengeNut) + parseInt(communityEssayNut);
+        const userNut = { totalNut: totalNut, essayNut: essayNut, communityChallengeNut: communityChallengeNut, communityEssayNut: communityEssayNut };
         res.status(200).json(userNut);
     } catch (err) {
         res.status(500).send(err.message);
-    }
-}
-
-export async function getUserTotalNut(req, res) {
-    console.log("Nut Service: (GET) /getUserTotalNut");
-
-    const accessToken = req.headers['x-access-token'];
-    if (!accessToken) {
-        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
-    }
-
-    try {
-        var reqUserId = await getAuthenticatedUserId(accessToken);
-    } catch (err) {
-        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
-    }
-
-    if (!reqUserId) {
-        return res.status(401).send(ERROR_NOT_AUTHENTICATED);
-    }
-
-    try {
-        const totalEssayNut = await nutDao.getTotalEssayNut(reqUserId);
-        const totalCommunityChallengeNut = await nutDao.getTotalCommunityChallengeNut(reqUserId);
-        const totalCommunityEssayNut = await nutDao.getTotalCommunityEssayNut(reqUserId);
-
-        const userTotalNut = parseInt(totalEssayNut.rows[0].total) + parseInt(totalCommunityChallengeNut.rows[0].total) +
-                parseInt(totalCommunityEssayNut.rows[0].total);
-        updateUserTotalNut(reqUserId, userTotalNut);
-        res.status(200).json(userTotalNut);
-    } catch (err) {
-        res.status(500).send(err.message);
-    }
-}
-
-export async function updateProfileTotalNut(userId) {
-    console.log("Nut Service: (internal) updateProfileTotalNut");
-
-    try {
-        const totalEssayNut = await nutDao.getTotalEssayNut(userId);
-        const totalCommunityChallengeNut = await nutDao.getTotalCommunityChallengeNut(userId);
-        const totalCommunityEssayNut = await nutDao.getTotalCommunityEssayNut(userId);
-
-        const userTotalNut = parseInt(totalEssayNut.rows[0].total) + parseInt(totalCommunityChallengeNut.rows[0].total) +
-                parseInt(totalCommunityEssayNut.rows[0].total);
-        updateUserTotalNut(reqUserId, userTotalNut);
-    } catch (err) {
-        return err;
     }
 }
