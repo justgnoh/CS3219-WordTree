@@ -97,7 +97,6 @@ function ProfilePage() {
         </div>
       </div>
       {renderMainContents()}
-      {/* TODO: Nut view */}
     </div>
   );
 }

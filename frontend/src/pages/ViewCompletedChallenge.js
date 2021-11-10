@@ -73,7 +73,7 @@ export default function ViewCompletedChallenge() {
                                         "seqNum": challengeData.essayPara[i].seq_num
                                     }
                                     const token1 = await user.getIdToken();
-                                    await removeVoteCompletedEssay(token1, reqBody1);
+                                    await removeVoteEssayPara(token1, reqBody1);
                                 }} />}
 
                         </Card.Header>
@@ -91,24 +91,22 @@ export default function ViewCompletedChallenge() {
                             <span style={{ "font-weight": "bold" }}>Racoon:</span> {' '}
                             {challengeData.challengeUser[1].user_name} {' '}
                             {challengeData.essayPara[i].upvoted == null ? <BsArrowUpSquare className={"upvote-button"} onClick={async () => {
-                                console.log(current);
-                                const reqBody = {
-                                    "uid1": current.squirrel_id,
-                                    "uid2": current.racoon_id,
-                                    "cid": current.challenge_id
-                                }
-                                const token = await user.getIdToken();
-                                await upVoteCompletedEssay(token, reqBody);
+                               const reqBody = {
+                                "uid1": challengeData.challengeUser[0].user_id,
+                                "cid": challengeData.challenge.challenge_id,
+                                "seqNum": challengeData.essayPara[i].seq_num
+                            }
+                            const token = await user.getIdToken();
+                            await upVoteEssayPara(token, reqBody);
                             }} />
                                 : <BsArrowUpSquareFill className={"upvote-button"} onClick={async () => {
-                                    console.log(current);
                                     const reqBody1 = {
-                                        "uid1": current.squirrel_id,
-                                        "uid2": current.racoon_id,
-                                        "cid": current.challenge_id
+                                        "uid1": challengeData.challengeUser[1].user_id,
+                                        "cid": challengeData.challenge.challenge_id,
+                                        "seqNum": challengeData.essayPara[i].seq_num
                                     }
                                     const token1 = await user.getIdToken();
-                                    await removeVoteCompletedEssay(token1, reqBody1);
+                                    await removeVoteEssayPara(token1, reqBody1);
                                 }} />}
                         </Card.Header>
                         <Card.Body>

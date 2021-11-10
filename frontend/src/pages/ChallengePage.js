@@ -69,12 +69,26 @@ export default function ChallengePage() {
     }
 
     let emptyChallengeData = [];
-    emptyChallengeData.push(
-        <tr>
-            <br></br>
-            <Spinner animation="border" variant="success" />
-        </tr>
-    )
+    if (user) {
+        emptyChallengeData.push(
+            <tr>
+                <td>There are no challenges created.</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        )
+    } else {
+        emptyChallengeData.push(
+            <tr>
+                <br></br>
+                <Spinner animation="border" variant="success" />
+            </tr>
+        )
+    }
 
     let challengeData = [];
     for (let i = 0; i < challengeList.length; i++) {

@@ -203,7 +203,9 @@ export async function getCommunityChallenges(token) {
 }
 
 
+// ===============================
 // NUT SERVICE
+// ===============================
 export async function getAllNuts(userId) {
     try {
         return await axios.get(API_HOST + '/nut/getUserNut/' + userId);
@@ -240,7 +242,6 @@ export async function upVoteCompletedEssay(token, formData) {
         console.log(err);
     }
 }
-
 
 export async function removeVoteCompletedEssay(token, formData) {
     try {

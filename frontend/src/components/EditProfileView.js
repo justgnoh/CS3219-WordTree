@@ -7,7 +7,7 @@ import { updateUserProfile } from '../utils/Api';
 
 export default function ProfileView(props) {
     const { userProfile } = props;
-    const [user, loading, error] = useAuthState(auth);
+    const [user] = useAuthState(auth);
     const [editName, setEditName] = useState('');
     const [editDOB, setEditDOB] = useState('');
     const [currentName, setCurrentName] = useState('');
@@ -22,6 +22,27 @@ export default function ProfileView(props) {
             setEditDOB(userProfile.profile.date_of_birth);
         }
     }, []);
+
+    useEffect(() => {
+        if (userProfile && interests && user) {
+            setCurrentName(userProfile.profile.user_name);
+            setCurrentDOB(userProfile.profile.date_of_birth);
+
+            let interestBadge = [];
+            for (let i = 0; i < interests.length; i++) {
+                interestBadge.push(
+                    <Row className="justify-content-md-center mt-3">
+                            <Badge pill bg="warning" style={{width: '5vw'}}>{interests[i].interest}</Badge>
+                    </Row>
+                )
+            }
+
+            setDisplayUserInterests(interestBadge);
+
+            getAllNuts(user.uid)
+                .then((resp) => {console.log(resp.data); setAllNuts(resp.data);})
+            }
+    }, [user, userProfile, interests]);
 
     let displayUserInterests = [];
         for (let i = 0; i < userProfile.profile.interests.length; i++) {
@@ -71,7 +92,7 @@ export default function ProfileView(props) {
                 </Row>
 
                 <Row className="justify-content-md-center mt-3">
-                    Interests: {( && userProfile.interest.length == 0) && displayUserInterests}
+                    Interests: {(userProfile.interest.length == 0) && displayUserInterests}
                 </Row>
             </Container>
 
