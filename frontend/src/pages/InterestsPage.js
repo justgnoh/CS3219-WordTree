@@ -25,8 +25,6 @@ export default function InterestsPage() {
     }
 
     async function addInterests() {
-        console.log(interests);
-        console.log("All Good")
         const userToken = await user.getIdToken(true);
         await updateUserInterests(userToken, interests);
         history.push("/profile");

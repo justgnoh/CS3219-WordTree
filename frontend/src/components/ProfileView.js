@@ -19,7 +19,6 @@ export default function ProfileView(props) {
 
     useEffect(() => {
         if (userProfile && interests && user) {
-            console.log(userProfile);
             setCurrentName(userProfile.profile.user_name);
             setCurrentDOB(userProfile.profile.date_of_birth);
             setJoinDateTime(userProfile.profile.joined_datetime);
@@ -36,7 +35,7 @@ export default function ProfileView(props) {
             setDisplayUserInterests(interestBadge);
 
             getAllNuts(user.uid)
-                .then((resp) => {console.log(resp.data); setAllNuts(resp.data);})
+                .then((resp) => {setAllNuts(resp.data);})
             }
     }, [user, userProfile, interests]);
 

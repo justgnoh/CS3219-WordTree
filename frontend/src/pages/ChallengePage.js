@@ -20,7 +20,6 @@ export default function ChallengePage() {
 
     function determineTurn(id, seq, squirrelId, racoonId) {
         if (seq % 2 == 0) {
-            console.log('Squirrels turn');
             if (id == squirrelId) {
                 return true;
             }
@@ -31,7 +30,6 @@ export default function ChallengePage() {
         }
 
         if (seq % 2 == 1) {
-            console.log('Racoons Turn')
             if (id == racoonId) {
                 return true;
             }
