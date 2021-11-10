@@ -19,9 +19,9 @@ function RegisterPage() {
       alert("Please enter name!"); 
       return;
     }
-      // Process DOB (YYYY-MM-DD -> DD/MM/YYYY)
+      // Process DOB (YYYY-MM-DD -> MM/DD/YYYY)
       const splitDate = dob.split("-");
-      const processedDOB = splitDate[2] + '/' + splitDate[1] + '/' + splitDate[0];
+      const processedDOB = splitDate[1] + '/' + splitDate[2] + '/' + splitDate[0];
       if (splitDate[2] === undefined || splitDate[1] === undefined || splitDate[0] === undefined) {
         alert("Please input a valid date of birth!");
       }
@@ -33,7 +33,7 @@ function RegisterPage() {
         alert("Password length must be at least 6 characters!")
         return;
       } 
-      
+
       // Firebase Registration - firebase error handled in the function
       registerWithEmailAndPassword(name, email, password, processedDOB);
   };
