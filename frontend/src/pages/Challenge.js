@@ -12,7 +12,6 @@ export default function Challenge() {
     const [countExceeded, setCountExceeded] = useState(false);
     const [user] = useAuthState(auth);
     const [essay, setEssay] = useState('');
-    const [authorName, setAuthorName] = useState('');
     const [essayThusFar, setEssayThusFar] = useState('');
     const [title, setTitle] = useState('');
     const [isMyTurn, setIsMyTurn] = useState(false);
@@ -42,16 +41,15 @@ export default function Challenge() {
 
     useEffect(async () => {
         if (user) {
-            setAuthorName(user.displayName);
             const token = await user.getIdToken();
             getChallengeById(token, cid).then((resp) => {
-                console.log(resp.data.essay_paras.length)
-                determineTurn(resp.data);
-                setWords(resp.data.words);
-                appendParas(resp.data);
-                setChallengeData(resp.data);
-                setTitle(resp.data.title);
-                // setWordCount(resp.data.word_limit_per_turn);
+                if (resp) {
+                    determineTurn(resp.data);
+                    setWords(resp.data.words);
+                    appendParas(resp.data);
+                    setChallengeData(resp.data);
+                    setTitle(resp.data.title);
+                }
             });
         }
     }, [user]);
@@ -66,8 +64,7 @@ export default function Challenge() {
         if (wordCount >= challengeData.word_limit_per_turn) {
             setShowFailureModal(true);
         }
-
-        if (wordCount === 0) {
+        else if (wordCount === 0) {
             setShowZeroWordCountModal(true);
         }
         else {
@@ -133,17 +130,14 @@ export default function Challenge() {
         const allParaSegments = data.essay_paras;
         let combinedSegments = '';
         for (let i = 0; i < allParaSegments.length; i++) {
-            combinedSegments += data.essay_paras[i].essay_para;
+            combinedSegments += (data.essay_paras[i].essay_para + " ");
         }
-        setEssayThusFar(combinedSegments + " ");
+        setEssayThusFar(combinedSegments);
     }
 
     function determineTurn(data) {
-        console.log(data);
-        console.log(user.uid);
         const userID = user.uid;
         if (data.essay_paras.length % 2 == 0) {
-            console.log('Squirrels turn');
             // if i am squirrel -> my turn
             // if i am racoon -> not my turn
             if (userID == data.squirrel_id) {
@@ -156,7 +150,6 @@ export default function Challenge() {
         }
 
         if (data.essay_paras.length % 2 == 1) {
-            console.log('Racoons Turn')
             // if i am racoon -> my turn
             // if i am squirrel -> not my turn
             if (userID == data.racoon_id) {
@@ -171,8 +164,10 @@ export default function Challenge() {
 
     async function submitEssay() {
         handleClose();
+        setShow(true);
         const token = await user.getIdToken();
         await addEssayPara(token, cid, essay, title);
+        setShow(false);
         history.push("/challenge");
     }
 
@@ -271,7 +266,7 @@ export default function Challenge() {
                             <Card.Text>
                                 Here are your word prompts. Use the words below to earn nuts!
                                 <br></br>
-                                {words.length == 0 && <Spinner animation="border" variant="success" /> }
+                                {words.length == 0 && <Spinner animation="border" variant="success" />}
                                 {word1Used ? <Badge pill bg="success" className="white-text me-3">{words[0]}</Badge> : <Badge pill bg="warning" className="black-text me-3">{words[0]}</Badge>}
                                 {word2Used ? <Badge pill bg="success" className="white-text me-3">{words[1]}</Badge> : <Badge pill bg="warning" className="black-text me-3">{words[1]}</Badge>}
                                 {word3Used ? <Badge pill bg="success" className="white-text me-3">{words[2]}</Badge> : <Badge pill bg="warning" className="black-text me-3">{words[2]}</Badge>}
@@ -365,6 +360,10 @@ export default function Challenge() {
                         Close
                     </Button>
                 </Modal.Footer>
+            </Modal>
+
+            <Modal show={show} fullscreen={true} onHide={() => setShow(false)}>
+                <Modal.Body><Spinner animation="border" variant="success"/></Modal.Body>
             </Modal>
 
         </div>
