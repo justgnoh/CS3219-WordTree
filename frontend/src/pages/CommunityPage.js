@@ -11,6 +11,7 @@ import { getCommunityChallenges, removeVoteCompletedEssay, upVoteCompletedEssay 
 export default function CommunityPage() {
     const [user] = useAuthState(auth);
     const [communityChallengeList, setCommunityChallengeList] = useState([]);
+    // const [communityChallengeList, setCommunityChallengeList] = useState([]);
     const history = useHistory();
 
     useEffect(async () => {
@@ -23,15 +24,6 @@ export default function CommunityPage() {
         }
     }, [user]);
 
-
-    let emptyChallengeData = [];
-    emptyChallengeData.push(
-        <tr>
-            <br></br>
-            <Spinner animation="border" variant="success" />
-        </tr>
-    )
-
     let communityChallengeData = [];
     for (let i = 0; i < communityChallengeList.length; i++) {
         const current = communityChallengeList[i];
@@ -39,7 +31,7 @@ export default function CommunityPage() {
             <tr>
                 <td>{current.challenge_id}</td>
                 <td>{current.upvotes} {' '}
-                    {current.upvoted == null ? <BsArrowUpSquare className={"upvote-button"} onClick={async () => {
+                    { communityChallengeList[i].upvoted == null ? <BsArrowUpSquare className={"upvote-button"} onClick={async () => {
                         console.log(current);
                         const reqBody = {
                             "uid1": current.squirrel_id,
@@ -47,7 +39,7 @@ export default function CommunityPage() {
                             "cid": current.challenge_id
                         }
                         const token = await user.getIdToken();
-                        await upVoteCompletedEssay(token, reqBody);
+                        await upVoteCompletedEssay(token, reqBody).then(() => updateUpvoteButton(i))
                     }} /> : <BsArrowUpSquareFill className={"upvote-button"} onClick={async () => {
                         console.log(current);
                         const reqBody1 = {
@@ -58,10 +50,6 @@ export default function CommunityPage() {
                         const token1 = await user.getIdToken();
                         await removeVoteCompletedEssay(token1, reqBody1);
                     }} />}
-
-
-
-
                 </td>
                 <td>{current.title}</td>
                 <td>
@@ -81,6 +69,71 @@ export default function CommunityPage() {
             </tr>
         )
     }
+    useEffect(() => {
+        console.log("in com challnege useeffect")
+        for (let i = 0; i < communityChallengeList.length; i++) {
+            const current = communityChallengeList[i];
+            communityChallengeData.push(
+                <tr>
+                    <td>{current.challenge_id}</td>
+                    <td>{current.upvotes} {' '}
+                        { communityChallengeList[i].upvoted == null ? <BsArrowUpSquare className={"upvote-button"} onClick={async () => {
+                            console.log(current);
+                            const reqBody = {
+                                "uid1": current.squirrel_id,
+                                "uid2": current.racoon_id,
+                                "cid": current.challenge_id
+                            }
+                            const token = await user.getIdToken();
+                            await upVoteCompletedEssay(token, reqBody).then(() => updateUpvoteButton(i))
+                        }} /> : <BsArrowUpSquareFill className={"upvote-button"} onClick={async () => {
+                            console.log(current);
+                            const reqBody1 = {
+                                "uid1": current.squirrel_id,
+                                "uid2": current.racoon_id,
+                                "cid": current.challenge_id
+                            }
+                            const token1 = await user.getIdToken();
+                            await removeVoteCompletedEssay(token1, reqBody1);
+                        }} />}
+                    </td>
+                    <td>{current.title}</td>
+                    <td>
+                        <Badge pill bg="warning" className="black-text">{current.interest}</Badge>
+                    </td>
+                    <td>
+                        <Badge pill bg="success">{current.squirrel_name}</Badge>
+                        ,
+                        <Badge pill bg="success">{current.racoon_name}</Badge>
+                    </td>
+                    <td>{current.num_of_total_turns}</td>
+                    <td>
+                        <Button variant="dark" size="sm" className="primary-color" onClick={() => {
+                            history.push("/community/" + current.challenge_id);
+                        }}>View</Button>
+                    </td>
+                </tr>
+            )
+        }
+    }, [communityChallengeList])
+
+    let updateUpvoteButton = (index) => {
+        let newChallengeList = communityChallengeList;
+        console.log("before" ,newChallengeList)
+        newChallengeList[index].upvoted = user.uid;
+        console.log("after" ,newChallengeList)
+        setCommunityChallengeList(newChallengeList);
+    }
+
+    let emptyChallengeData = [];
+    emptyChallengeData.push(
+        <tr>
+            <br></br>
+            <Spinner animation="border" variant="success" />
+        </tr>
+    )
+
+
 
     return (
         <div className="ms-5 me-5">
