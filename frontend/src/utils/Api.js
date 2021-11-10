@@ -273,7 +273,7 @@ export async function upVoteEssayPara(token, formData) {
 }
 
 export async function removeVoteEssayPara(token, formData) {
-    return await axios.delete(API_HOST + '/nut/deleteCommunityChallengeNut', {
+    return await axios.delete(API_HOST + '/nut/deleteCommunityEssayNut', {
         data: {
             "upvotedUserId": formData.uid1,
             "challengeId": formData.cid,
