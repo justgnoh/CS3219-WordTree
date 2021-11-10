@@ -14,7 +14,6 @@ export default function ViewRequestsPage() {
         if (user) {
             const token = await user.getIdToken();
             getChallengeRequests(token).then(resp => {
-                console.log(resp.data);
                 setAwaitingChallengeList(resp.data);
             });
         }

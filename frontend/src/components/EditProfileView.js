@@ -47,13 +47,11 @@ export default function ProfileView(props) {
             setDisplayUserInterests(interestBadge);
 
             getAllNuts(user.uid)
-                .then((resp) => { console.log(resp.data); setAllNuts(resp.data); });
+                .then((resp) => { setAllNuts(resp.data); });
         }
     }, [user, userProfile, interests]);
 
     async function editProfile() {
-        console.log(editName);
-        console.log(editDOB.slice(0, 10));
         const editData = {
             "uid": user.uid,
             "name": editName,
@@ -61,7 +59,6 @@ export default function ProfileView(props) {
         };
 
         const token = await user.getIdToken();
-        console.log(token);
         await updateUserProfile(token, editData);
         history.go(0);
     }

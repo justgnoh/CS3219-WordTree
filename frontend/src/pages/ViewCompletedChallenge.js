@@ -22,7 +22,6 @@ export default function ViewCompletedChallenge() {
         if (user) {
             const token = await user.getIdToken();
             getCommunityChallengeById(token, cid).then((resp) => {
-                console.log(resp.data)
                 appendParas(resp.data.essayPara);
                 setChallengeData(resp.data);
             });
@@ -30,7 +29,6 @@ export default function ViewCompletedChallenge() {
     }, [user]);
 
     function appendParas(data) {
-        console.log(data);
         const allParaSegments = data;
         let combinedSegments = '';
         for (let i = 0; i < allParaSegments.length; i++) {
