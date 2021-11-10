@@ -5,8 +5,9 @@ import { getAllNuts } from '../utils/Api';
 
 export default function ProfileView(props) {
     const { userProfile, user, interests } = props;
-    const [currentName, setCurrentName] = useState('');
-    const [currentDOB, setCurrentDOB] = useState('');
+    const [currentName, setCurrentName] = useState(' ');
+    const [currentDOB, setCurrentDOB] = useState(' ');
+    const [joinDateTime, setJoinDateTime] = useState(' ');
     const [allNuts, setAllNuts] = useState({
         communityChallengeNut: 0,
         communityEssayNut: 0,
@@ -18,14 +19,16 @@ export default function ProfileView(props) {
 
     useEffect(() => {
         if (userProfile && interests && user) {
+            console.log(userProfile);
             setCurrentName(userProfile.profile.user_name);
             setCurrentDOB(userProfile.profile.date_of_birth);
+            setJoinDateTime(userProfile.profile.joined_datetime);
 
             let interestBadge = [];
             for (let i = 0; i < interests.length; i++) {
                 interestBadge.push(
                     <Row className="justify-content-md-center mt-3">
-                            <Badge pill bg="warning" style={{width: '5vw'}}>{interests[i].interest}</Badge>
+                            <Badge pill bg="warning" style={{width: '7vw'}}>{interests[i].interest}</Badge>
                     </Row>
                 )
             }
@@ -47,12 +50,12 @@ export default function ProfileView(props) {
                     </Col>
                     <Col xs lg="2">
                         <Row className="justify-content-md-center">Date of birth:</Row>
-                        <Row className="justify-content-md-center">{currentDOB}</Row>
+                        <Row className="justify-content-md-center">{currentDOB.slice(0,10)}</Row>
                     </Col>
                 </Row>
 
                 <Row className="justify-content-md-center mt-3">
-                    Date Joined: {userProfile.profile.joined_datetime}
+                    Date Joined: {joinDateTime.slice(0,10)}
                 </Row>
 
                 <Row className="justify-content-md-center mt-3">
