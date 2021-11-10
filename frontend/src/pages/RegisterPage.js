@@ -14,15 +14,28 @@ function RegisterPage() {
   const history = useHistory();
 
   const register = () => {
-    // TODO: Add more error handling
-    if (!name) alert("Please enter name");
+    //error handling for name, email, password
+    if (!name) {
+      alert("Please enter name!"); 
+      return;
+    }
       // Process DOB (YYYY-MM-DD -> DD/MM/YYYY)
       const splitDate = dob.split("-");
       const processedDOB = splitDate[2] + '/' + splitDate[1] + '/' + splitDate[0];
-      console.log(processedDOB);
-    
-      // Firebase Registration
-    registerWithEmailAndPassword(name, email, password, processedDOB);
+      if (splitDate[2] === undefined || splitDate[1] === undefined || splitDate[0] === undefined) {
+        alert("Please input a valid date of birth!");
+      }
+  
+      if (email.trim().length === 0) {
+        alert("Empty email field!");
+        return;
+      } else if (password.trim().length < 6) {
+        alert("Password length must be at least 6 characters!")
+        return;
+      } 
+      
+      // Firebase Registration - firebase error handled in the function
+      registerWithEmailAndPassword(name, email, password, processedDOB);
   };
 
   useEffect(() => {

@@ -20,15 +20,20 @@ const db = getFirestore();
 // Sign in by Username & Password
 const basicSignIn = async (email, password) => {
   signInWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    const user = userCredential.user;
+ .then((userCredential) => {
     console.log('User Logged In');
+    const user = userCredential.user;
     console.log(user);
     // user.getIdToken(true).then(token => console.log(token))
   })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
+  .catch((err) => {
+    if (err.code === "auth/user-not-found") {
+      alert("User is not found!");
+    } else if (err.code === "auth/wrong-password") {
+      alert("Wrong password!");
+    } else {
+      alert(err.message);
+    }
   });
 };
 
@@ -50,8 +55,14 @@ const registerWithEmailAndPassword = async (name, email, password, dob) => {
       }
       createUserAccount(token, data);
     })
-    .catch((error) => {
-      console.log(error);
+    .catch((err) => {
+        if (err.code === "auth/invalid-email") {
+          alert("Please fill in a valid email!");
+        } else if (err.code === "auth/email-already-in-use") {
+          alert("Email is already in use!");
+        } else {
+          alert(err.message);
+        };
     });
 };
 
