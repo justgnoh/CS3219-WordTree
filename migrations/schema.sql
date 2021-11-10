@@ -33,7 +33,7 @@ CREATE TABLE Challenges (
     squirrel_id VARCHAR(50) NOT NULL REFERENCES UserAccount(user_id),
     racoon_id VARCHAR(50) REFERENCES UserAccount(user_id) DEFAULT NULL,
     num_of_total_turns INTEGER NOT NULL CHECK (num_of_total_turns = 4 OR num_of_total_turns = 6),
-    word_limit_per_turn INTEGER NOT NULL CHECK (word_limit_per_turn = 300 OR word_limit_per_turn = 500),
+    word_limit_per_turn INTEGER NOT NULL CHECK (word_limit_per_turn = 1000 OR word_limit_per_turn = 1500),
     interest VARCHAR(100) NOT NULL REFERENCES Interest(interest),
     status_of_challenge VARCHAR(100) NOT NULL DEFAULT 'DRAFT',
     CHECK (squirrel_id != racoon_id),
@@ -41,7 +41,7 @@ CREATE TABLE Challenges (
 );
 
 CREATE TABLE TurnDetails (
-    challenge_id PRIMARY KEY REFERENCES Challenges(challenge_id),
+    challenge_id INTEGER PRIMARY KEY REFERENCES Challenges(challenge_id),
     num_of_sequences_completed INTEGER NOT NULL DEFAULT 0,
     time_of_last_completed_sequence TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

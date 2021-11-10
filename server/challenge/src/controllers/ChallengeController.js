@@ -98,7 +98,7 @@ export const createNewChallenge = async (req, res) => {
     return res.status(400).send(error_messages.MISSING_FIELDS);
   if (data.num_of_total_turns !== 4 && data.num_of_total_turns !== 6)
     return res.status(400).send(error_messages.INVALID_FIELDS);
-  if (data.word_limit_per_turn !== 300 && data.word_limit_per_turn !== 500)
+  if (data.word_limit_per_turn !== 1000 && data.word_limit_per_turn !== 1500)
     return res.status(400).send(error_messages.INVALID_FIELDS);
 
   const challenge = await addChallenge(
