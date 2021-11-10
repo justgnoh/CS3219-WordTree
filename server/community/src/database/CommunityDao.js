@@ -2,17 +2,16 @@ import pool from '../database/db.js';
 
 const listChallengeQuery = "SELECT ca.challenge_id, title, ca.squirrel_id, ca.racoon_id, s.user_name AS squirrel_name, r.user_name AS racoon_name, num_of_total_turns, word_limit_per_turn, interest, COALESCE(upvotes, 0) AS upvotes, upvoter_user_id AS upvoted " +
         "FROM Challenges AS ca " +
-        "LEFT JOIN (SELECT DISTINCT challenge_id, COUNT(*) AS upvotes FROM CommunityChallengeNut GROUP BY challenge_id, upvoter_user_id) AS co ON co.challenge_id = ca.challenge_id " +
+        "LEFT JOIN (SELECT challenge_id, COUNT(*) / 2 AS upvotes FROM CommunityChallengeNut GROUP BY challenge_id) AS co ON co.challenge_id = ca.challenge_id " +
         "LEFT JOIN (SELECT challenge_id, upvoter_user_id FROM CommunityChallengeNut WHERE upvoter_user_id = $1) AS ci ON ca.challenge_id = ci.challenge_id " +
         "LEFT JOIN (SELECT user_id, user_name FROM UserProfile) AS s ON ca.squirrel_id = s.user_id " +
         "LEFT JOIN (SELECT user_id, user_name FROM UserProfile) as r ON ca.racoon_id = r.user_id " +
         "WHERE status_of_challenge = 'COMPLETED' " +
         "GROUP BY ca.challenge_id, s.user_name, r.user_name, upvotes, upvoter_user_id ORDER BY ca.challenge_id DESC LIMIT $2 OFFSET $3;";
 
-
 const getChallengeDetailsQuery = "SELECT ca.challenge_id, title, squirrel_id, racoon_id, num_of_total_turns, word_limit_per_turn, interest, COALESCE(upvotes, 0) AS upvotes, upvoter_user_id AS upvoted " +
         "FROM Challenges AS ca " +
-        "LEFT JOIN (SELECT DISTINCT challenge_id, COUNT(*) AS upvotes FROM CommunityChallengeNut GROUP BY challenge_id, upvoter_user_id) AS co ON co.challenge_id = ca.challenge_id " +
+        "LEFT JOIN (SELECT challenge_id, COUNT(*) / 2 AS upvotes FROM CommunityChallengeNut GROUP BY challenge_id) AS co ON co.challenge_id = ca.challenge_id " +
         "LEFT JOIN (SELECT challenge_id, upvoter_user_id FROM CommunityChallengeNut WHERE upvoter_user_id = $1) AS ci ON co.challenge_id = ci.challenge_id " +
         "WHERE ca.challenge_id = $2 GROUP BY ca.challenge_id, upvoter_user_id, co.upvotes;";
 

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Badge, Button, Col, Container, Row } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useHistory } from "react-router";
 import { getUserProfile } from "../utils/Api";
 
 import { auth } from "../firebase";
 
-import NutView from "../components/NutView";
 import ProfileView from "../components/ProfileView";
+import EditProfileView from "../components/EditProfileView";
 
 function ProfilePage() {
   const [user] = useAuthState(auth);
@@ -40,17 +40,10 @@ function ProfilePage() {
 
   function enableEdit() {
     setEditProfile(true);
-    setViewNut(false);
   }
 
   function disableEdit() {
     setEditProfile(false);
-    setViewNut(false);
-  }
-
-  function enableNut() {
-    setEditProfile(false);
-    setViewNut(true);
   }
 
   function renderMainContents() {
@@ -58,31 +51,24 @@ function ProfilePage() {
       // Edit Profile
       if (user && userProfile) { 
           return (
-          <EditProfileView userProfile={userProfile} user={user} />
+          <EditProfileView userProfile={userProfile} user={user} interests={userProfile.interest} />
         );
       }
     }
     if (!editProfile && !viewNut) {
       // Normal Profile
       if (user && userProfile) {
+        console.log(userProfile);
       return (
         <ProfileView userProfile={userProfile} user={user} interests={userProfile.interest} />
       );
       }
     }
-    if (viewNut) {
-      // Nut View
-      return (
-        <div className="d-flex  align-content-center justify-content-center profile-contents-container borderGrey">
-          <NutView essayNut={10} communityChallengeNut={15} communityEssayNut={15} />
-        </div>
-      );
-    }
   }
 
   return (
-    <div className="d-flex justify-content-center profile-container borderGrey ">
-      <div className="d-flex flex-column align-items-center profile-menu borderGrey ">
+    <div className="d-flex justify-content-center profile-container">
+      <div className="d-flex flex-column align-items-center profile-menu ">
         <div className="d-flex flex-column profile-menu-nav gap-3">
           <Button
             variant="dark"

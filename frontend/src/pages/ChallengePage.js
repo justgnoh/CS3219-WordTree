@@ -13,10 +13,8 @@ export default function ChallengePage() {
     useEffect(async () => {
         if (user) {
             const token = await user.getIdToken();
-            getChallengesForUserId(token).then((resp) => {
-                console.log(resp.data)
-                setChallengeList(resp.data);
-            });
+            const resp = await getChallengesForUserId(token);
+            setChallengeList(resp.data);
         }
     }, [user]);
 
