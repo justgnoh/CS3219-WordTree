@@ -40,7 +40,6 @@ function RegisterPage() {
 
   useEffect(() => {
     if (loading) return;
-    // TODO: Add post Auth Page
     if (user) {
         history.replace("/interests");
     }

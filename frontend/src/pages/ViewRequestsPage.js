@@ -62,14 +62,10 @@ export default function ViewRequestsPage() {
                 <td>
                     {isOwnRequest ? <Button variant="dark" size="sm" className="primary-color" disabled>Accept</Button> 
                     : <Button variant="dark" size="sm" className="primary-color" onClick={async () => {
-                        console.log(awaitingChallengeList[i]);
                         const challengeData = awaitingChallengeList[i];
-                        console.log(challengeData.challenge_id);
-
                         const challengeId = challengeData.challenge_id;
                         await user.getIdToken()
                         .then((token) => {
-                            console.log(challengeData.challenge_id);
                             acceptChallenge(token, challengeId);
                         }).then(() => {
                             history.push("/challenge/" + challengeData.challenge_id);

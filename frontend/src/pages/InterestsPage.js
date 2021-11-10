@@ -30,16 +30,6 @@ export default function InterestsPage() {
         const userToken = await user.getIdToken(true);
         await updateUserInterests(userToken, interests);
         history.push("/profile");
-        
-        // if (interests.length != 0) {
-        //     // TODO: Post
-        //     console.log("All Good")
-        //     const userToken = await user.getIdToken(true);
-        //     await updateUserInterests(userToken, interests);
-        //     history.push("/profile");
-        // } else {
-        //     setShow(true);
-        // }
     }
 
     return (

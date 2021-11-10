@@ -34,10 +34,6 @@ export default function CreateChallengePage() {
         })
     }, []);
 
-    function handleInterests(val) {
-        setInterests(val);
-    }
-
     async function createChallengeRequest() {
         var request = {
         "uid": user.uid,
@@ -48,7 +44,6 @@ export default function CreateChallengePage() {
 
         if (request.uid != '' && (request.turns == "6" || request.turns == "4") &&
             (request.wordLimit == "1000" || request.wordLimit == "1500") && request.interest.length != 0) {
-            console.log(request);
             const token = await user.getIdToken();
             await createNewChallenge(request, token);
             history.replace("/challenge");
@@ -145,7 +140,7 @@ export default function CreateChallengePage() {
                     <Modal.Title>Ooops!</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    Please check if you have selected all required option.
+                    Please check if you have selected all required options.
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>

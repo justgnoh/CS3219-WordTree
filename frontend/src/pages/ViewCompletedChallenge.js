@@ -17,7 +17,6 @@ export default function ViewCompletedChallenge() {
         },
         essay_para: []
     });
-    const [upvoted, setUpvoted] = useState(false);
 
     useEffect(async () => {
         if (user) {
@@ -65,8 +64,7 @@ export default function ViewCompletedChallenge() {
                                     "seqNum": challengeData.essayPara[i].seq_num
                                 }
                                 const token = await user.getIdToken();
-                                await upVoteEssayPara(token, reqBody);
-                                setUpvoted(true);
+                                await upVoteEssayPara(token, reqBody).then(() => history.go(0));
                             }} />
                                 : <BsArrowUpSquareFill className={"upvote-button"} onClick={async () => {
                                     const reqBody1 = {
@@ -75,8 +73,7 @@ export default function ViewCompletedChallenge() {
                                         "seqNum": challengeData.essayPara[i].seq_num
                                     }
                                     const token1 = await user.getIdToken();
-                                    await removeVoteEssayPara(token1, reqBody1);
-                                    setUpvoted(false);
+                                    await removeVoteEssayPara(token1, reqBody1).then(() => history.go(0));
                                 }} />}
 
                         </Card.Header>
@@ -100,7 +97,7 @@ export default function ViewCompletedChallenge() {
                                 "seqNum": challengeData.essayPara[i].seq_num
                             }
                             const token = await user.getIdToken();
-                            await upVoteEssayPara(token, reqBody);
+                            await upVoteEssayPara(token, reqBody).then(() => history.go(0));
                             }} />
                                 : <BsArrowUpSquareFill className={"upvote-button"} onClick={async () => {
                                     const reqBody1 = {
@@ -109,7 +106,7 @@ export default function ViewCompletedChallenge() {
                                         "seqNum": challengeData.essayPara[i].seq_num
                                     }
                                     const token1 = await user.getIdToken();
-                                    await removeVoteEssayPara(token1, reqBody1);
+                                    await removeVoteEssayPara(token1, reqBody1).then(() => history.go(0));
                                 }} />}
                         </Card.Header>
                         <Card.Body>

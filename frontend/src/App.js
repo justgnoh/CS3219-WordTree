@@ -26,8 +26,6 @@ function App() {
     <Router>
       <Navigation/>
       <div>
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
         <Switch>
         <Route exact path="/">
             <HomePage />
@@ -67,10 +65,6 @@ function App() {
       </div>
     </Router>
   );
-}
-
-function Community() {
-  return <h2>Welcome to the Treehouse! Come hangout!</h2>;
 }
 
 export default App;

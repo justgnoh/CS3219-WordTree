@@ -4,12 +4,11 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, basicSignIn } from "../firebase.js";
 
 import "./styles/LoginPage.css";
-import { Alert } from "react-bootstrap";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [user] = useAuthState(auth);
+  const [user, error] = useAuthState(auth);
   const history = useHistory();
 
   useEffect(() => {

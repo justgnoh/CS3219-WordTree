@@ -2,7 +2,6 @@ import { io } from "socket.io-client";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase.js";
 import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
 
 // initialise connection to server through socket
 const socket = io("http://localhost:80/connect", {
