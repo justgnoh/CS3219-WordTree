@@ -29,15 +29,15 @@ INSERT INTO UserInterest (user_id, interest) VALUES ('UY8F8bckPGMYJYcjDVATXjuK9Q
 INSERT INTO UserInterest (user_id, interest) VALUES ('UY8F8bckPGMYJYcjDVATXjuK9Qx2', 'Adventure');
 
 INSERT INTO Challenges (challenge_id, title, squirrel_id, racoon_id, num_of_total_turns, word_limit_per_turn, interest, status_of_challenge)
-VALUES (1, 'The Unsolved Mystery', 'oDvs8LMf8JQG4WWMCChvJ0WRQAh1', 'JIcmq40600cn8YBLa0uBVv0fJZe2', 4, 300, 'Crime', 'COMPLETED');
+VALUES (1, 'The Unsolved Mystery', 'oDvs8LMf8JQG4WWMCChvJ0WRQAh1', 'JIcmq40600cn8YBLa0uBVv0fJZe2', 4, 1000, 'Crime', 'COMPLETED');
 INSERT INTO Challenges (challenge_id, squirrel_id, racoon_id, num_of_total_turns, word_limit_per_turn, interest, status_of_challenge)
-VALUES (2, 'fDudvKGcZ7Sn5AAnHLWMggR34R82', 'UY8F8bckPGMYJYcjDVATXjuK9Qx2', 6, 300, 'Horror', 'DRAFT');
+VALUES (2, 'fDudvKGcZ7Sn5AAnHLWMggR34R82', 'UY8F8bckPGMYJYcjDVATXjuK9Qx2', 6, 1000, 'Horror', 'DRAFT');
 INSERT INTO Challenges (challenge_id, squirrel_id, num_of_total_turns, word_limit_per_turn, interest, status_of_challenge)
-VALUES (3, 'oDvs8LMf8JQG4WWMCChvJ0WRQAh1', 4, 500, 'Fantasy', 'WAITING_MATCH');
+VALUES (3, 'oDvs8LMf8JQG4WWMCChvJ0WRQAh1', 4, 1500, 'Fantasy', 'WAITING_MATCH');
 INSERT INTO Challenges (challenge_id, title, squirrel_id, racoon_id, num_of_total_turns, word_limit_per_turn, interest, status_of_challenge)
-VALUES (4, 'Journey to the Dragon Island', 'JIcmq40600cn8YBLa0uBVv0fJZe2', 'UY8F8bckPGMYJYcjDVATXjuK9Qx2', 4, 300, 'Adventure', 'COMPLETED');
+VALUES (4, 'Journey to the Dragon Island', 'JIcmq40600cn8YBLa0uBVv0fJZe2', 'UY8F8bckPGMYJYcjDVATXjuK9Qx2', 4, 1000, 'Adventure', 'COMPLETED');
 INSERT INTO Challenges (challenge_id, squirrel_id, num_of_total_turns, word_limit_per_turn, interest, status_of_challenge)
-VALUES (5, 'fDudvKGcZ7Sn5AAnHLWMggR34R82', 6, 500, 'Sci-Fi', 'WAITING_MATCH');
+VALUES (5, 'fDudvKGcZ7Sn5AAnHLWMggR34R82', 6, 1500, 'Sci-Fi', 'WAITING_MATCH');
 
 INSERT INTO TurnDetails (challenge_id, num_of_sequences_completed) VALUES (1, 4);
 INSERT INTO TurnDetails (challenge_id, num_of_sequences_completed) VALUES (2, 3);
