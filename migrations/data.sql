@@ -5,10 +5,10 @@ INSERT INTO UserAccount (user_id, email) VALUES ('fDudvKGcZ7Sn5AAnHLWMggR34R82',
 INSERT INTO UserAccount (user_id, email) VALUES ('UY8F8bckPGMYJYcjDVATXjuK9Qx2', 'justin@gmail.com');
 INSERT INTO UserAccount (user_id, email) VALUES ('WC12K5jFN4U4IUx3FzIAx6p87Zq1', 'james@gmail.com');
 
-INSERT INTO UserProfile (user_id, user_name, total_nut, date_of_birth) VALUES ('oDvs8LMf8JQG4WWMCChvJ0WRQAh1', 'Nikhila', 9, '01/01/1996');
-INSERT INTO UserProfile (user_id, user_name, total_nut, date_of_birth) VALUES ('JIcmq40600cn8YBLa0uBVv0fJZe2', 'Yun Qing', 17, '01/01/1997');
-INSERT INTO UserProfile (user_id, user_name, total_nut, date_of_birth) VALUES ('fDudvKGcZ7Sn5AAnHLWMggR34R82', 'Boon Ji', 6, '01/01/1998');
-INSERT INTO UserProfile (user_id, user_name, total_nut, date_of_birth) VALUES ('UY8F8bckPGMYJYcjDVATXjuK9Qx2', 'Justin', 13, '01/01/1999');
+INSERT INTO UserProfile (user_id, user_name, total_nut, date_of_birth) VALUES ('oDvs8LMf8JQG4WWMCChvJ0WRQAh1', 'Nikhila', '01/01/1996');
+INSERT INTO UserProfile (user_id, user_name, total_nut, date_of_birth) VALUES ('JIcmq40600cn8YBLa0uBVv0fJZe2', 'Yun Qing', '01/01/1997');
+INSERT INTO UserProfile (user_id, user_name, total_nut, date_of_birth) VALUES ('fDudvKGcZ7Sn5AAnHLWMggR34R82', 'Boon Ji', '01/01/1998');
+INSERT INTO UserProfile (user_id, user_name, total_nut, date_of_birth) VALUES ('UY8F8bckPGMYJYcjDVATXjuK9Qx2', 'Justin', '01/01/1999');
 INSERT INTO UserProfile (user_id, user_name, date_of_birth) VALUES ('WC12K5jFN4U4IUx3FzIAx6p87Zq1', 'James', '01/01/2000');
 
 INSERT INTO Interest (interest) VALUES ('Crime');
