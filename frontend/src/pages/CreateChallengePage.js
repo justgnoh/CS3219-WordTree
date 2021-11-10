@@ -1,17 +1,19 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Breadcrumb, InputGroup, FormControl, Modal, Button, ToggleButton, ToggleButtonGroup } from 'react-bootstrap'
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
+import { useHistory } from 'react-router';
 import { createNewChallenge, getSystemInterests } from '../utils/Api';
 
 export default function CreateChallengePage() {
-    const [user, loading, error] = useAuthState(auth);
+    const [user] = useAuthState(auth);
+    const history = useHistory();
 
     // Request Values
     const [turns, setTurns] = useState('');
     const [wordLimit, setWordLimit] = useState('');
-    // const [interests, setInterests] = useState([]);
     const [interests, setInterests] = useState('');
+    const [interestsRadio, setInterestsRadio] = useState([]);
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -22,31 +24,29 @@ export default function CreateChallengePage() {
     ];
 
     const wordLimitRadio = [
-        { name: '300 words', value: '300' },
-        { name: '500 words', value: '500' },
+        { name: '1000 characters', value: '1000' },
+        { name: '1500 characters', value: '1500' },
     ]
 
-    const interestsRadio = [{ interest: 'crime' }, { interest: 'fantasy' }, { interest: 'adventure' }, { interest: 'horror' }];
-    // const interestsRadio = getSystemInterests();
+    useEffect(() => {
+        getSystemInterests().then((resp) => {
+            setInterestsRadio(resp.data);
+        })
+    }, []);
 
-    var request = {
-        "uid": 'user.uid',
-        "turns": turns,
-        "wordLimit": wordLimit,
-        "interests": interests
-    }
+    async function createChallengeRequest() {
+        var request = {
+        "uid": user.uid,
+        "turns": parseInt(turns),
+        "wordLimit": parseInt(wordLimit),
+        "interest": interests
+        }
 
-    function handleInterests(val) {
-        setInterests(val);
-    }
-
-    function createChallengeRequest() {
-        console.log(request);
-        if (request.uid.length != 0 && (request.turns == "6" || request.turns == "4") &&
-            (request.wordLimit == "300" || request.wordLimit == "500") && request.interests.length != 0) {
-            // TODO: Post
-            // console.log("All Good")
-            createNewChallenge(request)
+        if (request.uid != '' && (request.turns == "6" || request.turns == "4") &&
+            (request.wordLimit == "1000" || request.wordLimit == "1500") && request.interest.length != 0) {
+            const token = await user.getIdToken();
+            await createNewChallenge(request, token);
+            history.replace("/challenge");
         } else {
             setShow(true);
         }
@@ -68,7 +68,6 @@ export default function CreateChallengePage() {
                     aria-label="Username"
                     aria-describedby="basic-addon1"
                     disabled
-                    // value={user.uid}
                 />
             </InputGroup>
 
@@ -110,16 +109,6 @@ export default function CreateChallengePage() {
 
             <h3 className="mt-3">Genre selection</h3>
 
-            {/* TODO: Get Genres */}
-            {/* <ToggleButtonGroup className="mb-3" type="checkbox" value={interests} onChange={handleInterests} >
-                {interestsRadio.map((item, idx) => (
-                    <ToggleButton className="black-text" id={idx} variant={'outline-warning'} value={item.name}>
-                        {item.name}
-                    </ToggleButton>
-                )
-                )}
-            </ToggleButtonGroup> */}
-
             {interestsRadio.map((item, idx) => (
                 <ToggleButton
                     key={idx}
@@ -151,7 +140,7 @@ export default function CreateChallengePage() {
                     <Modal.Title>Ooops!</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    Please check if you have selected all required option.
+                    Please check if you have selected all required options.
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>

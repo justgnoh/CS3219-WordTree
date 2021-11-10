@@ -25,7 +25,7 @@ export default function Navigation() {
         {user && (
           <Nav>
             <Button variant="outline-warning">
-              <BsBell onClick={()=>console.log("bell")}/>
+              <BsBell onClick={()=> console.log("Open Notification Menu")}/>
             </Button>
           </Nav>
         )}

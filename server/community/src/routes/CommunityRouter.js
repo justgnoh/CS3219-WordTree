@@ -3,7 +3,7 @@ import * as communityController from '../controllers/CommunityController.js';
 
 const router = Router();
 
-router.post('/listChallenges', communityController.listChallenges);
-router.post('/getChallenge', communityController.getChallenge);
+router.get('/listChallenges/:offset?/:limit?', communityController.listChallenges);
+router.get('/getChallenge/:challengeId', communityController.getChallenge);
 
 export default router;

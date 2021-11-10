@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth, registerWithEmailAndPassword } from "../firebase.js";
-import { createUserAccount } from "../utils/Api.js";
 
 import "./styles/RegisterPage.css";
 
@@ -15,31 +14,34 @@ function RegisterPage() {
   const history = useHistory();
 
   const register = () => {
-    // TODO: Add more error handling
-    if (!name) alert("Please enter name");
-
-    // Firebase Registration
-    registerWithEmailAndPassword(name, email, password);
-
-    // Internal DB Registration
-    const formData = {
-      userId: user.uid,
-      email: email,
-      password: password,
-      name: name,
-      dateOfBirth: dob
+    //error handling for name, email, password
+    if (!name) {
+      alert("Please enter name!"); 
+      return;
     }
-    createUserAccount(formData);
-
-    console.log("done");
+      // Process DOB (YYYY-MM-DD -> DD/MM/YYYY)
+      const splitDate = dob.split("-");
+      const processedDOB = splitDate[2] + '/' + splitDate[1] + '/' + splitDate[0];
+      if (splitDate[2] === undefined || splitDate[1] === undefined || splitDate[0] === undefined) {
+        alert("Please input a valid date of birth!");
+      }
+  
+      if (email.trim().length === 0) {
+        alert("Empty email field!");
+        return;
+      } else if (password.trim().length < 6) {
+        alert("Password length must be at least 6 characters!")
+        return;
+      } 
+      
+      // Firebase Registration - firebase error handled in the function
+      registerWithEmailAndPassword(name, email, password, processedDOB);
   };
 
   useEffect(() => {
     if (loading) return;
-    // TODO: Add post Auth Page
     if (user) {
-        // history.replace("/interests");
-        history.replace("/profile");
+        history.replace("/interests");
     }
   }, [user, loading]);
 

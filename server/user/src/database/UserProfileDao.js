@@ -37,13 +37,3 @@ export async function updateUserName(userId, name, dateOfBirth) {
         throw err;
     }
 }
-
-export async function updateUserTotalNut(userId, totalNut) {
-    try {
-        const result = await pool.query("UPDATE " + userProfileDb +
-                " SET " + totalNutCol + " = $1 WHERE " + userIdCol + " = $2;", [totalNut, userId]);
-        return result;
-    } catch (err) {
-        throw err;
-    }
-}

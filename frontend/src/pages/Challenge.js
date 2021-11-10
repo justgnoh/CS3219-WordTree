@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Badge, Button, InputGroup, FormControl, Breadcrumb, Modal } from 'react-bootstrap';
+import { Card, Table, Badge, Button, InputGroup, FormControl, Breadcrumb, Modal, Spinner } from 'react-bootstrap';
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
+import { useParams, useHistory } from 'react-router-dom';
+import { getChallengeById, addEssayPara } from '../utils/Api';
 
 export default function Challenge() {
+    const { cid } = useParams();
+    const history = useHistory();
     const [wordCount, setWordCount] = useState(0);
     const [countExceeded, setCountExceeded] = useState(false);
-    const [user, loading, error] = useAuthState(auth);
+    const [user] = useAuthState(auth);
     const [essay, setEssay] = useState('');
+    const [essayThusFar, setEssayThusFar] = useState('');
+    const [title, setTitle] = useState('');
+    const [isMyTurn, setIsMyTurn] = useState(false);
 
     // Modals
     const [show, setShow] = useState(false);
@@ -23,14 +30,29 @@ export default function Challenge() {
     // Nut Count
     const [nutCount, setNutCount] = useState(0);
 
-    // TODO: Pull max word count from ENDPOINT
-    const maxWordCount = 100;
+    // Word Prompts
+    const [words, setWords] = useState([]);
 
-    // TODO: Pull words from word service
-    const word1 = "proactive";
-    const word2 = "dilemma";
-    const word3 = "destroy";
-    const words = [word1, word2, word3];
+    const [challengeData, setChallengeData] = useState({
+        racoon_id: '',
+        essay_paras: []
+    });
+
+
+    useEffect(async () => {
+        if (user) {
+            const token = await user.getIdToken();
+            getChallengeById(token, cid).then((resp) => {
+                if (resp) {
+                    determineTurn(resp.data);
+                    setWords(resp.data.words);
+                    appendParas(resp.data);
+                    setChallengeData(resp.data);
+                    setTitle(resp.data.title);
+                }
+            });
+        }
+    }, [user]);
 
     function handleClose() {
         setShowSuccessModal(false);
@@ -39,11 +61,10 @@ export default function Challenge() {
     }
 
     function handleShow() {
-        if (wordCount >= maxWordCount) {
+        if (wordCount >= challengeData.word_limit_per_turn) {
             setShowFailureModal(true);
-        } 
-        
-        if (wordCount === 0) {
+        }
+        else if (wordCount === 0) {
             setShowZeroWordCountModal(true);
         }
         else {
@@ -53,7 +74,6 @@ export default function Challenge() {
 
     function handleWordCount(e) {
         e.preventDefault();
-        console.log(e.target.value);
         const essayData = e.target.value;
         const wordCount = essayData.length
 
@@ -62,33 +82,33 @@ export default function Challenge() {
         checkWordUsage(essayData);
         checkNutsEarned(essayData);
 
-        if (wordCount < maxWordCount) {
+        if (wordCount < challengeData.word_limit_per_turn) {
             setCountExceeded(false);
         }
 
-        if (wordCount >= maxWordCount) {
+        if (wordCount >= challengeData.word_limit_per_turn) {
             setCountExceeded(true);
         }
     }
 
     function checkWordUsage(d) {
-        if (d.includes(word1)) {
+        if (d.includes(words[0])) {
             setWord1Used(true);
         }
-        if (d.includes(word2)) {
+        if (d.includes(words[1])) {
             setWord2Used(true);
         }
-        if (d.includes(word3)) {
+        if (d.includes(words[2])) {
             setWord3Used(true);
         }
 
-        if (!d.includes(word1)) {
+        if (!d.includes(words[0])) {
             setWord1Used(false);
         }
-        if (!d.includes(word2)) {
+        if (!d.includes(words[1])) {
             setWord2Used(false);
         }
-        if (!d.includes(word3)) {
+        if (!d.includes(words[2])) {
             setWord3Used(false);
         }
     }
@@ -100,63 +120,140 @@ export default function Challenge() {
             if (d.includes(element)) {
                 console.log('plus');
                 count++;
-            } 
+            }
         });
 
         setNutCount(count);
     }
 
-    function submitEssay() {
-        handleClose();
-        // TODO: Submit essay;
-        // /challenge/<:id>
-
-        console.log(essay);
+    function appendParas(data) {
+        const allParaSegments = data.essay_paras;
+        let combinedSegments = '';
+        for (let i = 0; i < allParaSegments.length; i++) {
+            combinedSegments += (data.essay_paras[i].essay_para + " ");
+        }
+        setEssayThusFar(combinedSegments);
     }
+
+    function determineTurn(data) {
+        const userID = user.uid;
+        if (data.essay_paras.length % 2 == 0) {
+            // if i am squirrel -> my turn
+            // if i am racoon -> not my turn
+            if (userID == data.squirrel_id) {
+                setIsMyTurn(true);
+            }
+
+            if (userID == data.racoon_id) {
+                setIsMyTurn(false);
+            }
+        }
+
+        if (data.essay_paras.length % 2 == 1) {
+            // if i am racoon -> my turn
+            // if i am squirrel -> not my turn
+            if (userID == data.racoon_id) {
+                setIsMyTurn(true);
+            }
+
+            if (userID == data.squirrel_id) {
+                setIsMyTurn(false);
+            }
+        }
+    }
+
+    async function submitEssay() {
+        handleClose();
+        setShow(true);
+        const token = await user.getIdToken();
+        await addEssayPara(token, cid, essay, title);
+        setShow(false);
+        history.push("/challenge");
+    }
+
+    function makeBadge(value) {
+        if (value == "DRAFT") {
+            return <Badge pill bg="secondary">{value}</Badge>
+        } else if (value == "WAITING_MATCH") {
+            if (isMyTurn) {
+                return <Badge pill bg="success">Your Turn</Badge>
+            } else {
+                return <Badge pill bg="secondary">Awaiting Match</Badge>
+            }
+        } else if (value == "ONGOING") {
+            if (isMyTurn) {
+                return <Badge pill bg="success">Your Turn</Badge>
+            } else {
+                return <Badge pill bg="danger">Awaiting Turn</Badge>
+            }
+        }
+    }
+
+    let emptyChallengeData = [];
+    emptyChallengeData.push(
+        <tr>
+            <br></br>
+            <Spinner animation="border" variant="success" />
+        </tr>
+    )
 
     return (
         <div className="ms-5 me-5">
             <h1>Ongoing Challenge</h1>
             <Breadcrumb>
                 <Breadcrumb.Item href="/challenge">Challenges</Breadcrumb.Item>
-                <Breadcrumb.Item active>Arthur {user ? user.uid : ''}</Breadcrumb.Item>
+                <Breadcrumb.Item active>Challenge ID: {challengeData.racoon_id ? challengeData.challenge_id : 'Draft'}</Breadcrumb.Item>
             </Breadcrumb>
 
             <Table responsive>
                 <thead>
                     <tr>
-                        <th>Display</th>
-                        <th>Username</th>
-                        <th>Genres</th>
-                        <th>Turns</th>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Squirrel Name</th>
+                        <th>Racoon Name</th>
+                        <th>Interests</th>
+                        <th>Rounds</th>
                         <th>Status</th>
                     </tr>
                 </thead>
+                {!challengeData.challenge_id ? emptyChallengeData
+                    : <tbody>
+                        <tr>
+                            <td>{challengeData.challenge_id}</td>
+                            <td>{challengeData.title}</td>
+                            <td>{challengeData.squirrel_name}</td>
+                            <td>{challengeData.racoon_name}</td>
+                            <td>
+                                <Badge pill bg="warning" className="black-text">{challengeData.interest}</Badge>
+                            </td>
+                            <td>
+                                {challengeData.essay_paras.length}/{challengeData.num_of_total_turns}
+                            </td>
+                            <td>
+                                {makeBadge(challengeData.status_of_challenge)}
+                            </td>
+                        </tr>
+                    </tbody>
+                }
 
-                <tbody>
-                    <tr onClick={() => console.log("clicked on row")}>
-                        <td>dp</td>
-                        <td>Arthur</td>
-                        <td>
-                            <Badge pill bg="warning" className="black-text">Horror</Badge>
-                            <Badge pill bg="warning" className="black-text">Sci-Fi</Badge>
-                        </td>
-                        <td>
-                            2/4 rounds
-                        </td>
-                        <td>
-                            <Badge pill bg="success">Your Turn</Badge>
-                        </td>
-                    </tr>
-                </tbody>
             </Table>
+
+            <InputGroup className="mb-3">
+                <InputGroup.Text id="basic-addon1">Title</InputGroup.Text>
+                {isMyTurn ? <FormControl
+                    placeholder={challengeData.title}
+                    onChange={(e) => setTitle(e.target.value)} />
+                    : <FormControl
+                        placeholder={challengeData.title}
+                        onChange={(e) => setTitle(e.target.value)} disabled />}
+            </InputGroup>
 
             <Card>
                 <Card.Header>Story thus far...</Card.Header>
                 <Card.Body>
                     <Card.Text>
-                        (GET ESSAY thus far from Essay Service)
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+                        {essayThusFar.length == 0 ? <Spinner animation="border" variant="success" /> : essayThusFar}
                     </Card.Text>
                 </Card.Body>
             </Card>
@@ -167,11 +264,12 @@ export default function Challenge() {
                         <Card.Header>Today's Prompt</Card.Header>
                         <Card.Body>
                             <Card.Text>
-                                (GET WORDS from Essay Service)
+                                Here are your word prompts. Use the words below to earn nuts!
                                 <br></br>
-                                {word1Used ? <Badge pill bg="success" className="black-text me-3">{word1}</Badge> : <Badge pill bg="warning" className="black-text me-3">{word1}</Badge>}
-                                {word2Used ? <Badge pill bg="success" className="black-text me-3">{word2}</Badge> :<Badge pill bg="warning" className="black-text me-3">{word2}</Badge>}
-                                {word3Used ? <Badge pill bg="success" className="black-text me-3">{word3}</Badge>: <Badge pill bg="warning" className="black-text me-3">{word3}</Badge>}
+                                {words.length == 0 && <Spinner animation="border" variant="success" />}
+                                {word1Used ? <Badge pill bg="success" className="white-text me-3">{words[0]}</Badge> : <Badge pill bg="warning" className="black-text me-3">{words[0]}</Badge>}
+                                {word2Used ? <Badge pill bg="success" className="white-text me-3">{words[1]}</Badge> : <Badge pill bg="warning" className="black-text me-3">{words[1]}</Badge>}
+                                {word3Used ? <Badge pill bg="success" className="white-text me-3">{words[2]}</Badge> : <Badge pill bg="warning" className="black-text me-3">{words[2]}</Badge>}
                             </Card.Text>
                         </Card.Body>
                     </Card>
@@ -182,11 +280,7 @@ export default function Challenge() {
                         <Card.Header>Round Statistics</Card.Header>
                         <Card.Body>
                             <Card.Text>
-                                (GET STATS from Challenge Service)
-                                <br></br>
-                                Time Left: 20h 31m left
-                                <br></br>
-                                {countExceeded ? <span className="red-text">Word Count: {wordCount}/{maxWordCount}</span> : <span className="green-text">Word Count: {wordCount}/{maxWordCount}</span>}
+                                {countExceeded ? <span className="red-text">Character Count: {wordCount}/{challengeData.word_limit_per_turn}</span> : <span className="green-text">Character Count: {wordCount}/{challengeData.word_limit_per_turn}</span>}
                             </Card.Text>
                         </Card.Body>
                     </Card>
@@ -208,10 +302,15 @@ export default function Challenge() {
             </div>
 
             <InputGroup className="mb-3 mt-3">
-                <textarea style={{ width: '100%', minHeight: '30vh' }} placeholder="Input your story here..." onKeyUp={handleWordCount} />
+                {isMyTurn ? <textarea style={{ width: '100%', minHeight: '30vh' }}
+                    placeholder=" Input your story here... "
+                    onKeyUp={handleWordCount} />
+                    : <textarea style={{ width: '100%', minHeight: '30vh' }}
+                        placeholder=" It is currently not your turn... "
+                        disabled />}
+
                 <div className="d-flex flex-row-reverse">
-                    <Button variant="dark" size="sm" className="primary-color" onClick={handleShow}>Submit</Button>
-                    {/* <Button variant="dark" size="sm" className="primary-color">Save as Draft</Button> */}
+                    {isMyTurn && <Button variant="dark" size="sm" className="primary-color" onClick={handleShow}>Submit</Button>}
                 </div>
             </InputGroup>
 
@@ -219,7 +318,16 @@ export default function Challenge() {
                 <Modal.Header closeButton>
                     <Modal.Title>Are you sure you want to submit?</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>You're good to go!</Modal.Body>
+                <Modal.Body>
+                    You're good to go!
+                    <br></br>
+                    <br></br>
+                    Nuts Earned: {nutCount}
+                    <br></br>
+                    Words Used: {word1Used && words[0]} {word2Used && words[1]} {word3Used && words[2]}
+                    <br></br>
+                    Great Job!
+                </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
                         Close
@@ -234,7 +342,7 @@ export default function Challenge() {
                 <Modal.Header closeButton>
                     <Modal.Title>Oops!</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>You have exceeded the word count. Please keep to the word limit.</Modal.Body>
+                <Modal.Body>You have exceeded the character count. Please keep to the word limit.</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
                         Close
@@ -246,14 +354,18 @@ export default function Challenge() {
                 <Modal.Header closeButton>
                     <Modal.Title>Oops!</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>You cannot submit an essay with 0 word count. Please type your essay.</Modal.Body>
+                <Modal.Body>You cannot submit an essay with 0 character count. Please type your essay.</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
                         Close
                     </Button>
                 </Modal.Footer>
             </Modal>
-        
+
+            <Modal show={show} fullscreen={true} onHide={() => setShow(false)}>
+                <Modal.Body><Spinner animation="border" variant="success"/></Modal.Body>
+            </Modal>
+
         </div>
     )
 }
