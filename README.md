@@ -18,11 +18,12 @@ Note: Our original code repository template is adapted from https://github.com/r
 1. Ensure you have Docker application running. 
 2. Enable kubernetes on Docker desktop.
 3. cd server and you will see all the backend microservices.
-4. For each microservices (except Auth Service). Add a .env file and fill in the required fields as follows:
+4. For frontend, download the firebase config js file locally (Ask Admin for the file). Add an env.js into /frontend/src folder env.js.
+5. For each microservices (except Auth Service), add a .env file and fill in the required fields as follows:
    - POSTGRES_URL: the url to ElephantSQL (to get from Admin). If local database is used, need to run the schema.sql file in migrations > schema.sql.
-5. For Auth Service, download the firebase admin sdk json file locally (Ask Admin for the file). Add a .env file into auth folder fill in the required fields as follows:
+6. For Auth Service, download the firebase admin sdk json file locally (Ask Admin for the file). Add a .env file into auth folder fill in the required fields as follows:
     - GOOGLE_APPLICATION_CREDENTIALS: To include the path to the JSON file.
-6. Run the following commands in order:
+7. Run the following commands in order:
 ```bash
     cd cs3219-project-ay2122-2122-s1-g36
 ```
