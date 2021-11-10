@@ -3,13 +3,14 @@ INSERT INTO UserAccount (user_id, email) VALUES ('oDvs8LMf8JQG4WWMCChvJ0WRQAh1',
 INSERT INTO UserAccount (user_id, email) VALUES ('JIcmq40600cn8YBLa0uBVv0fJZe2', 'yunqing@gmail.com');
 INSERT INTO UserAccount (user_id, email) VALUES ('fDudvKGcZ7Sn5AAnHLWMggR34R82', 'boonji@gmail.com');
 INSERT INTO UserAccount (user_id, email) VALUES ('UY8F8bckPGMYJYcjDVATXjuK9Qx2', 'justin@gmail.com');
-INSERT INTO UserAccount (user_id, email) VALUES ('WC12K5jFN4U4IUx3FzIAx6p87Zq1', 'james@gmail.com');
+INSERT INTO UserAccount (user_id, email) VALUES ('aAnRr402HkUowub1KE8VuHfWzVp2', 'james@gmail.com');
 
-INSERT INTO UserProfile (user_id, user_name, date_of_birth) VALUES ('oDvs8LMf8JQG4WWMCChvJ0WRQAh1', 'Nikhila', '01/01/1996');
-INSERT INTO UserProfile (user_id, user_name, date_of_birth) VALUES ('JIcmq40600cn8YBLa0uBVv0fJZe2', 'Yun Qing', '01/01/1997');
-INSERT INTO UserProfile (user_id, user_name, date_of_birth) VALUES ('fDudvKGcZ7Sn5AAnHLWMggR34R82', 'Boon Ji', '01/01/1998');
-INSERT INTO UserProfile (user_id, user_name, date_of_birth) VALUES ('UY8F8bckPGMYJYcjDVATXjuK9Qx2', 'Justin', '01/01/1999');
-INSERT INTO UserProfile (user_id, user_name, date_of_birth) VALUES ('WC12K5jFN4U4IUx3FzIAx6p87Zq1', 'James', '01/01/2000');
+INSERT INTO UserProfile (user_id, user_name, total_nut, date_of_birth) VALUES ('oDvs8LMf8JQG4WWMCChvJ0WRQAh1', 'Nikhila', 9, '01/01/1996');
+INSERT INTO UserProfile (user_id, user_name, total_nut, date_of_birth) VALUES ('JIcmq40600cn8YBLa0uBVv0fJZe2', 'Yun Qing', 17, '01/01/1997');
+INSERT INTO UserProfile (user_id, user_name, total_nut, date_of_birth) VALUES ('fDudvKGcZ7Sn5AAnHLWMggR34R82', 'Boon Ji', 6, '01/01/1998');
+INSERT INTO UserProfile (user_id, user_name, total_nut, date_of_birth) VALUES ('UY8F8bckPGMYJYcjDVATXjuK9Qx2', 'Justin', 13, '01/01/1999');
+INSERT INTO UserProfile (user_id, user_name, date_of_birth) VALUES ('aAnRr402HkUowub1KE8VuHfWzVp2', 'James', '01/01/2000');
+
 
 INSERT INTO Interest (interest) VALUES ('Crime');
 INSERT INTO Interest (interest) VALUES ('Horror');
@@ -31,13 +32,13 @@ INSERT INTO UserInterest (user_id, interest) VALUES ('UY8F8bckPGMYJYcjDVATXjuK9Q
 INSERT INTO Challenges (challenge_id, title, squirrel_id, racoon_id, num_of_total_turns, word_limit_per_turn, interest, status_of_challenge)
 VALUES (1, 'The Unsolved Mystery', 'oDvs8LMf8JQG4WWMCChvJ0WRQAh1', 'JIcmq40600cn8YBLa0uBVv0fJZe2', 4, 1000, 'Crime', 'COMPLETED');
 INSERT INTO Challenges (challenge_id, squirrel_id, racoon_id, num_of_total_turns, word_limit_per_turn, interest, status_of_challenge)
-VALUES (2, 'fDudvKGcZ7Sn5AAnHLWMggR34R82', 'UY8F8bckPGMYJYcjDVATXjuK9Qx2', 6, 1000, 'Horror', 'DRAFT');
+VALUES (2, 'fDudvKGcZ7Sn5AAnHLWMggR34R82', 'UY8F8bckPGMYJYcjDVATXjuK9Qx2', 6, 1500, 'Horror', 'WAITING_MATCH');
 INSERT INTO Challenges (challenge_id, squirrel_id, num_of_total_turns, word_limit_per_turn, interest, status_of_challenge)
-VALUES (3, 'oDvs8LMf8JQG4WWMCChvJ0WRQAh1', 4, 1500, 'Fantasy', 'WAITING_MATCH');
+VALUES (3, 'oDvs8LMf8JQG4WWMCChvJ0WRQAh1', 4, 1500, 'Fantasy', 'DRAFT');
 INSERT INTO Challenges (challenge_id, title, squirrel_id, racoon_id, num_of_total_turns, word_limit_per_turn, interest, status_of_challenge)
 VALUES (4, 'Journey to the Dragon Island', 'JIcmq40600cn8YBLa0uBVv0fJZe2', 'UY8F8bckPGMYJYcjDVATXjuK9Qx2', 4, 1000, 'Adventure', 'COMPLETED');
 INSERT INTO Challenges (challenge_id, squirrel_id, num_of_total_turns, word_limit_per_turn, interest, status_of_challenge)
-VALUES (5, 'fDudvKGcZ7Sn5AAnHLWMggR34R82', 6, 1500, 'Sci-Fi', 'WAITING_MATCH');
+VALUES (5, 'fDudvKGcZ7Sn5AAnHLWMggR34R82', 6, 1500, 'Sci-Fi', 'DRAFT');
 
 INSERT INTO TurnDetails (challenge_id, num_of_sequences_completed) VALUES (1, 4);
 INSERT INTO TurnDetails (challenge_id, num_of_sequences_completed) VALUES (2, 3);
