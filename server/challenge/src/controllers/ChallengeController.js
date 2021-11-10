@@ -178,7 +178,7 @@ export const addEssayPara = async (req, res) => {
       challengeID
     );
 
-    if (!result) return res.status(500).send(error_messages.INTERNAL_ERROR);
+    // if (!result) return res.status(500).send(error_messages.INTERNAL_ERROR);
 
     const newStatus = getNewStatus(sequenceNum + 1, challenge['num_of_total_turns'])
 
